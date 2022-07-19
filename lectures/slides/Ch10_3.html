@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-11-05">
+  <title>Classy Details</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Classy Details</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">November 5, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Grade Reports are out!</li>
+<li>Keep making progress on Project 3!</li>
+<li>Project 4 guide will be posted on Monday, after we introduce the Enigma machine in class.
+<ul>
+<li>You have basically two weeks for this one. It is due the Friday before Thanksgiving.</li>
+</ul></li>
+<li>Organized lab today! (First in a while!)</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2">
+<h2>Review Question</h2>
+<div class="cols">
+<div class="col">
+<p>What expression below would best fill in the gap in the code to the right?</p>
+<div class="poll">
+<ol>
+<li><code class="python">self.wage = wage</code></li>
+<li><code class="python">TechJob.__init__(self, wage)</code></li>
+<li><code class="python">TechJob.__init__(wage)</code></li>
+<li><code class="python">Job.__init__(wage)</code></li>
+</ol>
+</div>
+</div>
+<div class="col" style="flex-grow:1">
+<pre ><code class="python" style="max-height:900px; font-size:0.7em;">class Job:
+    def __init__(self, wage):
+        self.wage = wage
+
+class TechJob(Job):
+    def __init__(self, wage):
+        self.wage = wage
+        self.codes = True
+
+class SeniorDev(TechJob):
+    def __init__(self, wage, exp):
+        # What goes here?
+        self.exp = exp</code></pre>
+</div>
+</div>
+<!--
+## Review Question {data-notes="Solution: hnktge"}
+::::::cols
+::::col
+Let's consider a greatly simplified Enigma machine, which only has one rotor that is not turning. So the signal goes through the rotor then the reflector and back through the rotor. Given the rotor and reflector mappings shown to the right, what would the word `python` encrypt to?
+
+:::{.poll}
+#. `aicmnz`
+#. `hnktge`
+#. `rfqbls`
+#. `zghpmy`
+:::
+
+::::
+
+::::col
+\begin{tikzpicture}%%height=100%
+[label/.style={font=\Large\bf, MGreen},
+scale=1.8,
+transform shape,
+]
+\node[label, MRed] at (1,0.5) {Rotor 1};
+\foreach[count=\t] \a/\b in {A/D,B/M,C/T,D/W,E/S,F/I,G/L,H/R,I/U,J/Y,K/Q,L/N,M/K,N/F,O/E,P/J,Q/C,R/A,S/Z,T/B,U/P,V/G,W/X,X/O,Y/H,Z/V} {
+    \node[label](a) at (0,-\t*0.5) {\a};
+    \node[label](b) at (2,-\t*0.5) {\b};
+    \draw[-stealth, MBlue, line width=3pt] (a) -- (b);
+}
+
+
+\node[label, MRed] at (6,0.5) {Reflector};
+\foreach[count=\t] \a/\b in {A/U,B/Q,C/N,D/T,E/L,F/S,G/Z,H/F,I/M,J/R,K/E,L/H,M/D,N/P,O/X,P/K,Q/I,R/B,S/V,T/Y,U/G,V/J,W/C,X/W,Y/O,Z/A} {
+    \node[label](a) at (5,-\t*0.5) {\a};
+    \node[label](b) at (7,-\t*0.5) {\b};
+    \draw[-stealth, MBlue, line width=3pt] (a) -- (b);
+}
+
+\end{tikzpicture}
+
+
+::::
+::::::
+-->
+</section>
+<section id="overusing-inheritance" class="slide level2">
+<h2>Overusing Inheritance</h2>
+<ul>
+<li>Inheritance is often used in situations where it does not really apply
+<ul>
+<li>A common example you might see in textbooks is a <code class="python">Pizza</code> class with various subclasses of pizza, like Pepperoni or Hawaiian.</li>
+<li>This is silly, there is only one point of difference between those objects: the ingredients
+<ul>
+<li>Just make a pizza class with a list of ingredients as an attribute</li>
+</ul></li>
+</ul></li>
+<li>Inheritance makes sense when subclasses share behavior</li>
+</ul>
+</section>
+<section id="extensions" class="slide level2">
+<h2>Extensions</h2>
+<ul>
+<li>While designing new class hierarchies will prove useful as you move on to larger applications, it is often more useful to <strong>extend</strong> existing classes to add new, desirable behavior</li>
+<li>This can be done with any existing class, but a few classes in the <code class="python">GObject</code> hierarchy make very enticing targets as the bases for potential extension:
+<ul>
+<li>The <code class="python">GPolygon</code> class makes it easy to define new subclasses that have a polygonal outline.
+<ul>
+<li>Also automatically support filling, since <code class="python">GPolygon</code> is a subclass of <code class="python">GFillableObject</code></li>
+</ul></li>
+<li>The <code class="python">GCompound</code> class can serve as a great parent for new subclasses that are composed of a combination of other shapes.</li>
+</ul></li>
+<li>In either case, it is generally useful to add additional methods or attributes to the subclass that are specific to that type.</li>
+</ul>
+</section>
+<section id="a-starry-example" class="slide level2">
+<h2>A Starry Example</h2>
+<pre ><code class="python" style="max-height:900px; font-size:0.8em;">class Star(GPolygon):
+    """ Class to draw an any-sided star with specified insets. """
+
+    def __init__(self, n_pts, r_out, r_in):
+        GPolygon.__init__(self)
+        angle_step = 2*math.pi / n_pts
+        angle = -math.pi/2
+        for n in range(n_pts):
+            self.add_vertex(r_out * math.cos(angle), 
+                            r_out * math.sin(angle))
+            angle += angle_step / 2
+            self.add_vertex(r_in * math.cos(angle),
+                            r_in * math.sin(angle))
+            angle += angle_step / 2
+
+
+def draw_stars():
+    gw = GWindow(400, 400)
+    s = Star(7, 100, 50)
+    s.set_filled(True)
+    s.set_fill_color('Gold')
+    gw.add(s, 200, 200)
+
+    s = Star(23, 40,30)
+    s.set_filled(True)
+    s.set_fill_color('Red')
+    gw.add(s, 200,200)
+
+draw_stars()</code></pre>
+</section>
+<section id="now-for-something-a-bit-flashier" class="slide level2">
+<h2>Now for something a bit flashier!</h2>
+<pre ><code class="python" style="max-height:900px">class FlashingStar(Star):
+    """ Class to draw flashing stars! """
+
+    def __init__(self, n_pts, r_out, r_in, 
+                 colors=['red','blue'], state=True):
+        Star.__init__(self, n_pts, r_out, r_in)
+        self.state = state
+        self.set_filled(self.state)
+        self.set_fill_color(random.choice(colors))
+        
+
+    def swap_fill(self):
+        self.state = not self.state
+        self.set_filled(self.state)
+
+
+def draw_stars():
+    def flash_callback():
+        for star in starlist:
+            star.swap_fill()
+
+    gw = GWindow(400, 400)
+    starlist = []
+    for i in range(3):
+        for j in range(3):
+            star = FlashingStar(3+i+j, 50, 20,
+                state=random.choice([True,False]))
+            gw.add(star, 100+i*100, 100+j*100)
+            starlist.append(star)
+    gw.set_interval(flash_callback, 1000)
+
+draw_stars()</code></pre>
+</section>
+<section id="making-fancy-labels" class="slide level2">
+<h2>Making Fancy Labels</h2>
+<pre ><code class="python" style="max-height:900px">class FancyLabel(GCompound):
+    """ Class to create a label in a nice filled box """
+
+    FONT = "24px 'Arial', 'Sans-Serif'"
+
+    def __init__(self, text, tcolor='black', bcolor='red'):
+        GCompound.__init__(self)
+        label = GLabel(text)
+        label.set_font(FancyLabel.FONT)
+        label.set_color(tcolor)
+        lwidth = label.get_width()+20
+        lheight = label.get_height()+10
+        label.move(
+                -label.get_width() / 2,
+                label.get_ascent()/2
+                )
+        background = GRect(
+                -lwidth/2, -lheight/2, 
+                lwidth, lheight
+                )
+        background.set_filled(True)
+        background.set_color(bcolor)
+
+        self.add(background)
+        self.add(label)
+
+
+
+
+def draw_label():
+    gw = GWindow(400,400)
+    flabel = FancyLabel('Cool label!')
+    flabel2 = FancyLabel('SUPER cool...', "yellow", "green")
+    gw.add(flabel, 200, 200)
+    gw.add(flabel2, 300,300)
+
+draw_label()</code></pre>
+</section>
+<section id="graphical-object-decomposition" class="slide level2">
+<h2>Graphical Object Decomposition</h2>
+<ul>
+<li>Using the <code class="python">GCompound</code> class as a parent class makes it possible to apply the strategy of decomposition to graphical objects!
+<ul>
+<li>Can decompose a graphical display into successively simpler pieces</li>
+</ul></li>
+<li>The text illustrates this with a train diagram, I will illustrate it here by making a segmented snake. <br><br></li>
+</ul>
+<figure>
+<img data-src="../images/CompoundSnake.png" style="width:40.0%" alt=" " /><figcaption aria-hidden="true"> </figcaption>
+</figure>
+</section>
+<section id="the-snake-hierarchy" class="slide level2">
+<h2>The Snake Hierarchy</h2>
+<ul>
+<li>Here I will utilize a generic snake body segment which will be a subclass of <code class="python">GCompound</code>
+<ul>
+<li>The snake head and tail segments will then be subclasses of the body segment class
+<p><img data-src="../images/svg_cache/6ba5c9f47747e0575f27c687561871e14e5dc723.svg" style="width:60.0%" /></p></li>
+</ul></li>
+<li>All the common elements will be added in the body segment, with the head and tail subclasses only adding their specific details.</li>
+</ul>
+</section>
+<section id="nesting-snakes" class="slide level2">
+<h2>Nesting Snakes</h2>
+<ul>
+<li>Since a <code class="python">GCompound</code> is also a <code class="python">GObject</code>, you can go ahead and add a <code class="python">GCompound</code> to another <code class="python">GCompound</code></li>
+<li>Here I will add all the snake pieces to a new class <code class="python">Snake</code>, which is a subclass of <code class="python">GCompound</code></li>
+<li>One advantage of doing so is that we can then animate the entire snake as a whole easily!</li>
+</ul>
+<figure>
+<img data-src="../images/MovingCompoundSnake.gif" alt=" " /><figcaption aria-hidden="true"> </figcaption>
+</figure>
+</section>
+<section id="snakey-code" class="slide level2">
+<h2>Snakey Code</h2>
+<pre ><code class="python" style="max-height:900px">class Segment(GCompound):
+    """ Create as generic snake body segment. """
+    R = 50
+    def __init__(self):
+        GCompound.__init__(self)
+        body = GOval(-Segment.R, -Segment.R, 
+                     2*Segment.R, 2*Segment.R)
+        body.set_filled(True)
+        body.set_fill_color('green')
+        body.set_line_width(5)
+        self.add(body)
+
+class Tail(Segment):
+    def __init__(self):
+        Segment.__init__(self)
+        tri = GPolygon()
+        tri.add_vertex(0, Segment.R)
+        tri.add_vertex(0, -Segment.R)
+        tri.add_vertex(-3*Segment.R, 0)
+        tri.set_filled(True)
+        tri.set_fill_color('green')
+        tri.set_line_width(5)
+        self.add(tri)
+        tri.send_to_back()
+
+class Eye(GCompound):
+    def __init__(self):
+        GCompound.__init__(self)
+        eye = GOval(-10,-5,20,10)
+        eye.set_filled(True)
+        eye.set_color("white")
+        pupil = GOval(-5,-5,10,10)
+        pupil.set_filled(True)
+        self.add(eye,-10,-5)
+        self.add(pupil, 0,-5)
+
+class Head(Segment):
+    def __init__(self):
+        Segment.__init__(self)
+        self.add(Eye(), 10, 20)
+        self.add(Eye(), 10, -20)
+        tongue = GLine(Segment.R, 0, 2*Segment.R, 0)
+        tongue.set_line_width(5)
+        tongue.set_color('red')
+        self.add(tongue)
+
+class Snake(GCompound):
+    """ Put all the snake pieces together. """
+    def __init__(self, length):
+        GCompound.__init__(self)
+        self.add(Tail(), 0, 0)
+        for i in range(1,length-1):
+            self.add(Segment(), i*Segment.R, 0)
+        self.add(Head(), (length-1)*Segment.R, 0)
+
+def make_snake():
+    def move_snake():
+        snake.move(10,0)
+
+    gw = GWindow(800,400)
+    snake = Snake(3)
+    gw.add(snake, -500,200)
+    gw.set_interval(move_snake, 30)
+
+make_snake()</code></pre>
+</section>
+<section id="variable-types" class="slide level2">
+<h2>Variable Types</h2>
+<ul>
+<li>So far we have been looking at <em>instance variables</em>
+<ul>
+<li>An attribute that is associated to a single particular instance or object</li>
+<li>Frequently, this is what we want when working with an object-oriented mindset</li>
+</ul></li>
+<li>Sometimes though, it is useful to create an attribute that is tied directly to the class itself, and not to a specific object.
+<ul>
+<li>Called a <em>class variable</em></li>
+</ul></li>
+</ul>
+</section>
+<section id="creating-class-variables" class="slide level2">
+<h2>Creating class variables</h2>
+<ul>
+<li>No usage of <code class="python">self</code>, since this variable applies to all the objects!</li>
+<li>Otherwise defined just like you would normally define a variable, but appears at the top of the class definition, immediately after the header line</li>
+</ul>
+<pre ><code class="python">class MyBestClass:
+    a_class_variable = "hello!"
+
+    def __init__(self):
+        self.an_instance_variable = "hi!"</code></pre>
+</section>
+<section id="accessing-class-variables" class="slide level2">
+<h2>Accessing Class Variables</h2>
+<ul>
+<li>You access a class variable by directly referencing the class name:
+<ul>
+<li><code class="python">print(MyBestClass.a_class_variable)</code></li>
+<li>You don’t actually have needed to make an object of that type yet to access</li>
+</ul></li>
+<li>You can access directly from the object as well, but I’d recommend against it, as it leads to easier confusing between class and instance variables.</li>
+<li>Changing the class variable should also be done by referencing the class name
+<ul>
+<li><code class="python">MyBestClass.a_class_variable = "HELLO"</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="when-to-use" class="slide level2">
+<h2>When to use</h2>
+<ul>
+<li>Do all members or objects of your class share a common trait?
+<ul>
+<li>Would it make sense for a single member of that class to have that trait altered?</li>
+<li>If no, it might be a good candidate for a class varible.</li>
+</ul></li>
+<li>Are there specific constants or known values that all instances of your class will rely on?
+<ul>
+<li>The math library has <code class="python">math.pi</code> for instance as a class variable.</li>
+</ul></li>
+<li>Do you need some sort of global counter to keep track of the number of instances of a type you have created?</li>
+</ul>
+</section>
+<section id="method-types" class="slide level2">
+<h2>Method Types</h2>
+<ul>
+<li>We have also been looking at <em>instance methods</em> so far
+<ul>
+<li>Each method is tied to a particular object that it will act on</li>
+</ul></li>
+<li>There are class methods, but we won’t see or spend time with those</li>
+<li>An alternative type of method are called <em>static methods</em>
+<ul>
+<li>Static methods are <strong>not</strong> tied to a particular object</li>
+<li>They do <strong>not</strong> have self as the first parameter</li>
+<li>Makes them very similar to just a normal function</li>
+<li>Only in the class because they are related to everything else</li>
+</ul></li>
+</ul>
+</section>
+<section id="creating-static-methods" class="slide level2">
+<h2>Creating Static Methods</h2>
+<ul>
+<li>Create a static method using what is called a <em>decorator</em> in Python</li>
+<li>You can imagine that decorators are special flags to Python that it should treat a particular method in a certain fashion.</li>
+<li>Decorators come immediately <strong>before</strong> the method header line, and start with the <code class="python">@</code> symbol</li>
+</ul>
+<pre ><code class="python">class MyNewClass:
+    
+    @staticmethod
+    def my_method(not_self_1, not_self_2):
+        print(not_self_1, not_self_2)</code></pre>
+</section>
+<section id="calling-static-methods" class="slide level2">
+<h2>Calling Static Methods</h2>
+<ul>
+<li>Because the method is not attached to an object, you should not call it with the receiver dot syntax</li>
+<li>Must call them using the functional syntax, beginning with the class name
+<ul>
+<li><code class="python">MyNewClass.my_method(1,2)</code></li>
+</ul></li>
+<li>Frequently used for functions that are related to the class but could otherwise be independent of the class
+<ul>
+<li>Examples: <code class="python">GImage.get_red(pixel)</code> and <code class="python">GImage.create_rgb_pixel(a,r,g,b)</code></li>
+</ul></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

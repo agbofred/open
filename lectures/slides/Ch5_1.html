@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-09-22">
+  <title>Random Events</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Random Events</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">September 22, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Problem Set 3 is out and due on Monday
+<ul>
+<li>Problem 1 is all about understanding existing code and debugging issues</li>
+<li>After today, should be good for Prob 2 and part of Prob 3</li>
+</ul></li>
+<li>We enter Ch 5 today in the text</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2" data-notes="Answer is 27">
+<h2 data-notes="Answer is 27">Review Question!</h2>
+<div class="cols">
+<div class="col">
+<p>What would be the printed value of z at the end of the code to the right?</p>
+<div class="poll">
+<ol>
+<li>19</li>
+<li>25</li>
+<li>27</li>
+<li>None of the above</li>
+</ol>
+</div>
+</div>
+<div class="col">
+<pre ><code class="python">def f(x,y=0):
+    z = (x + 3) ** 2
+    return y + z
+
+x = 1
+z = x + f(y=x,x=2)
+print(z)
+</code></pre>
+</div>
+</div>
+</section>
+<section id="name-resolution-and-scope" class="slide level2">
+<h2>Name Resolution and Scope</h2>
+<ul>
+<li>When Python encounters a variable name in a program, it looks for where the variable was defined in an expanding search:
+<ol type="1">
+<li><strong>Local</strong> - The local context is all the variables defined within the current function. This includes variables appearing as a parameter!</li>
+<li><strong>Enclosing</strong> - The enclosing context consists of the names defined in a function enclosing the current one.</li>
+<li><strong>Global</strong> - The global context consists of names defined outside of any function or imported into the current module.</li>
+<li><strong>Built-in</strong> - The last place Python looks is in the names of any built-in functions, like <code class="python">abs</code>, <code class="python">str</code>, <code class="python">print</code>, etc.</li>
+</ol></li>
+<li>The part of a program in which a name is defined in called its <em>scope</em></li>
+</ul>
+</section>
+<section id="scoping-example" class="slide level2">
+<h2>Scoping Example</h2>
+<pre ><code class="python" style="max-height:900px">def func1(x,y):
+    return z + func2(x,y)
+
+def func2(x,y):
+    def func3(x):
+        return (y + x) ** 2
+
+    z = x - func3(y)
+    return z - y
+
+z = 1
+print(func1(2,z))</code></pre>
+</section>
+<section id="local-variables" class="slide level2">
+<h2>Local Variables</h2>
+<ul>
+<li>In Python, assigning any value to a variable means that the variable is assumed to be <em>local</em>
+<ul>
+<li>This generally makes sense, as you would not want more specific functions overriding variables in other areas</li>
+</ul></li>
+<li>Can lead to issues though:</li>
+</ul>
+<pre ><code class="python badcode">def increment():
+    x = x + 1
+
+x = 0
+increment()</code></pre>
+<ul>
+<li>There are a few ways to address this, but we’ll focus on one in particular when it comes to PGL</li>
+</ul>
+</section>
+<section id="understanding-check" class="slide level2" data-notes="Answer is 50">
+<h2 data-notes="Answer is 50">Understanding Check</h2>
+<div class="cols">
+<div class="col">
+<p>What would be the final printed value of <code class="python">c</code> in the code to the right?</p>
+<div class="poll">
+<ol>
+<li>-15</li>
+<li>20</li>
+<li>50</li>
+<li>None of the above</li>
+</ol>
+</div>
+</div>
+<div class="col">
+<pre ><code class="python" style="max-height:900px">def f(a, b=5, c=True):
+    if c:
+        return a + b
+    else:
+        return a * b
+
+def g(c):
+    for i in range(2):
+        c+=b
+    return c > b
+
+a = -3
+b = 2
+c = f(10, c=g(a))
+print(c)</code></pre>
+</div>
+</div>
+</section>
+<section id="libraries-and-interfaces" class="slide level2">
+<h2>Libraries and Interfaces</h2>
+<div class="cols">
+<div class="col" style="flex-grow:1.5">
+<ul>
+<li>Modern programming depends on the use of libraries.
+<ul>
+<li>You usually write only a fraction of the code.</li>
+</ul></li>
+<li>Libraries can be viewed from two perspectives:
+<ul>
+<li>Code that uses a library is called a <em>client</em>.</li>
+<li>Code for the library itself is called the <em>implementation</em></li>
+</ul></li>
+<li>The point where the client and the implementation meet is called the <em>interface</em>
+<ul>
+<li>Serves as both a barrier and a communication channel</li>
+</ul></li>
+</ul>
+</div>
+<div class="col">
+<p><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:export-ydpi="96"
+   inkscape:export-xdpi="96"
+   inkscape:export-filename="/home/jedediah/Teaching/IntroPython/Materials/Lecture/images/Interface.png"
+   sodipodi:docname="Interface.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07, custom)"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 168.67001 214.88948"
+   height="214.88948mm"
+   width="168.67001mm">
+  <defs
+     id="defs2">
+    <pattern
+       patternTransform="matrix(0.05598093,0,0,0.10974996,490.94732,58.173532)"
+       id="pattern3760"
+       xlink:href="#pattern3754"
+       inkscape:collect="always" />
+    <pattern
+       patternTransform="matrix(0.05598093,0,0,0.10974996,490.94732,-41.290476)"
+       id="pattern3754"
+       xlink:href="#pattern2771"
+       inkscape:collect="always" />
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker3230"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Mend">
+      <path
+         transform="scale(-0.6)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#ffe792;fill-opacity:1;fill-rule:evenodd;stroke:#ffe792;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path3228" />
+    </marker>
+    <marker
+       inkscape:collect="always"
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3184"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path3182"
+         style="fill:#ffe792;fill-opacity:1;fill-rule:evenodd;stroke:#ffe792;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)" />
+    </marker>
+    <marker
+       inkscape:collect="always"
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="Arrow2Mend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Mend">
+      <path
+         transform="scale(-0.6)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path2823" />
+    </marker>
+    <pattern
+       patternTransform="matrix(0.06184701,0,0,0.08492921,450.70571,-43.695963)"
+       id="pattern2771"
+       xlink:href="#pattern2762"
+       inkscape:collect="always" />
+    <pattern
+       patternTransform="matrix(0.08872183,-0.00358136,0.01040512,0.25776877,604.29476,-0.02901339)"
+       id="pattern2769"
+       xlink:href="#pattern2762"
+       inkscape:collect="always" />
+    <pattern
+       id="pattern2762"
+       patternTransform="translate(1800.3302,-172.20255)"
+       height="71.677642"
+       width="193.15544"
+       patternUnits="userSpaceOnUse">
+      <rect
+         style="fill:none;stroke:#e9436f;stroke-width:8.93858;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect2756"
+         width="92.217171"
+         height="30.739058"
+         x="4.4692912"
+         y="36.469292" />
+      <rect
+         y="36.469292"
+         x="96.468979"
+         height="30.739058"
+         width="92.217171"
+         id="rect2758"
+         style="fill:none;stroke:#e9436f;stroke-width:8.93858;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+      <rect
+         style="fill:none;stroke:#e9436f;stroke-width:8.93858;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect2760"
+         width="92.217171"
+         height="30.739058"
+         x="50.46896"
+         y="4.4692912" />
+    </pattern>
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-maximized="1"
+     inkscape:window-y="43"
+     inkscape:window-x="1096"
+     inkscape:window-height="1381"
+     inkscape:window-width="2528"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="mm"
+     inkscape:cy="365.06291"
+     inkscape:cx="92.123185"
+     inkscape:zoom="1.4"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-346.46704,35.125748)"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <rect
+       ry="0"
+       id="rect2767"
+       y="-15.959108"
+       x="599.5813"
+       height="34.874104"
+       width="43.479031"
+       style="fill:url(#pattern2769);stroke:none;stroke-width:0.264583" />
+    <rect
+       rx="0"
+       ry="0"
+       y="-33.943249"
+       x="415.49988"
+       height="83.722404"
+       width="31.376846"
+       id="rect833"
+       style="fill:url(#pattern3754);fill-opacity:1;stroke:#f92672;stroke-width:2.365;stroke-linecap:round;stroke-linejoin:bevel" />
+    <text
+       transform="rotate(-90)"
+       id="text2784"
+       y="366.51645"
+       x="-86.833694"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.2386px;line-height:1.25;font-family:'Bebas Neue';-inkscape-font-specification:'Bebas Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#66d9ef;fill-opacity:1;stroke:none;stroke-width:0.264582;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.2386px;font-family:'Bebas Neue';-inkscape-font-specification:'Bebas Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#66d9ef;stroke-width:0.264582;"
+         y="366.51645"
+         x="-86.833694"
+         id="tspan2782"
+         sodipodi:role="line">Client</tspan></text>
+    <text
+       transform="rotate(-90)"
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.2386px;line-height:1.25;font-family:'Bebas Neue';-inkscape-font-specification:'Bebas Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.264582;"
+       x="-133.97966"
+       y="514.85468"
+       id="text2788"><tspan
+         sodipodi:role="line"
+         id="tspan2786"
+         x="-133.97966"
+         y="514.85468"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.2386px;font-family:'Bebas Neue';-inkscape-font-specification:'Bebas Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.264582;">Implementation</tspan></text>
+    <text
+       id="text2792"
+       y="179.48135"
+       x="385.65378"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.2386px;line-height:1.25;font-family:'Bebas Neue';-inkscape-font-specification:'Bebas Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#fd971f;fill-opacity:1;stroke:none;stroke-width:0.264582;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.2386px;font-family:'Bebas Neue';-inkscape-font-specification:'Bebas Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#fd971f;stroke-width:0.264582;"
+         y="179.48135"
+         x="385.65378"
+         id="tspan2790"
+         sodipodi:role="line">Interface</tspan></text>
+    <path
+       id="path2794"
+       d="m 392.25884,61.483447 h 77.37373"
+       style="fill:none;stroke:#000000;stroke-width:2.26501;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Mend)" />
+    <path
+       style="fill:#ffe792;stroke:#ffe792;stroke-width:2.26501;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker3184)"
+       d="m 392.25884,61.483447 h 77.37373"
+       id="path3180" />
+    <path
+       id="path3226"
+       d="M 472.20124,53.544577 H 394.82751"
+       style="fill:#ffe792;stroke:#ffe792;stroke-width:2.26501;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker3230)" />
+    <rect
+       style="fill:url(#pattern3760);fill-opacity:1;stroke:#f92672;stroke-width:2.365;stroke-linecap:round;stroke-linejoin:bevel"
+       id="rect3758"
+       width="31.376846"
+       height="83.722404"
+       x="415.49988"
+       y="65.52076"
+       ry="0"
+       rx="0" />
+  </g>
+</svg>
+</p>
+</div>
+</div>
+</section>
+<section id="nondeterministic-programming" class="slide level2">
+<h2>Nondeterministic Programming</h2>
+<ul>
+<li>Before writing our own library, helps to have more examples than just <code class="python">math</code></li>
+<li>Let’s look at the built-in <code class="python">random</code> library, which lets us simulate random processes</li>
+<li>Programs that involve random processes that cannot be predicted in advance are said to be <em>nondeterministic</em></li>
+<li>Nondeterministic behavior is essential to many applications.
+<ul>
+<li>Many games would not be enjoyable if they behaved the exact same way every playthrough</li>
+<li>Important practical uses in simulations, computer security, and algorithm research</li>
+</ul></li>
+</ul>
+</section>
+<section id="important-functions-in-random" class="slide level2">
+<h2>Important Functions in <code class="python">random</code></h2>
+<div style="font-size: 80%">
+<ul>
+<li>Random Integers</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 63%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code class="python">randint(minv, maxv)</code></td>
+<td style="text-align: left;">Returns an integer between minv and maxv, inclusive</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code class="python">randrange(limit)</code></td>
+<td style="text-align: left;">Returns an integer from 0 up to but not including limit</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code class="python">randrange(start,limit)</code></td>
+<td style="text-align: left;">Returns an integer from start up to but not including limit</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Random Floats</li>
+</ul>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code class="python">random()</code></td>
+<td style="text-align: left;">Returns a random number between 0 and 1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code class="python">uniform(minv, maxv)</code></td>
+<td style="text-align: left;">Returns a random number between minv and maxv</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Random from lists</li>
+</ul>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code class="python">choice(a_list)</code></td>
+<td style="text-align: left;">Returns a random element from <code class="python">a_list</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code class="python">sample(a_list, k)</code></td>
+<td style="text-align: left;">Returns a list of <code class="python">k</code> elements from <code class="python">a_list</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code class="python">shuffle(a_list)</code></td>
+<td style="text-align: left;">Randomly reorders the elements of <code class="python">a_list</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="random-examples" class="slide level2">
+<h2>Random Examples</h2>
+<pre ><code class="python" style="max-height:900px">import random
+
+def random_redblue():
+    if random.random() > 0.5:
+        return "red"
+    else:
+        return "blue"
+
+def random_color():
+    color_string = "#"
+    for i in range(6):
+        color_string += random.choice("0123456789ABCDEF")
+    return color</code></pre>
+</section>
+<section id="quite-the-reader" class="slide level2">
+<h2>Quite the Reader</h2>
+<ul>
+<li>You can <code class="python">return</code> any type of variable from a function, including <code class="python">GObject</code> graphical objects</li>
+<li>Can be useful to write simple functions that bundle together common tasks</li>
+<li>Can create our own Python library by constructing a collection of constants or functions</li>
+<li>All code not in functions gets executed as soon as we <code class="python">import</code> so generally don’t want extraneous print statements or to be running any code directly</li>
+<li>Want the library to be in the same location as any code we want to <code class="python">import</code> the library in</li>
+</ul>
+</section>
+<section id="pgl-help-library" class="slide level2">
+<h2>PGL Help Library</h2>
+<pre ><code class="python" style="max-height:900px; font-size:0.75em;">from pgl import GRect, GLabel
+import random
+
+def create_filled_rect(
+    x_cent, y_cent, width, height, fill_col='black', border_col=None
+):
+    """
+    Creates a GRect object with the desired fill color. 
+    If a border color is specified, also draws the 
+    border in the desired color.
+    """
+    rect = GRect(x_cent-width/2, 
+                 y_cent-height/2, 
+                 width, height)
+    rect.set_filled(True)
+    if border_col is None:
+        rect.set_color(fill_col)
+    else:
+        rect.set_color(border_col)
+        rect.set_fill_color(fill_col)
+    return rect
+
+def random_color():
+    """
+    Returns a random opaque color as a hex string.
+    """
+    color = "#"
+    for i in range(6):
+        color += random.choice("0123456789ABCDEF")
+    return color
+
+def create_centered_label(x_cent, y_cent, text, font=None):
+    """
+    Creates a GLabel object and centers it on the coordinates
+    x_cent and y_cent.
+    """
+    label = GLabel(text)
+    if font is not None:
+        label.set_font(font)
+    label.set_location(x_cent - label.get_width() / 2, 
+                       y_cent + label.get_ascent() / 2 )
+    return label</code></pre>
+<!--
+## {data-background-iframe="https://www.youtube.com/embed/TIxt9guMbXo"}
+-->
+</section>
+<section id="new-methods" class="slide level2">
+<h2>New Methods</h2>
+<ul>
+<li>A new method that acts on a <code class="python">GWindow</code>:</li>
+</ul>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code class="no-highlight">get_element_at(x,y)</code></td>
+<td style="text-align: left;">Returns the frontmost object at (x,y) or <code class="python">None</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>And more new methods that act on any <code class="python">GObject</code></li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 71%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code class="no-highlight">set_location(x,y)</code></td>
+<td style="text-align: left;">Resets the location of the object to the specified point</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code class="no-highlight">move(dx,dy)</code></td>
+<td style="text-align: left;">Moves the object <code class="python">dx</code> and <code class="python">dy</code> pixels from its current position</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code class="no-highlight">move_polar(dr,theta)</code></td>
+<td style="text-align: left;">Moves the object <code class="python">dr</code> pixel units in direction <code class="python">theta</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code class="no-highlight">contains(x,y)</code></td>
+<td style="text-align: left;">Returns <code class="python">True</code> if the object contains the specified point</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code class="no-highlight">get_color()</code></td>
+<td style="text-align: left;">Returns the color currently assigned to the object</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-python-event-model" class="slide level2">
+<h2>The Python Event Model</h2>
+<ul>
+<li>Graphical applications usually make it possible for the user to control the action of a program by using an input device such a mouse.
+<ul>
+<li>Programs supporting this type of control are called <em>interactive programs</em>.</li>
+</ul></li>
+<li>User actions such as clicking the mouse are called <em>events</em>.</li>
+<li>Programs that respond to events are said to be <em>event driven</em>.</li>
+<li>User input does not generally occur at predictable times. As the events are not controlled by the program, they are said to be <em>asynchronous</em>.</li>
+<li>In Python, you write a function that acts as a <em>listener</em> for a particular event type. When the event happens, the listener is called.</li>
+</ul>
+</section>
+<section id="first-class-functions" class="slide level2">
+<h2>First Class Functions</h2>
+<ul>
+<li>Functions in Python are treated as data values just like anything else!
+<ul>
+<li>We will need to take advantage of this to write listener functions.</li>
+</ul></li>
+<li>You can assign a function to a variable, pass it as a parameter, return it as a result, etc</li>
+<li>Functions treated like any other data value are called <em>first-class functions</em></li>
+<li>To work with a function itself, you leave off the <code class="python">()</code>. Including the parentheses is how you <em>call</em> the function!</li>
+</ul>
+</section>
+<section id="a-first-class-example" class="slide level2">
+<h2>A First Class Example</h2>
+<pre ><code class="python">import math
+
+def evaluate_numbers(func):
+    print(func)
+    print(func(0))
+    print(func(2))
+    print(func(10))
+
+evaluate_numbers(math.sqrt)
+evaluate_numbers(math.exp)</code></pre>
+<!--
+## Inner Functions
+- Python allows you to define one function inside another:
+```python
+def f(x, y):
+    def g(n):
+        return x ** n
+    y += g(x)
+    return y
+```
+- It is worth looking at an example with our stack frames to see what is fully happening here
+
+
+## Name Resolution and Scope
+- When Python encounters a variable name in a program, it looks for where the variable was defined in an expanding search:
+    1. **Local** - The local context is all the variables defined within the current function. This includes variables appearing as a parameter!
+    2. **Enclosing** - The enclosing context consists of the names defined in a function enclosing the current one.
+    3. **Global** - The global context consists of names defined outside of any function or imported into the current module.
+    4. **Built-in** - The last place Python looks is in the names of any built-in functions, like `abs`, `str`, `print`, etc.
+- The part of a program in which a name is defined in called its _scope_
+-->
+</section>
+<section id="closures" class="slide level2">
+<h2>Closures</h2>
+<div class="cols">
+<div class="col">
+<p>Consider the code to the right.</p>
+<div>
+<ul>
+<li class="fragment">Why does the line 12 not error?</li>
+<li class="fragment"><a href="http://www.pythontutor.com/visualize.html#code=b%20%3D%201%0Adef%20f1%28a%29%3A%0A%20%20%20%20print%28a%29%0A%20%20%20%20print%28b%29%0A%20%20%20%20def%20f2%28%29%3A%0A%20%20%20%20%20%20%20%20c%20%3D%20a%20%2B%20b%0A%20%20%20%20%20%20%20%20return%20c%20*%203%0A%20%20%20%20return%20f2%20%0Af2%20%3D%20f1%2810%29%0Ac%20%3D%20f2%28%29&amp;cumulative=false&amp;curInstr=0&amp;heapPrimitives=false&amp;mode=display&amp;origin=opt-frontend.js&amp;py=3&amp;rawInputLstJSON=%5B%5D&amp;textReferences=false">Python Tutor</a></li>
+<li class="fragment"><code class="python">f2</code> must also keep track of any local variables!</li>
+<li class="fragment">The local variables that are included as part of a function are called its <em>closure</em></li>
+</ul>
+</div>
+</div>
+<div class="col">
+<pre ><code class="python" style="max-height:800px" data-line-numbers="">b = 1
+def f1(a):
+    print(a)
+    print(b)
+
+    def f2():
+        c = a + b
+        return c * 3
+    return f2 
+
+f2 = f1(10) 
+c = f2()</code></pre>
+</div>
+</div>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

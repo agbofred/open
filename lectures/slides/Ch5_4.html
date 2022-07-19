@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-09-29">
+  <title>Complex Shapes</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Complex Shapes</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">September 29, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>I’m still trying to get through PS2 feedback, sorry for the delay</li>
+<li>Project 1 due next Monday night!
+<ul>
+<li>Make sure you get a start on it <strong>today</strong> if you haven’t yet!</li>
+</ul></li>
+<li>Normal (and mandatory) section meetings again this week
+<ul>
+<li>Problems are ones that should assist with the Breakout Project!</li>
+</ul></li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="quick-general-poll" class="slide level2">
+<h2>Quick General Poll</h2>
+<p>Comparatively speaking, how would you say you are doing in absorbing and keeping up with the material in this class?</p>
+<div class="poll">
+<ol>
+<li>“Probably better than most of my peers”</li>
+<li>“Probably about the same as most of my peers”</li>
+<li>“Probably worse than most of my peers”</li>
+<li>“Probably way worse than most of my peers”</li>
+</ol>
+</div>
+</section>
+<section id="review-question" class="slide level2" data-notes="Answer: B, as step will run 50 times in 1 second">
+<h2 data-notes="Answer: B, as step will run 50 times in 1 second">Review Question!</h2>
+<div class="cols">
+<div class="col">
+<p>When the function to the right is run, what does the screen look like just after 1 second has passed?</p>
+<div class="cols">
+<div class="col">
+<figure>
+<img data-src="../images/AnimationA.png" style="width:70.0%" alt="(A)" /><figcaption aria-hidden="true">(A)</figcaption>
+</figure>
+<figure>
+<img data-src="../images/AnimationC.png" style="width:70.0%" alt="(C)" /><figcaption aria-hidden="true">(C)</figcaption>
+</figure>
+</div>
+<div class="col">
+<figure>
+<img data-src="../images/AnimationB.png" style="width:70.0%" alt="(B)" /><figcaption aria-hidden="true">(B)</figcaption>
+</figure>
+<figure>
+<img data-src="../images/AnimationD.png" style="width:70.0%" alt="(D)" /><figcaption aria-hidden="true">(D)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="col" style="flex-grow:1">
+<pre ><code class="python" style="max-height:900px; font-size:0.8em">def rev_q():
+    def step():
+        rect.move(1, 1)
+
+    def once():
+        rect.set_filled(True)
+
+    gw = GWindow(200, 200)
+    rect = GRect(0, 0, 25, 25)
+    gw.add(rect)
+    gw.set_interval(step, 20)
+    gw.set_timeout(once, 1000)</code></pre>
+</div>
+</div>
+</section>
+<section id="simulation" class="slide level2">
+<h2>Simulation</h2>
+<ul>
+<li>Our technique of piecing together many small movements to resemble motion is not limited to just making pretty animations!</li>
+<li>Physicists use similar techniques to break complex problems into simple pieces
+<ul>
+<li>“In this small time interval, the motion is simple”</li>
+<li>Chain together many time intervals to construct the full motion</li>
+</ul></li>
+<li>There are many areas where this is the <strong>only</strong> way to solve a problem, as we can not write down equations to express the result otherwise!</li>
+</ul>
+</section>
+<section id="the-two-body-problem" class="slide level2">
+<h2>The Two Body Problem</h2>
+<pre ><code class="python" style="max-height:950px;">from pgl import GWindow, GOval, GLine, GState
+from pgl_tools import create_filled_circle
+
+def two_body():
+    def step():
+        # Compute forces and accelerations
+        dx = planet1.get_x() - planet2.get_x()
+        dy = planet1.get_y() - planet2.get_y()
+        r3 = (dx ** 2 + dy ** 2) ** (3 / 2)
+        ax = 1000 / r3 * dx
+        ay = 1000 / r3 * dy
+
+        # Compute velocities
+        gs.vx1 += -ax
+        gs.vy1 += -ay
+        gs.vx2 += ax
+        gs.vy2 += ay
+
+        # Draw history paths
+        path1 = GLine(
+            planet1.get_x() + 10,
+            planet1.get_y() + 10,
+            planet1.get_x() + 10 + gs.vx1,
+            planet1.get_y() + 10 + gs.vy1,
+        )
+        path1.set_color("red")
+        path1.set_line_width(3)
+
+        path2 = GLine(
+            planet2.get_x() + 10,
+            planet2.get_y() + 10,
+            planet2.get_x() + 10 + gs.vx2,
+            planet2.get_y() + 10 + gs.vy2,
+        )
+        path2.set_color("cyan")
+        path2.set_line_width(3)
+
+        # Move them
+        planet1.move(gs.vx1, gs.vy1)
+        planet2.move(gs.vx2, gs.vy2)
+
+        gw.add(path1)
+        gw.add(path2)
+
+    gw = GWindow(600, 600)
+    gs = GState()
+    gs.vx1, gs.vy1 = 0, 1
+    gs.vx2, gs.vy2 = 0, -1
+
+    planet1 = create_filled_circle(200, 200, 10, "red")
+    planet2 = create_filled_circle(400, 200, 10, "cyan")
+
+    gw.add(planet1)
+    gw.add(planet2)
+
+    gw.set_interval(step, 30)
+
+if __name__ == '__main__':
+    two_body()</code></pre>
+</section>
+<section id="something-to-smile-about" class="slide level2">
+<h2>Something to smile about</h2>
+<div class="cols">
+<div class="col">
+<!--- Up until now, we haven't had a way to draw an arc!-->
+<ul>
+<li>The <code class="python">GArc</code> class represents an arc formed by taking a section of the perimeter of an oval.</li>
+<li>3 things necessary:
+<ul>
+<li>The bounding rectangle geometry (upper left corner and width and height)</li>
+<li>The <em>starting angle</em> (in degrees)</li>
+<li>The <em>sweep angle</em> (in degrees) which is how far the arc extends</li>
+</ul></li>
+<li>Negative angles move in the clockwise direction</li>
+</ul>
+</div>
+<div class="col">
+<p><img data-src="../images/svg_cache/c373d117ae4343ad6167af137c3fd0503ddd4439.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="fillable-arcs" class="slide level2">
+<h2>Fillable Arcs</h2>
+<ul>
+<li>The <code class="python">GArc</code> class is a <code class="python">GFillableObject</code>, and so you can call <code class="python">.set_filled()</code> on a <code class="python">GArc</code> object</li>
+<li>Filled like a pie-shaped wedge formed between the center of the bounding box and the starting and end points of the arc</li>
+</ul>
+<div class="cols">
+<div class="col">
+<pre ><code class="python">def filled_arc():
+    gw = GWindow(400, 400)
+    arc = GArc(50, 50, 
+               350, 350, 
+               90, 135)
+    arc.set_color("orange")
+    arc.set_filled(True)
+    gw.add(arc)</code></pre>
+</div>
+<div class="col">
+<p><img data-src="../images/FilledArc.png" style="width:70.0%" /></p>
+</div>
+</div>
+<!-- Moving to a lab?
+## Pacman Discussion
+::::::cols
+::::col
+How to recreate the animation below? Each group has a question to answer on the right.
+<br><br><br>
+
+![PacMan!](../images/Pacman.gif){width=100%}
+::::
+::::{.col style="flex-grow:1.5;"}
+
+
+Group A
+: How could we create the initial PacMan image?
+
+Group B
+: How can we move PacMan and bounce him off the edges?
+
+Group C
+: How can we make his mouth open and close?
+
+Group D
+: How can we make his mouth flip around when he bounces off the walls?
+
+
+::::
+
+::::::
+-->
+</section>
+<section id="the-gpolygon-class" class="slide level2">
+<h2>The <code class="python">GPolygon</code> class</h2>
+<ul>
+<li>Used to represent graphical objects bounded by line segments
+<ul>
+<li>Polygons consist of several <em>vertices</em> bounded by <em>edges</em></li>
+</ul></li>
+</ul>
+<p><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="GPolygons.svg"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 316.60822 101.79784"
+   height="101.79784mm"
+   width="316.60822mm">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     inkscape:window-maximized="1"
+     inkscape:window-y="43"
+     inkscape:window-x="1096"
+     inkscape:window-height="1381"
+     inkscape:window-width="2528"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="mm"
+     inkscape:cy="0.068641731"
+     inkscape:cx="818.37938"
+     inkscape:zoom="0.49497475"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-218.05446,41.926654)"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <path
+       inkscape:transform-center-x="3.388389e-06"
+       d="M 269.46239,53.744498 224.18114,9.4812806 268.44436,-35.79997 313.72561,8.463248 Z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="true"
+       sodipodi:arg2="2.344826"
+       sodipodi:arg1="1.5594278"
+       sodipodi:r2="31.660797"
+       sodipodi:r1="44.775127"
+       sodipodi:cy="8.9722643"
+       sodipodi:cx="268.95337"
+       sodipodi:sides="4"
+       id="path835"
+       style="fill:none;stroke:#66d9ef;stroke-width:8.665;stroke-linecap:round"
+       sodipodi:type="star" />
+    <path
+       inkscape:transform-center-x="4.7445856e-06"
+       d="m 404.69518,50.575813 -48.01813,-0.03726 -23.97679,-41.6035483 24.04133,-41.5662887 48.01813,0.03726 23.97679,41.6035489 z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="true"
+       sodipodi:arg2="1.5715723"
+       sodipodi:arg1="1.0479735"
+       sodipodi:r2="40.561043"
+       sodipodi:r1="48.018143"
+       sodipodi:cy="8.9722643"
+       sodipodi:cx="380.71838"
+       sodipodi:sides="6"
+       id="path837"
+       style="fill:none;stroke:#f92672;stroke-width:8.665;stroke-linecap:round"
+       sodipodi:type="star" />
+    <path
+       inkscape:transform-center-x="6.1462532e-06"
+       d="M 468.09743,19.433937 450.34445,0.47401838 476.00728,-3.5342564 488.55326,-26.277281 500.2956,-3.1091087 525.80242,1.7948475 507.39677,20.12184 510.61487,45.895676 487.4972,34.054208 463.97928,45.079359 Z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="false"
+       sodipodi:arg2="3.4732543"
+       sodipodi:arg1="2.8449358"
+       sodipodi:r2="39.676682"
+       sodipodi:r1="20.664049"
+       sodipodi:cy="13.393324"
+       sodipodi:cx="487.85886"
+       sodipodi:sides="5"
+       id="path839"
+       style="fill:none;stroke:#a6e22e;stroke-width:8.665;stroke-linecap:round"
+       sodipodi:type="star" />
+    <circle
+       r="4.5723495"
+       cy="8.9722643"
+       cx="268.95337"
+       id="path841"
+       style="fill:#6c6f93;stroke:none;stroke-width:8.665;stroke-linecap:round" />
+    <circle
+       style="fill:#6c6f93;stroke:none;stroke-width:8.665;stroke-linecap:round"
+       id="circle843"
+       cx="380.71838"
+       cy="8.9722643"
+       r="4.5723495" />
+    <circle
+       r="4.5723495"
+       cy="12.059289"
+       cx="488.12354"
+       id="circle845"
+       style="fill:#6c6f93;stroke:none;stroke-width:8.665;stroke-linecap:round" />
+  </g>
+</svg>
+</p>
+<ul>
+<li>Location not fixed in upper left, but at some convenient reference point</li>
+<li>Often a convenient reference point is near the center of the object, but it doesn’t need to be</li>
+<li><code class="python">GPolygon</code>s are <code class="python">GFillableObject</code>s, so they can of course be filled</li>
+</ul>
+</section>
+<section id="polygonal-construction" class="slide level2">
+<h2>Polygonal Construction</h2>
+<ul>
+<li>The <code class="python">GPolygon</code> function creates an <strong>empty</strong> polygon, which you then can add vertexes too</li>
+<li>Can create a vertex by calling <code class="python">.add_vertex(x,y)</code> on the <code class="python">GPolygon</code> object
+<ul>
+<li><code class="python">x</code> and <code class="python">y</code> measured <strong>relative to the reference point</strong></li>
+</ul></li>
+<li>Vertexes past the first can be defined in a few ways:
+<ul>
+<li><code class="python">.add_vertex(x,y)</code> adds another new vertex relative to the reference point</li>
+<li><code class="python">.add_edge(dx,dy)</code> adds a new vertex relative to the preceding vertex</li>
+<li><code class="python">.add_polar_edge(r, theta)</code> adds a new vertex relative to the previous using polar coordinates</li>
+</ul></li>
+</ul>
+</section>
+<section id="triangle-by-vertex" class="slide level2">
+<h2>Triangle By Vertex</h2>
+<pre ><code class="python" style="max-height:900px;">def triangle_by_vertex():
+    def create_triangle(b, h):
+        tri = GPolygon()
+        tri.add_vertex(-b / 2, h / 2)
+        tri.add_vertex(b / 2, h / 2)
+        tri.add_vertex(0, -h / 2)
+        return tri
+
+    gw = GWindow(500, 500)
+    triangle = create_triangle(200, 200)
+    triangle.set_filled(True)
+    triangle.set_color("red")
+    gw.add(triangle, 250, 250)</code></pre>
+</section>
+<section id="triangle-by-polar-edge" class="slide level2">
+<h2>Triangle by Polar Edge</h2>
+<pre ><code class="python" style="max-height:900px;">def triangle_by_polar_edge():
+    def create_eq_triangle(side):
+        tri = GPolygon()
+        tri.add_vertex(0, 0)
+        for i in range(0, 360, 120):
+            tri.add_polar_edge(side, i)
+        return tri
+
+    gw = GWindow(500, 500)
+    triangle = create_eq_triangle(100)
+    triangle.set_filled(True)
+    triangle.set_color("green")
+    gw.add(triangle, 250, 250)</code></pre>
+</section>
+<section id="compound-objects" class="slide level2">
+<h2>Compound Objects</h2>
+<ul>
+<li>The <code class="python">GCompound</code> class makes it possible to combine several graphical objects so that the entire structure behaves as a single object</li>
+<li>Can be thought of as a combination of <code class="python">GWindow</code> and <code class="python">GObject</code>
+<ul>
+<li>You can objects to it, but then you can also add it (and everything in it) to a canvas as one unit</li>
+</ul></li>
+<li>Uses its own coordinate system relative to a reference point
+<ul>
+<li>When adding objects to the <code class="python">GCompound</code>, you place them relative to the reference point</li>
+<li>When adding the <code class="python">GCompound</code> to a canvas, you set the location of the reference point</li>
+</ul></li>
+</ul>
+</section>
+<section id="and-my-axe" class="slide level2">
+<h2>And my Axe!</h2>
+<pre ><code class="python" style="max-height:900px;">def my_axe():
+    def create_axe():
+        axe = GCompound()
+        shaft = GRect(-15, 0, 30, 300)
+        shaft.set_filled(True)
+        shaft.set_color("brown")
+        axe.add(shaft)
+
+        blade = GPolygon()
+        blade.add_vertex(0, 0)
+        blade.add_vertex(200, -50)
+        blade.add_vertex(200, 50)
+        blade.set_filled(True)
+        blade.set_color("gray")
+        axe.add(blade, -80, 50)
+        return axe
+
+    gw = GWindow(500, 500)
+    axe = create_axe()
+    gw.add(axe, 250, 100)</code></pre>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-12-01">
+  <title>The Search for Efficiency</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">The Search for Efficiency</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">December 1, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Project 5 guide posted!
+<ul>
+<li>Getting an earlier start is always recommended!</li>
+<li>Section meetings this week will focus on common sticking points</li>
+</ul></li>
+<li>Final
+<ul>
+<li>I will be posting final study materials and some old tests next week so that you have material to study from</li>
+<li>Will be more weighted toward content from the latter half of the semester, but everything we’ve been doing this semester builds on earlier material</li>
+</ul></li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+<!--
+## Review Question {data-notes="Solution: D[1][2]"}
+After running the below code, how would you access the `"ninja"` element in list `D`?
+```python
+A = ['pirate', 'ninja']
+B = ['samurai'] + A
+C = [B, ['ship', 'rope', 'horse']]
+D = C[::-1]
+```
+
+
+:::{.poll}
+#. `D[1][0]`
+#. `D[0][1]`
+#. `D[0][2]`
+#. `D[1][2]`
+:::
+
+
+## Image Thresholding
+::::::cols
+::::col
+- As an example of reading and manipulating pixel values, lets look at how we could threshold the image to the right
+- Thresholding is when you take a grayscale image and convert it to a black and white image, where a pixel is set to be white if it is above a certain threshold in brightness
+- Grayscale, so each RGB component is the same
+- Let's threshold at a value of 30
+::::
+
+::::col
+![Blurry Moon by Jed Rembold](../images/Moon.png)
+::::
+::::::
+
+
+## Thresholding Code
+```{.python style='max-height:900px; font-size:.8em;'}
+from pgl import GWindow, GImage
+
+def threshold(e):
+    thresh_value = 30
+    height = len(pixels)
+    width = len(pixels[0])
+    new_array = [[0 for i in range(width)] for i in range(height)]
+    for r in range(height):
+        for c in range(width):
+            if GImage.get_red(pixels[r][c]) > thresh_value:
+                new_array[r][c] = GImage.create_rgb_pixel(0, 255, 0)
+            else:
+                new_array[r][c] = GImage.create_rgb_pixel(0, 0, 0)
+    new_image = GImage(new_array)
+    gw.add(new_image)
+
+gw = GWindow(800, 525)
+image = GImage("Moon.png")
+gw.add(image)
+pixels = image.get_pixel_array()
+gw.add_event_listener("click", threshold)
+```
+-->
+</section>
+<section id="review-question" class="slide level2">
+<h2>Review Question!</h2>
+<div class="cols">
+<div class="col">
+<p>The two classes to the right mimic a bit of what might occur in the course of the Adventure Project. What python data type is <code class="python">ANS</code>?</p>
+<div class="poll">
+<ol>
+<li>A String</li>
+<li>An AdvObject</li>
+<li>A Location</li>
+<li>A List</li>
+</ol>
+</div>
+</div>
+<div class="col">
+<pre ><code class="python" style="max-height:1000px; font-size:.6em;">class AdvObject:
+    def __init__(self, name, loc):
+        self.name = name
+        self.loc = loc
+    def get_loc(self):
+        return self.loc
+
+class Location:
+    def __init__(self, name):
+        self.name = name
+        self.stuff = []
+    def store(self, item):
+        self.stuff.append(item)
+    def retrieve_top(self):
+        return self.stuff.pop()
+
+A = AdvObject("Hammer", "RA")
+B = AdvObject("Torch", "RA")
+RA = Location("RA")
+RA.store(A)
+RA.store(B)
+ANS = RA.retrieve_top().get_loc()</code></pre>
+</div>
+</div>
+</section>
+<section id="searching-for-efficiency" class="slide level2">
+<h2>Searching for Efficiency</h2>
+<ul>
+<li>Chapter 8 is less about introducing new programming machinery and more about better understanding what we already have</li>
+<li>Hopefully you have realized by now that there can be <strong>many</strong> approaches to solving a problem computationally
+<ul>
+<li>So far, the first way you figure out has likely been the “best”, in that it gets the job done.</li>
+<li>Sometimes there is a different though in an approach that is technically correct and one that is practically correct.</li>
+<li>How can we make informed choices about the algorithms we use?</li>
+</ul></li>
+<li>Want to look at algorithm efficiency in this chapter</li>
+<li>Will focus mainly on Searching and Sorting as our examples to better understand how an algorithm’s efficiency can be quantified</li>
+</ul>
+</section>
+<section id="a-linear-search" class="slide level2">
+<h2>A Linear Search</h2>
+<ul>
+<li>Suppose you needed to determine if a particular element was in a list, and didn’t have any of the built-in methods available to you</li>
+<li>The easiest method (which many of you have indeed used!) is to just search through the list element by element and check it to see if it is the one you desire
+<ul>
+<li>This approach is called a <em>linear search</em></li>
+</ul></li>
+<li>Easy to understand and implement:</li>
+</ul>
+<pre ><code class="python">def linear_search(quest, array):
+    for i in range(len(array)):
+        if array[i] == quest:
+            return i
+    return -1</code></pre>
+</section>
+<section id="searching-for-area-codes" class="slide level2">
+<h2>Searching for Area Codes</h2>
+<ul>
+<li>To illustrate the efficiency of linear search, it can be helpful to work with a larger dataset</li>
+<li>We’ll look here at searching through potential US area codes to find that of Salem: 503</li>
+<li>Linear search examines each value in order to find the matching value.
+<ul>
+<li>As the arrays get larger, the number of steps required also grows</li>
+</ul></li>
+<li>As you watch linear search do its thing on the next slide, see if you can beat the computer at finding 503.
+<ul>
+<li>What approach did you take?</li>
+</ul></li>
+</ul>
+</section>
+<section id="linear-search-in-action" class="slide level2">
+<h2>Linear Search in Action</h2>
+<div class="fig-container" data-file="../images/d3/LinearSearch.html" data-style="width:100%; display:inline;" data-scroll="no">
+
+</div>
+</section>
+<section id="how-did-you-do" class="slide level2">
+<h2>How did you do?</h2>
+<ul>
+<li>Frequently, many people can “beat the animation” in finding 503</li>
+<li>Approaches vary, but you may well have done something along the lines of:
+<ul>
+<li>Look at some number in the middle</li>
+<li>Depending on how close it was to 503, jump ahead some in that direction and check again</li>
+</ul></li>
+<li>Requires some special conditions though, so let’s try again</li>
+</ul>
+</section>
+<section id="racing-linear-search-again" class="slide level2">
+<h2>Racing Linear Search Again</h2>
+<div class="fig-container" data-file="../images/d3/LinearSearch_v2.html" data-style="width:100%; display:inline;" data-scroll="no">
+
+</div>
+</section>
+<section id="idea-of-a-binary-search" class="slide level2">
+<h2>Idea of a Binary Search</h2>
+<ul>
+<li>If your data is ordered, then you might try a alternative search strategy</li>
+<li>Look at the center element in the array, it is either:
+<ul>
+<li>The value you want. Excellent! Return it.</li>
+<li>A value larger than what you want. Throw away that value and everything bigger.</li>
+<li>A value smaller than what you want. Throw away that value and everything smaller.</li>
+</ul></li>
+<li>Then you can repeat the process with the remaining elements until you find your value</li>
+<li>Since number of searched elements is divided by 2 each time, called a <em>binary search</em></li>
+</ul>
+</section>
+<section id="binary-search-in-action" class="slide level2">
+<h2>Binary Search in Action</h2>
+<div class="fig-container" data-file="../images/d3/BinarySearch.html" data-style="width:100%; display:inline;" data-scroll="no">
+
+</div>
+</section>
+<section id="implementing-binary-search" class="slide level2">
+<h2>Implementing Binary Search</h2>
+<pre ><code class="python" style="max-height:900px">def binary_search(target, array):
+    lh = 0
+    rh = len(array) - 1
+    while lh <= rh:
+        middle = (lh + rh) // 2
+        if array[middle] == target:
+            return middle
+        elif array[middle] < target:
+            lh = middle + 1
+        else:
+            rh = middle - 1
+    return -1</code></pre>
+</section>
+<section id="linear-search-efficiency" class="slide level2">
+<h2>Linear Search Efficiency</h2>
+<ul>
+<li>The running time of the linear seach depends on the size of the array
+<ul>
+<li>That in itself is not really surprising. The running time of most algorithms will depend on the size of the problem to which the algorithm is applied.</li>
+</ul></li>
+<li>For many applications, it is easy to come up with a numeric value that describes the problem size, commonly called <span class="math inline">\(N\)</span>.
+<ul>
+<li>For most lists, <span class="math inline">\(N\)</span> is simply the length of the array</li>
+</ul></li>
+<li>In the worst case, when the target value is the last element of the list or does not appear at all, the linear search requires <span class="math inline">\(N\)</span> steps
+<ul>
+<li>On average, it takes about half that, or <span class="math inline">\(\frac{N}{2}\)</span></li>
+<li>Computer Scientists are apparently pessimists though, and will generally use the worse case scenario to compare</li>
+</ul></li>
+</ul>
+</section>
+<section id="binary-search-efficiency" class="slide level2">
+<h2>Binary Search Efficiency</h2>
+<ul>
+<li>The running time of binary search also depends on the size of the array, but in a very different way</li>
+<li>Each step of the process, the binary search rules out half the remaining options
+<ul>
+<li>The worst case (which we had earlier!) requires a number of steps equal to however many times we can divide the array in half until we have only a single number left.</li>
+<li>Mathematically, this looks like <span class="math display">\[1 = N / \underbrace{2 / 2 / 2 / 2 \cdots / 2}_{k\text{ times}} = \frac{N}{2^k}\]</span></li>
+</ul></li>
+<li>We really want to know the number of steps, <span class="math inline">\(k\)</span>, so solving for <span class="math inline">\(k\)</span>: <span class="math display">\[2^k = N \quad\Rightarrow\quad k = \log_2(N)\]</span></li>
+</ul>
+</section>
+<section id="comparing-efficiencies" class="slide level2">
+<h2>Comparing Efficiencies</h2>
+<ul>
+<li>The below table illustrates the differences in the number of required steps for the two search algorithms</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Problem Size</th>
+<th>Linear (<span class="math inline">\(N\)</span>)</th>
+<th>Binary (<span class="math inline">\(log_2 N\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10</td>
+<td>10</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>100</td>
+<td>100</td>
+<td>7</td>
+</tr>
+<tr class="odd">
+<td>1,000</td>
+<td>1,000</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>1,000,000</td>
+<td>1,000,000</td>
+<td>20</td>
+</tr>
+<tr class="odd">
+<td>1,000,000,000</td>
+<td>1,000,000,000</td>
+<td>30</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Clearly, for large values, the difference in the number of steps is <strong>enormous</strong></li>
+<li>At 1 million elements, the binary search is 50,000 times faster!</li>
+</ul>
+</section>
+<section id="sorting" class="slide level2">
+<h2>Sorting</h2>
+<ul>
+<li>Binary search only works on arrays in which the elements are ordered.
+<ul>
+<li>The process of putting the elements into order is called <em>sorting</em>.</li>
+</ul></li>
+<li>Lots of different sorting algorithms, which can vary substantially in their efficiency.</li>
+<li>From an algorithms view, sorting is probably the most applicable algorithm we’ll discuss in this course
+<ul>
+<li>Organizing data makes it easier to digest that data, whether the data is being digested by other machines or by humans</li>
+</ul></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

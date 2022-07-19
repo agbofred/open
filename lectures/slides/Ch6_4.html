@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-10-08">
+  <title>Formatting English</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Formatting English</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">October 8, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Hopefully you are making some progress on Problem Set 4!</li>
+<li>I <strong>am</strong> still making progress with grading PS’s, though I’m behind more than I’d like, for which I apologize.</li>
+<li>Lab today as per usual!</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review" class="slide level2" data-notes="Solution: x[-6:-1]">
+<h2 data-notes="Solution: x[-6:-1]">Review!</h2>
+<p>Suppose you have the string <code class="python">x = "consternation"</code> and you’d like to just extract and print the word <code class="python">"nation"</code>. Which expression below will <strong>not</strong> give you the string <code class="python">"nation"</code>?</p>
+<div class="poll">
+<ol>
+<li><code class="python">x[7:len(x)]</code></li>
+<li><code class="python">x[7:]</code></li>
+<li><code class="python">x[-6:len(x)]</code></li>
+<li><code class="python">x[-6:-1]</code></li>
+</ol>
+</div>
+</section>
+<section id="igpay-atinlay" class="slide level2">
+<h2>Igpay Atinlay</h2>
+<ul>
+<li>Reminder: we were trying to construct a program to convert English to Pig Latin</li>
+<li>Rules of Pig Latin:
+<ul>
+<li>If the word begins with a consonant, move everything up to the first vowel to the end and append on “ay” at the end
+<center>
+<code class="python">fleet</code> ⟶ <code class="python">eetflay</code>
+</center></li>
+<li>If the word starts with a vowel, just append “way” to the end
+<center>
+<code class="python">orange</code> ⟶ <code class="python">orangeway</code>
+</center></li>
+<li>If the word has no vowels, do nothing</li>
+</ul></li>
+<li>Our decomposition:
+<ul>
+<li>Convert a single word ✓
+<ul>
+<li>Find first vowel ✓</li>
+</ul></li>
+<li>Loop over whole phrase to convert the entire phrase word by word</li>
+</ul></li>
+</ul>
+</section>
+<section id="onvertcay-hrasepay" class="slide level2">
+<h2>oNvertcay hrasepay</h2>
+<pre ><code class="python" style="max-height:900px;">def string_2_pig_latin(string):
+    start = 0
+    i = 0
+    phrase = ""
+    finding_words = True
+    while len(string) > 0 and finding_words:
+        if not string[i].isalpha():
+            word = string[start:i]
+            phrase += word_2_pig_latin(word) + string[i]
+            start = i + 1
+        i += 1
+        if i == len(string):
+            finding_words = False
+            phrase += word_2_pig_latin(string[start:])
+    return phrase</code></pre>
+</section>
+<section id="the-english.py-library" class="slide level2">
+<h2>The <code class="python">english.py</code> Library</h2>
+<ul>
+<li>To facilitate working with English words, we can take advantage of the pre-written <code class="python">english</code> module
+<ul>
+<li>This will be highly useful in the Project 2</li>
+</ul></li>
+<li>The <code class="python">english</code> module exports two resources:
+<ul>
+<li><code class="python">ENGLISH_WORDS</code>: a constant which contains all the valid English words in alphabetical order</li>
+<li><code class="python">is_english_word()</code>: a predicate function which takes a string as input and returns <code class="python">True</code> or <code class="python">False</code> depending on if that string is in the list of valid English words</li>
+</ul></li>
+</ul>
+<!--
+## Biggest simple palindrome
+- Suppose we wanted to determine what the longest simple palindrome(s) was in the English language:
+
+```python
+from english import ENGLISH_WORDS
+
+def find_biggest_palindromes():
+    best_length = 0
+    for word in ENGLISH_WORDS:
+        if word == word[::-1] and len(word) >= best_length:
+            print(word)
+            best_length = len(word)
+```
+-->
+</section>
+<section id="biggest-no-vowel-word" class="slide level2">
+<h2>Biggest No-vowel Word</h2>
+<ul>
+<li>Suppose we wanted to determine the longest word in the English language without vowels:</li>
+</ul>
+<pre ><code class="python">from english import ENGLISH_WORDS
+
+def find_first_vowel(word):
+    for i in range(len(word)):
+        if word[i].lower() in "aeiou":
+            return i
+    return -1
+
+def find_longest_no_vowels():
+    best_length = 0
+    for word in ENGLISH_WORDS:
+        vowel_loc = find_first_vowel(word)
+        if vowel_loc == -1 and len(word) > best_length:
+            best_length = len(word)
+            print(word)
+
+
+if __name__ == '__main__':
+    find_longest_no_vowels()</code></pre>
+</section>
+<section id="when-pig-latin-english" class="slide level2">
+<h2>When Pig Latin = English?</h2>
+<ul>
+<li>What about when the Pig Latin version of a word is a (different) but valid English word?</li>
+<li>Lets not count words with no vowels, since clearly they would qualify</li>
+</ul>
+<pre ><code class="python">def platin_equals_english():
+    count = 0
+    for word in ENGLISH_WORDS:
+        platin = word_2_pig_latin(word)
+        if is_english_word(platin) and word != platin:
+            print(word, ":", platin)
+            count += 1
+    return count</code></pre>
+</section>
+<section id="string-formatting" class="slide level2">
+<h2>String Formatting</h2>
+<ul>
+<li>Constructing text or a sentence by interleaving strings and other objects comes up a lot in communicating code results to a user</li>
+</ul>
+<pre ><code class="python">A = 10
+B = print("The value of A is: " + str(A) +"!")
+print(B)</code></pre>
+<ul>
+<li>Having to convert everything manually to strings (when necessary) and concatenate it all together is clunky and easy to mess up</li>
+<li>Python gives us two main methods to assist with this and any other formatting desires we might have:
+<ul>
+<li>The <code class="python">.format()</code> method in Python’s string class</li>
+<li>A new language feature called <em>f-strings</em>, introduced in Python 3.6</li>
+</ul></li>
+</ul>
+</section>
+<section id="placeholders" class="slide level2">
+<h2>Placeholders</h2>
+<ul>
+<li>The <code class="python">format</code> method and f-strings rely on the idea of a <em>placeholder</em> that is inserted into the string, and that marks where later data should be inserted
+<ul>
+<li>We use curly brackets: <code class="python">{}</code> to indicate the placeholder</li>
+<li>The placeholder shows up in the original string that the <code class="python">format</code> method is acting on, not as an argument to <code class="python">format</code></li>
+</ul></li>
+<li>Objects which are provided as arguments to <code class="python">format</code> are then converted to a string if needed and swapped in instead of the placeholder.</li>
+<li>Simple Examples
+<ul>
+<li><code class="python">"The value of A is {}".format(10)</code></li>
+<li><code class="python">"{} + {} is {}".format(2, 5, 2+5)</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="labels-can-be-key" class="slide level2">
+<h2>Labels can be key</h2>
+<ul>
+<li>By default, all arguments to <code class="python">.format()</code> are positional
+<ul>
+<li>Order of parameters is matched with the order of <code class="python">{}</code></li>
+</ul></li>
+<li>You can also provide an order index inside the placeholder (<code class="python">{ }</code>)
+<ul>
+<li><code class="python">"{1} + {0} is {2}".format(2, 5, 2+5)</code></li>
+</ul></li>
+<li>You can also provide keyword labels in the placeholder, but then you must call with a keyword
+<ul>
+<li><code class="python">"{name} is {age} years old.".format(age=34, name="Amy")</code></li>
+<li><code class="python">"{} + {B} + {C} = {}".format(3, 10, C=5, B=2)</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="the-format-of-format" class="slide level2">
+<h2>The format of format</h2>
+<ul>
+<li>Often times when displaying a value in a string, we may want control over certain format specifications:
+<ul>
+<li>The number of decimals shown</li>
+<li>Padding a number of zeros or spaces</li>
+<li>Justifying a number within a region of characters</li>
+<li>Use scientific notation</li>
+<li>etc</li>
+</ul></li>
+<li>We can do all this (and more) by including a colon and then a special format specification inside the placeholder!
+<ul>
+<li><code class="python">"The value of A is {0:.5f}".format(10)</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="shaping-your-format" class="slide level2">
+<h2>Shaping your format</h2>
+<ul>
+<li>Lots we can do, but we rarely need to do it all at once</li>
+<li>The basic building blocks:
+<center>
+<span style="font-family: monospace"> <span class="fragment highlight-current-green" data-fragment-index="6">[[fill]align]</span><!--
+--><span class="fragment highlight-current-green" data-fragment-index="5">[sign]</span><!--
+--><span class="fragment highlight-current-green" data-fragment-index="4">[width]</span><!--
+--><span class="fragment highlight-current-green" data-fragment-index="3">[,]</span><!--
+--><span class="fragment highlight-current-green" data-fragment-index="2">[.precision]</span><!--
+--><span class="fragment highlight-current-green" data-fragment-index="1">[type]</span> </span>
+</center></li>
+</ul>
+<br>
+<hr>
+<div class="only-fragment fragment current" data-fragment-index="1">
+<ul>
+<li><code class="no-highlight">type</code>
+<ul>
+<li>What type of object you want to represent as a string</li>
+<li>“d” - base-10 integer</li>
+<li>“f” - float or decimal</li>
+<li>“e” - scientific notation</li>
+<li>More on next slide</li>
+</ul></li>
+</ul>
+</div>
+<div class="only-fragment fragment current" data-fragment-index="2">
+<ul>
+<li><code class="no-highlight">precision</code>
+<ul>
+<li>How many digits to display after a decimal point</li>
+<li>Details can vary a little by conversion type</li>
+</ul></li>
+</ul>
+</div>
+<div class="only-fragment fragment current" data-fragment-index="3">
+<ul>
+<li><code class="no-highlight">Grouping</code>
+<ul>
+<li>A comma here indicates that numbers should be grouped in sets of 3 and separated with a comma</li>
+</ul></li>
+</ul>
+</div>
+<div class="only-fragment fragment current" data-fragment-index="4">
+<ul>
+<li><code class="no-highlight">width</code>
+<ul>
+<li>The minimum number of characters you want the formatted value to be</li>
+</ul></li>
+</ul>
+</div>
+<div class="only-fragment fragment current" data-fragment-index="5">
+<ul>
+<li><code class="no-highlight">sign</code>
+<ul>
+<li>If the sign of the number should be specified</li>
+<li>A + sign ensures all numbers will have either a + or - sign</li>
+<li>A space just adds a space before positive numbers (negatives would have a - sign in front)</li>
+</ul></li>
+</ul>
+</div>
+<div class="only-fragment fragment current" data-fragment-index="6">
+<ul>
+<li><code class="no-highlight">[fill]align</code>
+<ul>
+<li>How you want the text aligned if it is smaller than the minium
+<ul>
+<li>Can be <code class="python"><</code>, <code class="python">></code>, or <code class="python">^</code> for left, right, or center justified</li>
+</ul></li>
+<li>Any characters you want to fill the empty space
+<ul>
+<li>Default is space</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="output-conversion-types" class="slide level2">
+<h2>Output Conversion Types</h2>
+<ul>
+<li>Below is a table of most common conversion types:</li>
+</ul>
+<div style="font-size:0.8em">
+<table>
+<thead>
+<tr class="header">
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">b</code></td>
+<td>Inserts an integer using its binary representation</td>
+</tr>
+<tr class="even">
+<td><code class="python">d</code></td>
+<td>Inserts an integer using its decimal representation</td>
+</tr>
+<tr class="odd">
+<td><code class="python">e</code> or <code class="python">E</code></td>
+<td>Inserts a number using scientific notation</td>
+</tr>
+<tr class="even">
+<td><code class="python">f</code> or <code class="python">F</code></td>
+<td>Inserts a number using a decimal point format</td>
+</tr>
+<tr class="odd">
+<td><code class="python">g</code> or <code class="python">G</code></td>
+<td>Choose <code class="python">e</code> or <code class="python">f</code> to get the best fit</td>
+</tr>
+<tr class="even">
+<td><code class="python">o</code></td>
+<td>Inserts an integer using its octal representation</td>
+</tr>
+<tr class="odd">
+<td><code class="python">s</code></td>
+<td>Inserts a string value</td>
+</tr>
+<tr class="even">
+<td><code class="python">x</code> or <code class="python">X</code></td>
+<td>Inserts an integer using its hexadecimal representation</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li>Uppercase conversion types use capital characters where possible in output</li>
+</ul>
+</section>
+<section id="not-to-be-confused-with-a-g-string" class="slide level2">
+<h2>Not to be confused with a g-string</h2>
+<ul>
+<li>Short for “format string”, an f-string achieves the same thing as <code class="python">.format()</code> but with less syntax</li>
+<li>Moves the value to be substituted directly into the placehold itself</li>
+<li>Need an <code class="python">f</code> right before the string to let Python know it needs to do more with this particular string</li>
+</ul>
+<pre ><code class="python">A = 10
+B = 15.123234
+print(f"A is {A} and B is {B:0.2f}")</code></pre>
+<ul>
+<li>You can otherwise use the same syntax and format specs as with format!</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

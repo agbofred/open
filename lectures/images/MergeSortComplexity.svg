@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="373.3909mm"
+   height="170.87794mm"
+   viewBox="0 0 373.3909 170.87794"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="MergeSortComplexity.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#383838"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.9899495"
+     inkscape:cx="879.45191"
+     inkscape:cy="271.25028"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="2528"
+     inkscape:window-height="1381"
+     inkscape:window-x="1096"
+     inkscape:window-y="43"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-246.55456,-32.306321)">
+    <g
+       id="g938"
+       transform="translate(16.904468)">
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect909"
+         width="16.389353"
+         height="16.389353"
+         x="369.52179"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect913"
+         width="16.389353"
+         height="16.389353"
+         x="585.56915"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect915"
+         width="16.389353"
+         height="16.389353"
+         x="554.70526"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect917"
+         width="16.389353"
+         height="16.389353"
+         x="523.84137"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect919"
+         width="16.389353"
+         height="16.389353"
+         x="492.97745"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect923"
+         width="16.389353"
+         height="16.389353"
+         x="462.11353"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect925"
+         width="16.389353"
+         height="16.389353"
+         x="431.2496"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect927"
+         width="16.389353"
+         height="16.389353"
+         x="400.38571"
+         y="185.71242"
+         ry="4.4282331" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="245.85693"
+       y="44.503204"
+       id="text835"><tspan
+         sodipodi:role="line"
+         id="tspan833"
+         x="245.85693"
+         y="44.503204"
+         style="fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">Sorting 8 items</tspan></text>
+    <g
+       id="g968"
+       transform="translate(16.904529)">
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect837"
+         width="16.389353"
+         height="16.389353"
+         x="418.68982"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect839"
+         width="16.389353"
+         height="16.389353"
+         x="435.07916"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect841"
+         width="16.389353"
+         height="16.389353"
+         x="451.46851"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect843"
+         width="16.389353"
+         height="16.389353"
+         x="467.85785"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect845"
+         width="16.389353"
+         height="16.389353"
+         x="484.24719"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect847"
+         width="16.389353"
+         height="16.389353"
+         x="500.63654"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect849"
+         width="16.389353"
+         height="16.389353"
+         x="517.02588"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect851"
+         width="16.389353"
+         height="16.389353"
+         x="533.41522"
+         y="33.388821"
+         ry="4.4282331" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="256.802"
+       y="69.607986"
+       id="text855"><tspan
+         sodipodi:role="line"
+         id="tspan853"
+         x="256.802"
+         y="69.607986"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">requires</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="246.58557"
+       y="96.645432"
+       id="text859"><tspan
+         sodipodi:role="line"
+         id="tspan857"
+         x="246.58557"
+         y="96.645432"
+         style="fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">Two sorts of 4 items</tspan></text>
+    <g
+       id="g958"
+       transform="translate(16.904468,7.4199994)">
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect861"
+         width="16.389353"
+         height="16.389353"
+         x="402.30048"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect863"
+         width="16.389353"
+         height="16.389353"
+         x="418.68982"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect865"
+         width="16.389353"
+         height="16.389353"
+         x="435.07916"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect867"
+         width="16.389353"
+         height="16.389353"
+         x="451.46851"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect869"
+         width="16.389353"
+         height="16.389353"
+         x="500.63666"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect871"
+         width="16.389353"
+         height="16.389353"
+         x="517.026"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect873"
+         width="16.389353"
+         height="16.389353"
+         x="533.41534"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect875"
+         width="16.389353"
+         height="16.389353"
+         x="549.80469"
+         y="76.743355"
+         ry="4.4282331" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="256.45059"
+       y="119.69867"
+       id="text879"><tspan
+         sodipodi:role="line"
+         id="tspan877"
+         x="256.45059"
+         y="119.69867"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">which requires</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="245.51587"
+       y="146.73613"
+       id="text883"><tspan
+         sodipodi:role="line"
+         id="tspan881"
+         x="245.51587"
+         y="146.73613"
+         style="fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">Four sorts of 2 items</tspan></text>
+    <g
+       id="g948"
+       transform="translate(16.904468,5.9613168)">
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect885"
+         width="16.389353"
+         height="16.389353"
+         x="385.91113"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect887"
+         width="16.389353"
+         height="16.389353"
+         x="402.30048"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect889"
+         width="16.389353"
+         height="16.389353"
+         x="437.42053"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect891"
+         width="16.389353"
+         height="16.389353"
+         x="453.80988"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect893"
+         width="16.389353"
+         height="16.389353"
+         x="498.29529"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect895"
+         width="16.389353"
+         height="16.389353"
+         x="514.68463"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect897"
+         width="16.389353"
+         height="16.389353"
+         x="549.80469"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect899"
+         width="16.389353"
+         height="16.389353"
+         x="566.19403"
+         y="128.97656"
+         ry="4.4282331" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="256.45059"
+       y="169.78934"
+       id="text903"><tspan
+         sodipodi:role="line"
+         id="tspan901"
+         x="256.45059"
+         y="169.78934"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">which requires</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="245.51587"
+       y="196.8268"
+       id="text907"><tspan
+         sodipodi:role="line"
+         id="tspan905"
+         x="245.51587"
+         y="196.8268"
+         style="fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">Eight sorts of 1 item</tspan></text>
+  </g>
+</svg>

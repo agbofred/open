@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-12-06">
+  <title>Emerging Recursion</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Emerging Recursion</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">December 6, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>I’ll let you know Wednesday’s lecture format (remote or in-person) as soon as I can. I should have heard back on my test by tomorrow.</li>
+<li>I didn’t make the progress I’d hoped on scoring this weekend, but I’m still trying to get caught up by the end of the week.</li>
+<li>I’ll be pushing review materials to the website tomorrow
+<ul>
+<li>Will include a sample exam as well as objective list</li>
+</ul></li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2" data-notes="Solution: 6 times">
+<h2 data-notes="Solution: 6 times">Review Question</h2>
+<p>Last Friday we looked at the selection sort, which had following form:</p>
+<pre ><code class="python" data-line-numbers="">def selection_sort(array):
+    for lh in range(len(array)):
+        rh = lh
+        for i in range(lh+1, len(array)):
+            if array[i] < array[rh]:
+                rh = i
+        array[lh], array[rh] = array[rh], array[lh]
+L = [3,2,6,1]
+selection_sort(L)</code></pre>
+<p>How many times would line 5 be reached in sorting the shown list <code class="python">L</code>?</p>
+<div class="hpoll">
+<ol>
+<li>4</li>
+<li>6</li>
+<li>10</li>
+<li>16</li>
+</ol>
+</div>
+<!--
+## Big-O Notation
+- The common way to express notational complexity is to use _big-O notation_, introduced by German mathematician Paul Bachmann in 1892
+- Big-O notations consists of the letter $\mathcal{O}$ followed by a formula that offers a qualitative assessment of the program running time as a function of the problem size ($N$)
+- The complexity of linear search was:
+$$\mathcal{O}(N)$$
+- The complexity of selection sort was:
+$$\mathcal{O}(N^2)$$
+- Read aloud, these would be "big-O of $N$" or "big-O of $N^2$"
+
+
+## Simplifying Big-O
+- Big-O just gives a qualitative estimate, so it makes sense to keep the expression on the inside as simple as possible
+- When writing big-O expressions, make the following simplifications:
+    - Eliminate any constant factors
+    - Eliminate any term whose contribution ceases to become significant when $N$ becomes large
+- Thus the computational complexity of selection sort is
+$$\mathcal{O}(N^2)$$
+and not
+$$\mathcal{O}\left(\frac{N^2 + N}{2}\right)$$
+
+
+## Choosing Insignificant Terms
+- For polynomials, higher order terms will generally be more significant, but be wary of potentially other expressions
+- Can always make or look at a plot to help choose
+
+<iframe src="https://www.desmos.com/calculator/tmdeiambhy?embed" width="80%" height="800px" style="border: 1px solid #ccc" frameborder=0></iframe>
+
+-->
+</section>
+<section id="a-more-efficient-strategy" class="slide level2">
+<h2>A More Efficient Strategy</h2>
+<ul>
+<li>As long as arrays are small, selection sort is perfectly workable!
+<ul>
+<li>Even 10,000 elements get sorted in just over 1 second</li>
+</ul></li>
+<li>Less attractive to commercial applications with <strong>huge</strong> arrays though
+<ul>
+<li>Sorting a million values to take over 3 hours?!</li>
+</ul></li>
+<li>The <span class="math inline">\(\mathcal{O}(N^2)\)</span> complexity does offer a little hope though
+<ul>
+<li>Sorting twice as many elements takes four times as long = BAD</li>
+<li>But sorting half as many elements takes only a quarter the time = GOOD!</li>
+<li>Can we break the array into smaller pieces and just work with those?</li>
+</ul></li>
+</ul>
+</section>
+<section id="a-diversion-to-recursion" class="slide level2">
+<h2>A Diversion to Recursion</h2>
+<ul>
+<li><em>Recursion</em> is the practice of dividing a problem up into smaller problems <strong>of the same form</strong>.
+<ul>
+<li>The sub-problems <strong>must</strong> have the same form as the larger problem, or it isn’t recursion</li>
+</ul></li>
+<li>Since the sub-problems have the same form as the larger problem, they can be solved using the <strong>same</strong> function
+<ul>
+<li>From a code perspective, the defining characteristic of recursion is a function which calls itself internally</li>
+</ul></li>
+</ul>
+</section>
+<section id="solving-the-same-simpler-problem" class="slide level2">
+<h2>Solving the same (simpler) problem</h2>
+<ul>
+<li>Say you needed to fundraise a $1000 for an important cause
+<ul>
+<li>Tough to get a single $1000 donation</li>
+<li>Could instead task 10 friends with raising $100
+<ul>
+<li>Each friend could task 10 other friends with raising $10</li>
+<li>Then those friends could find 10 people who would each donate a dollar</li>
+</ul></li>
+</ul></li>
+<li>Solving the problem the same way each time:
+<ul>
+<li>Dividing up the problem and asking those people to solve a simpler (cheaper) problem</li>
+<li>It <strong>must</strong> end somewhere, generally called the <em>base case</em>
+<ul>
+<li>Here that would have been at the $1 donation point</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="recursive-factorial" class="slide level2">
+<h2>Recursive Factorial</h2>
+<ul>
+<li>The factorial function can be defined in two different ways, one of which lends itself nicely to recursion <span class="math display">\[n! = (n-1) \times (n-2) \times (n-3) \times \cdots \times 1\]</span> or <span class="math display">\[n! = \begin{cases} 1 &amp; \text{if $n$ is 0} \\ n \times (n-1)! &amp; \text{otherwise}\end{cases}\]</span></li>
+<li>The second can be expression computationally as:</li>
+</ul>
+<pre ><code class="python">def factorial(n):
+    if n == 0:  # Our base case
+        return 1
+    else:       # Our recursive case
+        return n * factorial(n - 1)</code></pre>
+</section>
+<section id="the-merge-sort-plan" class="slide level2">
+<h2>The Merge Sort Plan</h2>
+<ol>
+<li>Divide the array into two halves: <code class="python">a1</code> and <code class="python">a2</code></li>
+<li>Sort each of <code class="python">a1</code> and <code class="python">a2</code> recursively</li>
+<li>Merge elements into the original array by choosing the smallest element from <code class="python">a1</code> or <code class="python">a2</code> on each cycle</li>
+</ol>
+<p>We’ll follow this process all the way through on pen and paper now to see that it works!</p>
+</section>
+<section id="merge-sort-walkthrough" class="slide level2">
+<h2>Merge Sort Walkthrough</h2>
+<div class="fig-container" data-file="https://visualgo.net/en/sorting" data-style="width:100%; height:900px;">
+
+</div>
+<!--<div class="fig-container" data-file="https://www.hackerearth.com/practice/algorithms/sorting/merge-sort/visualize/&output=embed"></div>-->
+<!--<iframe src="https://www.hackerearth.com/practice/algorithms/sorting/merge-sort/visualize/&output=embed"></iframe>-->
+</section>
+<section id="merge-sort-code-implementation" class="slide level2">
+<h2>Merge Sort Code Implementation</h2>
+<pre ><code class="python" style="max-height:900px">def merge_sort(array):
+    if len(array) > 1:
+        mid = len(array)//2
+        a1 = array[:mid]
+        a2 = array[mid:]
+        merge_sort(a1)
+        merge_sort(a2)
+        merge(array, a1, a2)
+
+def merge(array, a1, a2):
+    n1 = len(a1)
+    n2 = len(a2)
+    i1 = 0 #current front indices
+    i2 = 0
+    for i in range(len(array)):
+        if (i1 < n1 and a1[i1] < a2[i2]) or i2 == n2:
+            array[i] = a1[i1]
+            i1 += 1
+        else:
+            array[i] = a2[i2]
+            i2 += 1</code></pre>
+</section>
+<section id="merge-sort-complexity" class="slide level2">
+<h2>Merge Sort Complexity</h2>
+<p><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="373.3909mm"
+   height="170.87794mm"
+   viewBox="0 0 373.3909 170.87794"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="MergeSortComplexity.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#383838"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.9899495"
+     inkscape:cx="879.45191"
+     inkscape:cy="271.25028"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="2528"
+     inkscape:window-height="1381"
+     inkscape:window-x="1096"
+     inkscape:window-y="43"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-246.55456,-32.306321)">
+    <g
+       id="g938"
+       transform="translate(16.904468)">
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect909"
+         width="16.389353"
+         height="16.389353"
+         x="369.52179"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect913"
+         width="16.389353"
+         height="16.389353"
+         x="585.56915"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect915"
+         width="16.389353"
+         height="16.389353"
+         x="554.70526"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect917"
+         width="16.389353"
+         height="16.389353"
+         x="523.84137"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect919"
+         width="16.389353"
+         height="16.389353"
+         x="492.97745"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect923"
+         width="16.389353"
+         height="16.389353"
+         x="462.11353"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect925"
+         width="16.389353"
+         height="16.389353"
+         x="431.2496"
+         y="185.71242"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect927"
+         width="16.389353"
+         height="16.389353"
+         x="400.38571"
+         y="185.71242"
+         ry="4.4282331" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="245.85693"
+       y="44.503204"
+       id="text835"><tspan
+         sodipodi:role="line"
+         id="tspan833"
+         x="245.85693"
+         y="44.503204"
+         style="fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">Sorting 8 items</tspan></text>
+    <g
+       id="g968"
+       transform="translate(16.904529)">
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect837"
+         width="16.389353"
+         height="16.389353"
+         x="418.68982"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect839"
+         width="16.389353"
+         height="16.389353"
+         x="435.07916"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect841"
+         width="16.389353"
+         height="16.389353"
+         x="451.46851"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect843"
+         width="16.389353"
+         height="16.389353"
+         x="467.85785"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect845"
+         width="16.389353"
+         height="16.389353"
+         x="484.24719"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect847"
+         width="16.389353"
+         height="16.389353"
+         x="500.63654"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect849"
+         width="16.389353"
+         height="16.389353"
+         x="517.02588"
+         y="33.388821"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect851"
+         width="16.389353"
+         height="16.389353"
+         x="533.41522"
+         y="33.388821"
+         ry="4.4282331" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="256.802"
+       y="69.607986"
+       id="text855"><tspan
+         sodipodi:role="line"
+         id="tspan853"
+         x="256.802"
+         y="69.607986"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">requires</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="246.58557"
+       y="96.645432"
+       id="text859"><tspan
+         sodipodi:role="line"
+         id="tspan857"
+         x="246.58557"
+         y="96.645432"
+         style="fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">Two sorts of 4 items</tspan></text>
+    <g
+       id="g958"
+       transform="translate(16.904468,7.4199994)">
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect861"
+         width="16.389353"
+         height="16.389353"
+         x="402.30048"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect863"
+         width="16.389353"
+         height="16.389353"
+         x="418.68982"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect865"
+         width="16.389353"
+         height="16.389353"
+         x="435.07916"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect867"
+         width="16.389353"
+         height="16.389353"
+         x="451.46851"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect869"
+         width="16.389353"
+         height="16.389353"
+         x="500.63666"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect871"
+         width="16.389353"
+         height="16.389353"
+         x="517.026"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect873"
+         width="16.389353"
+         height="16.389353"
+         x="533.41534"
+         y="76.743355"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect875"
+         width="16.389353"
+         height="16.389353"
+         x="549.80469"
+         y="76.743355"
+         ry="4.4282331" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="256.45059"
+       y="119.69867"
+       id="text879"><tspan
+         sodipodi:role="line"
+         id="tspan877"
+         x="256.45059"
+         y="119.69867"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">which requires</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="245.51587"
+       y="146.73613"
+       id="text883"><tspan
+         sodipodi:role="line"
+         id="tspan881"
+         x="245.51587"
+         y="146.73613"
+         style="fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">Four sorts of 2 items</tspan></text>
+    <g
+       id="g948"
+       transform="translate(16.904468,5.9613168)">
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect885"
+         width="16.389353"
+         height="16.389353"
+         x="385.91113"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect887"
+         width="16.389353"
+         height="16.389353"
+         x="402.30048"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect889"
+         width="16.389353"
+         height="16.389353"
+         x="437.42053"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect891"
+         width="16.389353"
+         height="16.389353"
+         x="453.80988"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect893"
+         width="16.389353"
+         height="16.389353"
+         x="498.29529"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect895"
+         width="16.389353"
+         height="16.389353"
+         x="514.68463"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect897"
+         width="16.389353"
+         height="16.389353"
+         x="549.80469"
+         y="128.97656"
+         ry="4.4282331" />
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:2.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect899"
+         width="16.389353"
+         height="16.389353"
+         x="566.19403"
+         y="128.97656"
+         ry="4.4282331" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="256.45059"
+       y="169.78934"
+       id="text903"><tspan
+         sodipodi:role="line"
+         id="tspan901"
+         x="256.45059"
+         y="169.78934"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">which requires</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f3f3f3;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="245.51587"
+       y="196.8268"
+       id="text907"><tspan
+         sodipodi:role="line"
+         id="tspan905"
+         x="245.51587"
+         y="196.8268"
+         style="fill:#f3f3f3;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">Eight sorts of 1 item</tspan></text>
+  </g>
+</svg>
+</p>
+<ul>
+<li>The work done at each level (all the work done by calls at that level) is proportional to the size of the array</li>
+<li>Running time is therefore proportional to <span class="math inline">\(N\)</span> times the number of levels</li>
+</ul>
+</section>
+<section id="so-how-many-levels" class="slide level2">
+<h2>So how many levels?</h2>
+<ul>
+<li>Same division by two situation we had with Binary Search!
+<ul>
+<li>Equal to the number of times you can divide the array in half until only a single element remaining</li>
+<li>Number of steps <span class="math inline">\(k\)</span> was given by: <span class="math display">\[k = \log_2(N)\]</span></li>
+</ul></li>
+<li>Total complexity of merge sort is thus <span class="math display">\[\mathcal{O}(N \log_2(N))\]</span></li>
+</ul>
+</section>
+<section id="comparing" class="slide level2">
+<h2>Comparing</h2>
+<table>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(N\)</span></th>
+<th><span class="math inline">\(N^2\)</span></th>
+<th><span class="math inline">\(N\log_2 N\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10</td>
+<td>100</td>
+<td>33</td>
+</tr>
+<tr class="even">
+<td>100</td>
+<td>10,000</td>
+<td>664</td>
+</tr>
+<tr class="odd">
+<td>1,000</td>
+<td>1,000,000</td>
+<td>9,966</td>
+</tr>
+<tr class="even">
+<td>10,000</td>
+<td>100,000,000</td>
+<td>132,877</td>
+</tr>
+<tr class="odd">
+<td>100,000</td>
+<td>10,000,000,000</td>
+<td>1,660,964</td>
+</tr>
+<tr class="even">
+<td>1,000,000</td>
+<td>1,000,000,000,000</td>
+<td>19,931,569</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Based on this, the merge sort would be over 50,000x faster than selection sort for an array of 1 million values!</li>
+</ul>
+</section>
+<section id="standard-complexity-classes" class="slide level2">
+<h2>Standard Complexity Classes</h2>
+<ul>
+<li>Most tend to fall into one of a small number of complexity classes</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Big-O</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>constant</td>
+<td><span class="math inline">\(\mathcal{O}(1)\)</span></td>
+<td>Finding the first element of an array</td>
+</tr>
+<tr class="even">
+<td>logarithmic</td>
+<td><span class="math inline">\(\mathcal{O}(\log N)\)</span></td>
+<td>Binary search in a sorted array</td>
+</tr>
+<tr class="odd">
+<td>linear</td>
+<td><span class="math inline">\(\mathcal{O}(N)\)</span></td>
+<td>Summing over an array, or linear search</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(N \log N\)</span></td>
+<td><span class="math inline">\(\mathcal{O}(N\log N)\)</span></td>
+<td>Merge sort</td>
+</tr>
+<tr class="odd">
+<td>quadratic</td>
+<td><span class="math inline">\(\mathcal{O}(N^2)\)</span></td>
+<td>Selection sort</td>
+</tr>
+<tr class="even">
+<td>cubic</td>
+<td><span class="math inline">\(\mathcal{O}(N^3)\)</span></td>
+<td>Obvious algorithms for matrix multiplication</td>
+</tr>
+<tr class="odd">
+<td>exponential</td>
+<td><span class="math inline">\(\mathcal{O}(2^N)\)</span></td>
+<td>Branch and try all possibilities</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>In general, any problem who complexity can not be expressed as a polynomial is considered <em>intractable</em></li>
+</ul>
+</section>
+<section id="p-vs-np" class="slide level2">
+<h2>P vs NP</h2>
+<p><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="381.3996mm"
+   height="164.10258mm"
+   viewBox="0 0 381.3996 164.10259"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="P_NP.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#363636"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="681.77593"
+     inkscape:cy="285.93943"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="2528"
+     inkscape:window-height="1381"
+     inkscape:window-x="1096"
+     inkscape:window-y="43"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-240.0478,19.532075)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:60.5762px;line-height:1.25;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#f92672;fill-opacity:1;stroke:none;stroke-width:0.264583;"
+       x="384.15753"
+       y="35.101734"
+       id="text835"><tspan
+         sodipodi:role="line"
+         id="tspan833"
+         x="384.15753"
+         y="35.101734"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:60.5762px;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f92672;stroke-width:0.264583;">P</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:60.5762px;line-height:1.25;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#66d9ef;fill-opacity:1;stroke:none;stroke-width:0.264583;"
+       x="477.37659"
+       y="34.805954"
+       id="text1408"><tspan
+         sodipodi:role="line"
+         id="tspan1406"
+         x="477.37659"
+         y="34.805954"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:60.5762px;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#66d9ef;stroke-width:0.264583;">NP</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.359px;line-height:1.25;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.264582"
+       x="272.90671"
+       y="73.434433"
+       id="text1412"
+       transform="scale(0.87481662,1.1430967)"><tspan
+         sodipodi:role="line"
+         id="tspan1410"
+         x="272.90671"
+         y="73.434433"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.359px;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:0.264582">Easy to solve</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.359px;line-height:1.25;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.264582"
+       x="272.90671"
+       y="117.30214"
+       id="text1416"
+       transform="scale(0.87481662,1.1430967)"><tspan
+         sodipodi:role="line"
+         id="tspan1414"
+         x="272.90671"
+         y="117.30214"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.359px;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:0.264582">Easy to verify</tspan></text>
+    <g
+       id="g1446"
+       class="fragment"
+       data-fragment-index="0"
+       transform="matrix(0.58530583,0,0,0.58530583,99.546422,-8.0998377)"
+       style="stroke-width:1.70851">
+      <path
+         style="fill:#a6e22e;stroke:#272822;stroke-width:0.452042px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 481.68147,130.52315 c 10.64097,11.70587 20.56098,24.19162 24.99536,40.80089 11.30069,-29.73519 26.09705,-60.03747 45.39852,-89.038649 L 506.4539,141.9872 Z"
+         id="path1418"
+         sodipodi:nodetypes="ccccc" />
+      <path
+         style="fill:#a6e22e;stroke:#272822;stroke-width:0.452042px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 481.68147,219.30245 c 10.64097,11.70587 20.56098,24.19162 24.99536,40.80089 11.30069,-29.73519 26.09705,-60.03747 45.39852,-89.03866 L 506.4539,230.7665 Z"
+         id="path1420"
+         sodipodi:nodetypes="ccccc" />
+    </g>
+    <path
+       style="fill:#a6e22e;stroke:#272822;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 494.02582,120.25916 c 6.22823,6.85152 12.03446,14.1595 14.62993,23.881 6.61436,-17.40418 15.27476,-35.14028 26.57202,-52.114843 l -26.7025,34.943823 z"
+       id="path1422"
+       sodipodi:nodetypes="ccccc"
+       class="fragment"
+       data-fragment-index="1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.0354px;line-height:1.25;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#fd971f;fill-opacity:1;stroke:none;stroke-width:0.264583;"
+       x="505.89117"
+       y="87.576302"
+       id="text1426"
+       class="fragment"
+       data-fragment-index="2"><tspan
+         sodipodi:role="line"
+         id="tspan1424"
+         x="505.89117"
+         y="87.576302"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.0354px;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#fd971f;stroke-width:0.264583;">?</tspan></text>
+    <g
+       id="g1452"
+       class="fragment"
+       data-fragment-index="2"
+       transform="matrix(0.58530583,0,0,0.58530583,99.546422,-8.0998377)"
+       style="stroke-width:1.70851">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:75.9964px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#fd971f;fill-opacity:1;stroke:none;stroke-width:0.452042;"
+         x="570.96332"
+         y="63.008766"
+         id="text1430"><tspan
+           sodipodi:role="line"
+           id="tspan1428"
+           x="570.96332"
+           y="63.008766"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:75.9964px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#fd971f;stroke-width:0.452042;">=</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:44.8661px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#fd971f;fill-opacity:1;stroke:none;stroke-width:0.452042;"
+         x="581.1347"
+         y="22.792524"
+         id="text1434"><tspan
+           sodipodi:role="line"
+           id="tspan1432"
+           x="581.1347"
+           y="22.792524"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:44.8661px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#fd971f;stroke-width:0.452042;">?</tspan></text>
+    </g>
+    <g
+       id="g1442"
+       style="fill:#f92672;stroke:#f92672;stroke-width:20.9096;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.3753536,0,0,0.37072911,270.66612,-61.363648)"
+       class="fragment fade-in-then-out"
+       data-fragment-index="1">
+      <path
+         style="fill:#f92672;stroke:#f92672;stroke-width:20.9096;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 608.1215,317.5609 c 18.99301,28.03276 43.88302,52.69495 78.69251,71.68743"
+         id="path1436"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:#f92672;stroke:#f92672;stroke-width:20.9096;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 620.37234,383.67816 56.95821,-58.49038"
+         id="path1438" />
+    </g>
+  </g>
+</svg>
+</p>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Loop the presentation
+        loop: false,
+        // Change the presentation direction to be RTL
+        rtl: false,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

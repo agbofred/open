@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-10-18">
+  <title>Getting Literate: Reading and Writing</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Getting Literate: Reading and Writing</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">October 18, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Project 2 due tonight!</li>
+<li>Graphical Contest deadline is a week from Friday</li>
+<li>Midterm is on Friday!
+<ul>
+<li>Study materials and practice tests have been posted</li>
+<li>Section meetings this week will be ready to talk about specific problems, but you <em>need to have started them to know what problems you have questions about</em>.</li>
+<li>Test is open-note and printouts of code you’ve written. Just no computers.</li>
+<li>I’ll include the Python summary pdf with the test.</li>
+<li>Will be written for just an hour, but I’ll let you use the lab hour afterwards if you need time to finish up.</li>
+</ul></li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+<!-- Actually covered at the end of last class
+## Review Question
+::::::cols
+::::col
+Given the code to the right, what would be the final printed value of `A`?
+
+
+:::{.poll}
+#. `['Fox', 'Giraffe', 'Hippo', 'Iguana']`
+#. `['Fox', 'Hippo', 'Iguana']`
+#. `['Iguana', 'Fox']`
+#. `['Fox', 'Iguana']`
+:::
+
+::::
+
+::::col
+```python
+A = ['Fox', 'Giraffe', 
+     'Hippo']
+A.append('Iguana')
+A[:].reverse()
+B = A
+for anim in B:
+    if anim[1] == 'i':
+        B.remove(anim)
+print(A)
+```
+
+::::
+::::::
+-->
+<!-- LATER USED IN CH7_5 -->
+</section>
+<section id="review" class="slide level2" data-notes="Solution: &#39;1111&#39;">
+<h2 data-notes="Solution: &#39;1111&#39;">Review!</h2>
+<p>What is the second element (index 1) in the below list?</p>
+<p><code class="python" style="display: block; margin: auto; text-align: center;">[i * 4 for i in "Oct 18, 2020" if not i.isalpha()]</code></p>
+<p><br></p>
+<div class="poll">
+<ol>
+<li><code class="python">16</code></li>
+<li><code class="python">"8888"</code></li>
+<li><code class="python">"cccc"</code></li>
+<li><code class="python">"1111"</code></li>
+</ol>
+</div>
+</section>
+<section id="where-strings-and-lists-meet" class="slide level2">
+<h2>Where Strings and Lists Meet</h2>
+<ul>
+<li>There are a handful of methods that provide interactions between strings and lists</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 66%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">str.split()</code></td>
+<td>Splits the string <code class="python">str</code> into a list of its components using whitespace as a separator</td>
+</tr>
+<tr class="even">
+<td><code class="python">str.split(sep)</code></td>
+<td>Splits the string <code class="python">str</code> into a list using the specified separator <code class="python">sep</code></td>
+</tr>
+<tr class="odd">
+<td><code class="python">str.splitlines()</code></td>
+<td>Splits the string <code class="python">str</code> into a list of strings at the newline character</td>
+</tr>
+<tr class="even">
+<td><code class="python">str.join(list)</code></td>
+<td>Joins the (string) elements of the <code class="python">list</code> into a string, using <code class="python">str</code> as the separator</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reading" class="slide level2">
+<h2>Reading</h2>
+<ul>
+<li>Programs often need to work with lists that are too large to reasonably exist typed all out in the code
+<ul>
+<li>Easier to read in the values of a list from some external data file</li>
+</ul></li>
+<li>A <em>file</em> is the generic name for any named collection of data maintained on some permanent storage media attached to a computer</li>
+<li>Files can contain information of many different types and encodings
+<ul>
+<li>Most common is the <em>text file</em></li>
+<li>Contains character data like you’d find in a string</li>
+</ul></li>
+</ul>
+</section>
+<section id="strings-vs-text-files" class="slide level2">
+<h2>Strings vs Text Files</h2>
+<ul>
+<li>While strings and text files both store characters, there are some important differences:
+<ul>
+<li><strong>The longevity of the data stored</strong>
+<ul>
+<li>The value of a string variable lasts only as long as the string exists, is not overridden, or is not thrown out when a function completes</li>
+<li>Information in a text file exists until the file is deleted</li>
+</ul></li>
+<li><strong>How data is read in</strong>
+<ul>
+<li>You have access to all the characters in a string variable pretty much immediately</li>
+<li>Data from text files is generally read in sequentially, starting from the beginning and proceeding until the end of the file is reached</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="reading-text-files" class="slide level2">
+<h2>Reading Text Files</h2>
+<ul>
+<li>The general approach for reading a text file is to first <em>open</em> the file and associate that file with a variable, commonly called its <em>file handle</em></li>
+<li>We will also use the <em>with</em> keyword to ensure that Python cleans up after itself (closes the file) when we are done with it (Many of us could use a <code class="python">with</code> irl)</li>
+</ul>
+<pre ><code class="python">with open(filename) as file_handle:
+    # Code to read the file using the file_handle</code></pre>
+<ul>
+<li>Python gives you several different ways to actually read in the data
+<ul>
+<li><code class="python">read</code> reads the entire file in as a string</li>
+<li><code class="python">readline</code> or <code class="python">readlines</code> reads a single line or lines from the file</li>
+<li><code class="python">read</code> alongside <code class="python">splitlines</code> gets you a list of line strings</li>
+<li>Can use the file handle as an iterator to loop over</li>
+</ul></li>
+</ul>
+</section>
+<section id="entire-file-string" class="slide level2">
+<h2>Entire file ⟶ String</h2>
+<ul>
+<li>The <code class="python">read</code> method reads the entire file into a string, with includes newline characters to mark the end of lines</li>
+<li>Simple, but can be cumbersome to work with in some cases, and, for large files, can take a large amount of memory</li>
+</ul>
+<p>As an example, the file:<br><br></p>
+<div class="block" name="Seuss.txt">
+<p>One fish<br> two fish<br> red fish<br> blue fish</p>
+</div>
+<p>would get read as</p>
+<p><code class="python" style="display: block; margin: auto; text-align: center;">"One fish\ntwo fish\nred fish\nblue fish"</code></p>
+</section>
+<section id="line-by-line" class="slide level2">
+<h2>Line by Line</h2>
+<ul>
+<li>Of the ways to read the file in a string at a time, using the file handler as an iterator and looping is probably best and certainly most flexible</li>
+<li>Leads to code that looks like:</li>
+</ul>
+<pre ><code class="python">with open(filename) as f:
+    for line in f:
+        # Do something with the line</code></pre>
+<ul>
+<li>Note that <strong>most</strong> strategies preserve the newline character, which you very likely do not want, so be ready to strip them out before doing more processing</li>
+</ul>
+</section>
+<section id="powers-combined" class="slide level2">
+<h2>Powers Combined</h2>
+<ul>
+<li>So long as your files are not gigantic, using <code class="python">read</code> and then the <code class="python">splitlines</code> method can be a good option</li>
+<li>This <strong>does</strong> remove the newline characters, since it splits the string at them</li>
+</ul>
+<pre ><code class="python">with open(filename) as f:
+    lines = f.read().splitlines()
+# Then you can do whatever you want with the list of lines</code></pre>
+</section>
+<section id="example-name-mangling" class="slide level2">
+<h2>Example: Name Mangling</h2>
+<ul>
+<li>Let’s look at an example with some more meat to it</li>
+<li>I have a text file with all your first names. I’d like to:
+<ul>
+<li>Read in the names</li>
+<li>Select two at random</li>
+<li>Combine the first half of one name with the second half of the other</li>
+<li>Print out both potential hybrid names</li>
+</ul></li>
+<li>We’ll practice breaking a problem into steps along the way here</li>
+</ul>
+</section>
+<section id="arent-you-exceptional" class="slide level2">
+<h2>Aren’t you Exceptional</h2>
+<ul>
+<li>When opening a file for reading, it is possible the file does not exist!
+<ul>
+<li>Python handles this (and many other potential errors that can arise) using a mechanism called <em>exception handling</em></li>
+<li>Common in other languages as well</li>
+</ul></li>
+<li>An <em>exception</em> is a object that belongs to an overarching hierarchy of exception classes
+<ul>
+<li>Different classes/types for different purposes</li>
+<li>File operations, for example, use the exception class <code class="python">IOError</code></li>
+</ul></li>
+<li>If <code class="python">open</code> encounters an error, it reports the error by <em>raising an exception</em> with <code class="python">IOError</code> as its type.
+<ul>
+<li>Raising an exception generally immediately terminates your program, but sometimes that is undesirable</li>
+</ul></li>
+</ul>
+</section>
+<section id="ignore-yoda-there-is-a-try" class="slide level2">
+<h2>Ignore Yoda, there is a <code class="python">try</code></h2>
+<ul>
+<li>Python uses the <code class="python">try</code> statement to indicate an interest in trying to handle a possible exception</li>
+<li>In simplest form, the syntax is:</li>
+</ul>
+<pre ><code class="python">try:
+    # Code that may cause an exception
+except type_of_exception:
+    # Code to handle that type of exception</code></pre>
+<ul>
+<li><code class="python">type_of_exception</code> here is the class name of the exception being handled
+<ul>
+<li><code class="python">IOError</code> for the file reading errors we are discussing</li>
+</ul></li>
+<li>Any exceptions arising from within the <code class="python">try</code> block or within functions <em>called</em> within the try block would be “caught” and the lower block of code run instead of terminating the program</li>
+</ul>
+</section>
+<section id="example-requesting-existing-file" class="slide level2">
+<h2>Example: Requesting Existing File</h2>
+<ul>
+<li>As an example, the below function will repeatedly ask the user to supply a file name that actually exists.</li>
+<li>It will not just immediately break should they give it an invalid filename!</li>
+</ul>
+<pre ><code class="python">def get_existing_file(prompt="Input a filename: "):
+    while True:
+        filename = input(prompt)
+        try:
+            with open(filename):
+                return filename
+        except IOError:
+            print("That filename is invalid!")</code></pre>
+<ul>
+<li>If the <code class="python">open</code> call succeeds, we immediately just return the filename, but if it fails due to a <code class="python">IOError</code>, we display a message and then keep asking</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

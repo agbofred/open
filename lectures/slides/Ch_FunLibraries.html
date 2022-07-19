@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-12-08">
+  <title>Doing More</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Doing More</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">December 8, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Adventure Game Project due on Friday night</li>
+<li>Guidelines and learning objectives for the final will get posted today</li>
+<li>On Friday we’ll wrap up a bit early to get a class picture and leave you time to fill out the class eval that should have been emailed to you a few weeks back, so please show up!</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+<!--
+## Review Question {data-notes="Solution: {['A', 'B']: {1, 2}}"}
+
+::::::cols
+::::{.col style="flex-grow:.7;"}
+The node class to the right for a linked list has a mystery static method at the bottom. What does it do?
+
+:::{.poll style="font-size:0.9em;"}
+#. Adds a new node named `A` at the end of the chain that starts with `C`
+#. Adds a new node named `A` after the node named `B` in the chain that starts with `C`
+#. Adds a new node named `A` before the node named `B` in the chain that starts with `C`
+#. Replaces the node named `B` with the node named `A` in the chain that starts with `C`
+:::
+::::
+
+::::col
+```{.python style="max-height:900px; font-size:0.7em; line-height:1.15em"}
+class Node:
+    def __init__(self, name, link=None):
+        self._name = name #str
+        self._link = link #Node
+
+    def get_name(self):
+        return self._name
+
+    def get_link(self):
+        return self._link
+
+    def set_link(self, new_link):
+        self._link = new_link
+
+    @staticmethod
+    def mystery(A, B, C):
+        cur = C
+        while cur.get_name() != B:
+            cur = cur.get_link()
+        D = cur.get_link()
+        new = Node(A, D)
+        cur.set_link(new)
+```
+
+::::
+::::::
+-->
+</section>
+<section id="review-question" class="slide level2" data-notes="Solution: 17 times!">
+<h2 data-notes="Solution: 17 times!">Review Question</h2>
+<p>The code for the main function of Merge Sort looked like below:</p>
+<pre ><code class="python" data-line-numbers="">def merge_sort(array):
+    if len(array) > 1:
+        mid = len(array)//2
+        a1 = array[:mid]
+        a2 = array[mid:]
+        merge_sort(a1)
+        merge_sort(a2)
+        merge(array, a1, a2)
+L = [45, 32, 68, 78, 12, 95, 312, 4, 32]
+merge_sort(L)</code></pre>
+<p>How many times (including line 10) does <code class="python">merge_sort</code> get called before the list is sorted?</p>
+<div class="hpoll">
+<ol>
+<li>1</li>
+<li>8</li>
+<li>12</li>
+<li>17</li>
+</ol>
+</div>
+</section>
+<section id="diff-libraries-for-diff-uses" class="slide level2">
+<h2>Diff Libraries for Diff Uses</h2>
+<div class="cols">
+<div class="col">
+<ul>
+<li>The Web
+<ul>
+<li>Requests</li>
+<li>BeautifulSoup</li>
+<li>Scrapy</li>
+<li>Django and Flask</li>
+</ul></li>
+<li>Math, Science and Analytics
+<ul>
+<li>Numpy</li>
+<li>Matplotlib</li>
+<li>Scipy</li>
+<li>Sympy</li>
+<li>Pandas</li>
+</ul></li>
+</ul>
+</div>
+<div class="col">
+<ul>
+<li>Automation
+<ul>
+<li>Pyautogui</li>
+<li>Selenium</li>
+</ul></li>
+<li>Games and Applications
+<ul>
+<li>Arcade</li>
+<li>PyGame</li>
+<li>wxPython</li>
+<li>tkinter</li>
+</ul></li>
+<li>Images
+<ul>
+<li>Pillow</li>
+<li>OpenCV</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="requests" class="slide level2">
+<h2>Requests</h2>
+<ul>
+<li><p>Responsible for interacting with http webpages</p></li>
+<li><p>Generally used to download some information from the web</p></li>
+<li><p>Most frequently use the <code class="python">get</code> method to download a url</p>
+<pre ><code class="python">response = requests.get("desired_url")</code></pre>
+<ul>
+<li>Returns a special request object, with lots of info about the response</li>
+<li>Can get the decoded text portion by accessing the <code class="python">text</code> attribute</li>
+</ul>
+<pre ><code class="python">print(response.text)</code></pre></li>
+</ul>
+</section>
+<section id="beautiful-soup" class="slide level2">
+<h2>Beautiful Soup</h2>
+<ul>
+<li><p>The text returned by <code class="python">requests</code> is generally raw HTML</p></li>
+<li><p>You <em>could</em> parse this yourself, but using a parser like BeautifulSoup can greatly streamline things</p>
+<ul>
+<li>This is especially true if you are needing to do more complicated actions</li>
+<li>BeautifulSoup is another great example of an abstract data type!</li>
+</ul></li>
+<li><p>You pass in HTML and are returned a custom soup object with many useful methods built in</p></li>
+<li><p>One of the more common things you’d want to do with the HTML is find certain elements on the page</p>
+<pre ><code class="python">soup.find_all('tag_name', more_filters)</code></pre>
+<ul>
+<li>Returns a list of everything that meets your requirements</li>
+</ul></li>
+</ul>
+</section>
+<section id="topic-finder" class="slide level2">
+<h2>Topic Finder</h2>
+<ul>
+<li>Let’s write a program to search all the lecture slides on the class webpage for a specific topic</li>
+<li>Will require a few steps:
+<ol>
+<li>Download the main Lecture page</li>
+<li>Find all the slide links on the page</li>
+<li>For each link, download <em>that</em> page</li>
+<li>Search that page for signs of the desired topic and print out if found</li>
+</ol></li>
+<li>If we were going to run a bunch of searches, it would make more sense to download everything once at the start, but we won’t worry about that here.</li>
+</ul>
+</section>
+<section id="topic-finder-code" class="slide level2">
+<h2>Topic Finder Code</h2>
+<pre ><code class="python" style="max-height:900px; font-size:0.65em; line-height:1.2em;">import requests
+from bs4 import BeautifulSoup
+
+
+def topic_finder():
+    def is_lecture_link(tag):
+        """ Filters out anchor tags with Lecture in the text. """
+        return tag.name == "a" and "Lecture" in tag.text
+
+    def find_lecture_containing(topic):
+        """ Returns a list of lectures that contain the desired topic string. """
+        lectures = []
+        for lecture in lecture_links:
+            content = requests.get("https:/" + lecture.get("href")).text
+            if topic.lower() in content.lower():
+                lectures.append((lecture.text, "https:/" + lecture.get("href")))
+        return lectures
+
+    url = "http://willamette.edu/~jjrembold/classes/cs151/slides/"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text)
+    lecture_links = soup.find_all(is_lecture_link)
+
+    finished = False
+    while not finished:
+        target = input("\nWhat topic are you looking for? ")
+        if target == "":
+            finished = True
+        else:
+            found = find_lecture_containing(target)
+            for lecture in reversed(found):
+                name, url = lecture
+                print(f"{name}: {url}")
+
+if __name__ == '__main__':
+    topic_finder()</code></pre>
+</section>
+<section id="general-automation" class="slide level2">
+<h2>General Automation</h2>
+<ul>
+<li>There are <strong>many</strong> libraries and API’s you can use with Python to control or automate things</li>
+<li>Sometimes though, nothing exists and you need something more primative</li>
+<li>The <code class="python">PyAutoGUI</code> library gives you methods to simulate moving and clicking the mouse and pressing keys on the keyboard
+<ul>
+<li>Will need to install through either pip or conda</li>
+</ul></li>
+<li><strong>Important!</strong>
+<ul>
+<li>Should always have an emergency escape if you start automating the mouse and keyboard!</li>
+<li><code class="python">PyAutoGUI</code> has a failsafe if you slam the mouse into one of the window corners</li>
+</ul></li>
+</ul>
+</section>
+<section id="common-methods" class="slide level2">
+<h2>Common Methods</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">.click()</code></td>
+<td>Clicks the mouse at the current location</td>
+</tr>
+<tr class="even">
+<td><code class="python">.mouseDown()</code></td>
+<td>Presses the mouse button down</td>
+</tr>
+<tr class="odd">
+<td><code class="python">.mouseUp()</code></td>
+<td>Releases the mouse button</td>
+</tr>
+<tr class="even">
+<td><code class="python">.moveTo(x,y)</code></td>
+<td>Moves to the coordinate (x,y)</td>
+</tr>
+<tr class="odd">
+<td><code class="python">.move(dx, dy)</code></td>
+<td>Moves from current position <code class="python">dx</code> horizontally and <code class="python">dy</code> vertically</td>
+</tr>
+<tr class="even">
+<td><code class="python">.drag(dx,dy)</code></td>
+<td>Clicks the mouse down and moves <code class="python">dx</code> over and <code class="python">dy</code> down</td>
+</tr>
+<tr class="odd">
+<td><code class="python">.position()</code></td>
+<td>Gets the current mouse position</td>
+</tr>
+<tr class="even">
+<td><code class="python">.write(text)</code></td>
+<td>Presses the keys represented in the string text</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="pyautogui-art" class="slide level2">
+<h2>PyAutoGUI Art</h2>
+<ul>
+<li>Perhaps easiest to demonstrate with a simple drawing program</li>
+<li>Because it is just moving the mouse, should work with <em>any</em> drawing program: Paint, Photoshop, Krita, etc</li>
+<li>Initially we’d like to draw a rectangular spiral</li>
+<li>Then can add changing colors if time</li>
+</ul>
+</section>
+<section id="retangular-spiral" class="slide level2">
+<h2>Retangular Spiral</h2>
+<pre ><code class="python" style="max-height:900px;">import pyautogui as pag
+
+CHANGE = 50
+
+pag.countdown(10)
+pag.click()  # Click to make the window active.
+distance = 500
+while distance > 0:
+    pag.drag(distance, 0, duration=0.5)  # Move right.
+    distance -= CHANGE
+    pag.drag(0, distance, duration=0.5)  # Move down.
+    pag.drag(-distance, 0, duration=0.5)  # Move left.
+    distance -= CHANGE
+    pag.drag(0, -distance, duration=0.5)  # Move up.</code></pre>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Loop the presentation
+        loop: false,
+        // Change the presentation direction to be RTL
+        rtl: false,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

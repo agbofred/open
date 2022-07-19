@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="249.27mm" height="38.824mm" version="1.1" viewBox="0 0 249.27 38.824" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="translate(-12.744 -3.627)">
+  <g fill="none" stroke="#2aff80" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.165">
+   <rect x="14.305" y="12.834" width="57.702" height="29.035" ry="5.0313"/>
+   <rect x="77.446" y="12.834" width="57.702" height="29.035" ry="5.0313"/>
+   <rect x="140.59" y="12.834" width="57.702" height="29.035" ry="5.0313"/>
+   <rect x="203.73" y="12.834" width="57.702" height="29.035" ry="5.0313"/>
+  </g>
+  <g fill="#2aff80" font-family="'FiraCode Nerd Font Mono'" font-weight="bold" letter-spacing="0px" word-spacing="0px">
+   <g font-size="8.7139px" stroke-width=".26458">
+    <text transform="scale(.99683 1.0032)" x="12.583467" y="9.9655218" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" xml:space="preserve"><tspan x="12.583467" y="9.9655218" fill="#2aff80" font-family="'FiraCode Nerd Font Mono'" font-size="8.7139px" font-weight="bold" stroke-width=".26458" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">GW_WIDTH</tspan></text>
+    <text transform="scale(.99683 1.0032)" x="76.716743" y="9.9655218" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" xml:space="preserve"><tspan x="76.716743" y="9.9655218" fill="#2aff80" font-family="'FiraCode Nerd Font Mono'" font-size="8.7139px" font-weight="bold" stroke-width=".26458" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">GW_HEIGHT</tspan></text>
+    <text transform="scale(.99683 1.0032)" x="140.84999" y="9.9655218" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" xml:space="preserve"><tspan x="140.84999" y="9.9655218" fill="#2aff80" font-family="'FiraCode Nerd Font Mono'" font-size="8.7139px" font-weight="bold" stroke-width=".26458" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">gw</tspan></text>
+    <text transform="scale(.99683 1.0032)" x="203.39973" y="9.9655218" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" xml:space="preserve"><tspan x="203.39973" y="9.9655218" fill="#2aff80" font-family="'FiraCode Nerd Font Mono'" font-size="8.7139px" font-weight="bold" stroke-width=".26458" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">rect</tspan></text>
+   </g>
+   <text class="fragment" transform="scale(.99683 1.0032)" x="27.312531" y="33.457386" font-size="17.414px" stroke-width=".26458" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" data-fragment-index="2" xml:space="preserve"><tspan x="27.312531" y="33.457386" fill="#2aff80" font-family="'FiraCode Nerd Font Mono'" font-size="17.414px" font-weight="bold" stroke-width=".26458" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">500</tspan></text>
+   <text class="fragment" transform="scale(.99683 1.0032)" x="90.649567" y="33.457386" font-size="17.414px" stroke-width=".26458" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" data-fragment-index="2" xml:space="preserve"><tspan x="90.649567" y="33.457386" fill="#2aff80" font-family="'FiraCode Nerd Font Mono'" font-size="17.414px" font-weight="bold" stroke-width=".26458" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">200</tspan></text>
+  </g>
+  <rect class="fragment" x="149.48" y="17.771" width="39.906" height="19.161" ry="3.352" fill="#f9f9f9" data-fragment-index="3"/>
+ </g>
+</svg>

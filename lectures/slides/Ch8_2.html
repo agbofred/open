@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-12-03">
+  <title>Sorting</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Sorting</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">December 3, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Be working on Adventure!
+<ul>
+<li>Reminder to let me know if you are looking for a partner so I can try to match people up. Or feel free to post publically on Discord or Campuswire.</li>
+</ul></li>
+<li>Lab today on measuring program runtimes</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2">
+<h2>Review Question</h2>
+<div class="cols">
+<div class="col">
+<p>You want to look for the term <code class="python">"fish"</code> in the list to the right. What search method would prove fastest in this specific case?</p>
+<div class="poll">
+<ol>
+<li>Linear Search</li>
+<li>Binary Search</li>
+<li>Both would be equal</li>
+</ol>
+</div>
+</div>
+<div class="col">
+<pre ><code class="python" style="max-height:900px">list_to_search = [
+    "onions",
+    "puppies",
+    "fish",
+    "donkey",
+    "carrots",
+    "goats",
+    "lasagna",
+    "sheep",
+    "bears",
+    "beets",
+    "battlestar galactica"
+]</code></pre>
+</div>
+</div>
+<!--
+## Linear Search Efficiency
+- The running time of the linear search depends on the size of the array
+    - That in itself is not really surprising. The running time of most algorithms will depend on the size of the problem to which the algorithm is applied.
+- For many applications, it is easy to come up with a numeric value that describes the problem size, commonly called $N$.
+    - For most lists, $N$ is simply the length of the array
+- In the worst case, when the target value is the last element of the list or does not appear at all, the linear search requires $N$ steps
+    - On average, it takes about half that, or $\frac{N}{2}$
+
+
+## Binary Search Efficiency
+- The running time of binary search also depends on the size of the array, but in a very different way
+- Each step of the process, the binary search rules out half the remaining options
+    - The worst case (which we had earlier!) requires a number of steps equal to however many times we can divide the array in half until we have only a single number left.
+    - Mathematically, this looks like
+        $$1 = N / \underbrace{2 / 2 / 2 / 2 \cdots / 2}_{k\text{ times}} = \frac{N}{2^k}$$
+- We really want to know the number of steps, $k$, so solving for $k$:
+$$2^k = N \quad\Rightarrow\quad k = \log_2(N)$$
+-->
+</section>
+<section id="comparing-efficiencies" class="slide level2">
+<h2>Comparing Efficiencies</h2>
+<ul>
+<li>The below table illustrates the differences in the number of required steps for the two search algorithms</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Problem Size</th>
+<th>Linear (<span class="math inline">\(N\)</span>)</th>
+<th>Binary (<span class="math inline">\(\log_2 N\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10</td>
+<td>10</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>100</td>
+<td>100</td>
+<td>7</td>
+</tr>
+<tr class="odd">
+<td>1000</td>
+<td>1000</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>1000000</td>
+<td>1000000</td>
+<td>20</td>
+</tr>
+<tr class="odd">
+<td>1000000000</td>
+<td>1000000000</td>
+<td>30</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Clearly, for large values, the difference in the number of steps is <strong>enormous</strong></li>
+<li>At 1 million elements, the binary search is 50,000 times faster!</li>
+</ul>
+</section>
+<section id="sorting" class="slide level2">
+<h2>Sorting</h2>
+<ul>
+<li>Binary search only works on arrays in which the elements are ordered.
+<ul>
+<li>The process of putting the elements into order is called <em>sorting</em>.</li>
+</ul></li>
+<li>Lots of different sorting algorithms, which can vary substantially in their efficiency.</li>
+<li>From an algorithms view, sorting is probably the most applicable algorithm we’ll discuss in this course
+<ul>
+<li>Organizing data makes it easier to digest that data, whether the data is being digested by other machines or by humans</li>
+</ul></li>
+</ul>
+</section>
+<section id="selection-sort" class="slide level2">
+<h2>Selection Sort</h2>
+<ul>
+<li>The easiest sorting algorithm to explain is that of <em>selection sort</em></li>
+<li>Imagine your left hand keeping track of where you were in the array, and your right hand scanning through and finding the next smallest value to move to that location each iteration</li>
+</ul>
+<pre ><code class="python">def selection_sort(array):
+    for lh in range(len(array)):
+        rh = lh
+        for i in range(lh+1, len(array)):
+            if array[i] < array[rh]:
+                rh = i
+        array[lh], array[rh] = array[rh], array[lh]</code></pre>
+</section>
+<section id="following-selection-sort" class="slide level2">
+<h2>Following Selection Sort</h2>
+<pre ><code class="python" data-line-numbers="1-9|2|3|4|5|4|5|4|5|6|4|5|4|5|4|5|4|5|4|5|6|4|4|7|2|3|4|1-9">def selection_sort(array):
+    for lh in range(len(array)):
+        rh = lh
+        for i in range(lh+1, len(array)):
+            if array[i] < array[rh]:
+                rh = i
+        array[lh], array[rh] = array[rh], array[lh]
+L = [31, 41, 59, 26, 53, 58, 97, 93, 23, 84]
+selection_sort(L)</code></pre>
+<div class="fig-container" data-file="../images/d3/SelectionSort.html" data-scroll="no", data-style="width:90%; display:inline;"></div>
+</section>
+<section id="selection-sort-efficiency" class="slide level2">
+<h2>Selection Sort Efficiency</h2>
+<ul>
+<li>One method to investigate the efficiency would be to time how long different operations took</li>
+<li>For one particular laptop, those times might look like:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Array Size</th>
+<th>Running Time (sec)</th>
+<th>Increase of</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10</td>
+<td>0.000013 s</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>100</td>
+<td>0.000581 s</td>
+<td>44x</td>
+</tr>
+<tr class="odd">
+<td>1,000</td>
+<td>0.0578 s</td>
+<td>99x</td>
+</tr>
+<tr class="even">
+<td>10,000</td>
+<td>5.738 s</td>
+<td>99x</td>
+</tr>
+<tr class="odd">
+<td>100,000</td>
+<td>574.2 s</td>
+<td>100x</td>
+</tr>
+<tr class="even">
+<td>1,000,000</td>
+<td>57395 s</td>
+<td>100x</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The time to sort 1 million entries is just under 16 hours!</li>
+</ul>
+</section>
+<section id="quicker-estimation-of-selection-sort-efficiency" class="slide level2">
+<h2>Quicker Estimation of Selection Sort Efficiency</h2>
+<ul>
+<li>Alternatively, we can estimate the efficiency by counting up how many times the most frequent operation is executed
+<ul>
+<li>The idea being that all the basic Python operations take around the same amount of time to do</li>
+</ul></li>
+<li>In selection sort that is the inner <code class="python">for</code> loop comparison
+<ul>
+<li>Checks 10 (<span class="math inline">\(N\)</span>) values the first time through</li>
+<li>Checks 9 (<span class="math inline">\(N-1\)</span>) values the second time through</li>
+<li>Checks 8 (<span class="math inline">\(N-2\)</span>) values the third time through, etc</li>
+</ul></li>
+<li>Can simplify with some series math <span class="math display">\[\displaystyle N + (N-1) + (N-2) + (N-3) + \cdots = \sum_{i=1}^N i = \frac{N\times(N+1)}{2}\]</span></li>
+</ul>
+</section>
+<section id="quadratic-growth" class="slide level2">
+<h2>Quadratic Growth</h2>
+<div class="cols">
+<div class="col">
+<ul>
+<li>Like with the run times, we can compare how this value scales with increasing <span class="math inline">\(N\)</span> values in the table to the right</li>
+<li>We see this tracks pretty close to our run time results, so our method of estimating the efficiency must be decent</li>
+<li>Multiplying things out, our efficiency scales as <span class="math display">\[\frac{1}{2}(N^2 + N) \approx N^2\]</span></li>
+</ul>
+</div>
+<div class="col">
+<table>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(N\)</span></th>
+<th><span class="math inline">\(\tfrac{N\times(N+1)}{2}\)</span></th>
+<th>Increase of</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10</td>
+<td>55</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>100</td>
+<td>5,050</td>
+<td>92x</td>
+</tr>
+<tr class="odd">
+<td>1,000</td>
+<td>500,500</td>
+<td>99x</td>
+</tr>
+<tr class="even">
+<td>10,000</td>
+<td>50,005,000</td>
+<td>100x</td>
+</tr>
+<tr class="odd">
+<td>100,000</td>
+<td>5,000,050,000</td>
+<td>100x</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="big-o-notation" class="slide level2">
+<h2>Big-O Notation</h2>
+<ul>
+<li>The common way to express notational complexity is to use <em>big-O notation</em>, introduced by German mathematician Paul Bachmann in 1892</li>
+<li>Big-O notations consists of the letter <span class="math inline">\(\mathcal{O}\)</span> followed by a formula that offers a qualitative assessment of the program running time as a function of the problem size (<span class="math inline">\(N\)</span>)</li>
+<li>The complexity of linear search was: <span class="math display">\[\mathcal{O}(N)\]</span></li>
+<li>The complexity of selection sort was: <span class="math display">\[\mathcal{O}(N^2)\]</span></li>
+<li>Read aloud, these would be “big-O of <span class="math inline">\(N\)</span>” or “big-O of <span class="math inline">\(N^2\)</span>”</li>
+</ul>
+</section>
+<section id="simplifying-big-o" class="slide level2">
+<h2>Simplifying Big-O</h2>
+<ul>
+<li>Big-O just gives a qualitative estimate, so it makes sense to keep the expression on the inside as simple as possible</li>
+<li>When writing big-O expressions, make the following simplifications:
+<ul>
+<li>Eliminate any constant factors</li>
+<li>Eliminate any term whose contribution ceases to become significant when <span class="math inline">\(N\)</span> becomes large</li>
+</ul></li>
+<li>Thus the computational complexity of selection sort is <span class="math display">\[\mathcal{O}(N^2)\]</span> and <strong>not</strong> <span class="math display">\[\mathcal{O}\left(\frac{N^2 + N}{2}\right)\]</span></li>
+</ul>
+</section>
+<section id="deducing-complexity-from-code" class="slide level2">
+<h2>Deducing complexity from code</h2>
+<ul>
+<li>Can often get a feeling for complexity just by looking at the code structure</li>
+<li>Find the section of code that seems to be executed the most</li>
+<li>How many times does that piece of code seem to be executed in comparison to the problem difficulty?</li>
+<li>Loops are often key!
+<ul>
+<li>Code in a single loop that iterates <span class="math inline">\(N\)</span> times gets executed <span class="math inline">\(N\)</span> times</li>
+<li>Code in a pair of nested loops that each iterate <span class="math inline">\(N\)</span> times gets executed <span class="math inline">\(N^2\)</span> times</li>
+</ul></li>
+</ul>
+</section>
+<section id="understanding-check" class="slide level2">
+<h2>Understanding Check</h2>
+<p>What would be the big-O complexity of the below function?</p>
+<pre ><code class="python">def func(array):
+    n = 0
+    while n < len(array):
+        for i in range(n):
+            array[i] = array[n]
+        n += 2
+</code></pre>
+<div class="hpoll">
+<ol>
+<li><span class="math inline">\(\mathcal{O}(N)\)</span></li>
+<li><span class="math inline">\(\mathcal{O}(N^2)\)</span></li>
+<li><span class="math inline">\(\mathcal{O}(N^{1/2})\)</span></li>
+<li><span class="math inline">\(\mathcal{O}(\frac{N^2}{2})\)</span></li>
+</ol>
+</div>
+</section>
+<section id="a-more-efficient-strategy" class="slide level2">
+<h2>A More Efficient Strategy</h2>
+<ul>
+<li>As long as arrays are small, selection sort is perfectly workable!
+<ul>
+<li>Even 10,000 elements get sorted in just over 1 second</li>
+</ul></li>
+<li>Less attractive to commercial applications with <strong>huge</strong> arrays though
+<ul>
+<li>Sorting a million values to take over 3 hours?!</li>
+</ul></li>
+<li>The <span class="math inline">\(\mathcal{O}(N^2)\)</span> complexity does offer a little hope though
+<ul>
+<li>Sorting twice as many elements takes four times as long = BAD</li>
+<li>But sorting half as many elements takes only a quarter the time = GOOD!</li>
+<li>Can we break the array into smaller pieces and just work with those?</li>
+</ul></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

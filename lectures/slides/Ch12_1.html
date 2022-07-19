@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-11-15">
+  <title>Token Slides</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Token Slides</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">November 15, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>Keep making progress on Project 4!</li>
+<li>Optional PS6 deadline is tonight</li>
+<li>The final contest of the semester will be a “Make a Game” contest!
+<ul>
+<li>I will get details out this week in case you want to make a start while you have some time over Thanksgiving.</li>
+<li>I’m less interested in game complexity and more about a good polished implementation.</li>
+</ul></li>
+</ul>
+</div><div class="column">
+<ul>
+<li>Potential Spring Classes
+<ul>
+<li>Datastructures</li>
+<li>Fundamentals of Data Science</li>
+<li>Intro to Data Engineering</li>
+</ul></li>
+<li>Final Exam times:
+<ul>
+<li>AM Section: Friday, Dec 17, 8-11am</li>
+<li>PM Section: Tuesday, Dec 14, 2-5pm</li>
+</ul></li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="review-question" class="slide level2" data-notes="Solution: 1">
+<h2 data-notes="Solution: 1">Review Question</h2>
+<p>Say I wrote a (bad) hash function that operated as:</p>
+<pre ><code class="python">def hash(value):
+    return len(str(value))</code></pre>
+<p>and that I then wrote a dictionary with a bucket hashing algorithm that utilized <strong>5</strong> buckets. If keys below were assigned to buckets according to our usual</p>
+<pre ><code class="python">abs(hash(key)) % num_buckets</code></pre>
+<p>how many would end up assigned to the index 2 bucket?</p>
+<pre ><code style="font-size:.8em;">keys = "beast", "goat", "five", "skeleton", "turkey", 1011011</code></pre>
+<div class="hpoll">
+<ol>
+<li>0</li>
+<li>1</li>
+<li>2</li>
+<li>3</li>
+</ol>
+</div>
+<!--
+## Token ADT
+- I find it helps to think of ADT's as a type of helps fulfill a particular objective or behavior goal
+- Cast your mind back to our Pig Latin translation program, which had two main pieces
+    - `to_pig_latin` which was responsible for taking a phrase and breaking it up into words
+    - `word_to_pig_latin` which took a single word and translated into Pig Latin
+- The first is an example of something that comes up often in computer science
+    - Breaking a larger thing into particular smaller chunks
+    - Chunks can really be anything, so the more general term computer scientists use is a _token_
+
+
+## A Token Scanner
+- A type that plucked out individual tokens might be called a _token scanner_
+- What would a client want from a token scanner?
+    - A way to pass in the necessary input
+    - A way to retrieve the next individual token
+    - A way to know when there are no more tokens
+    - Maybe a way to tailor what tokens are desired
+- These requirements help inform what methods should be incorporated into a token scanner class!
+    - Still need to determine what internal attributes or method might be needed
+-->
+</section>
+<section id="token-scanner-design" class="slide level2">
+<h2>Token Scanner Design</h2>
+<ul>
+<li>Frequently, specific wants or objectives make for good methods to include in the token scanner</li>
+<li>Chapter 12 includes an example of a common implementation</li>
+<li>Exports 4 main methods:
+<ol>
+<li><code class="python">scanner.set_input(str)</code>
+<ul>
+<li>Sets the input of the token scanner to the specified string or input stream</li>
+</ul></li>
+<li><code class="python">scanner.next_token()</code>
+<ul>
+<li>Returns the next token from the stream, or <code class="python">""</code> at the end</li>
+</ul></li>
+<li><code class="python">scanner.has_more_tokens</code>
+<ul>
+<li>Returns <code class="python">True</code> if more tokens exist, <code class="python">False</code> otherwise</li>
+</ul></li>
+<li><code class="python">scanner.ignore_whitespace()</code>
+<ul>
+<li>Customization option which tells the scanner to ignore whitespace characters</li>
+</ul></li>
+</ol></li>
+</ul>
+</section>
+<section id="token-scanner-code" class="slide level2">
+<h2>Token Scanner Code</h2>
+<pre ><code class="python" style="max-height:900px; font-size:.7em; font-spacing:2em;" data-line-numbers="7-46|54-59|63-69|71-86|88-94|96-100|104-109"># File: tokenscanner.py
+
+"""
+This file implements a simple version of a token scanner class.
+"""
+
+# A token scanner is an abstract data type that divides a string into
+# individual tokens, which are strings of consecutive characters that
+# form logical units.  This simplified version recognizes two token types:
+#
+#   1. A string of consecutive letters and digits
+#   2. A single character string
+#
+# To use this class, you must first create a TokenScanner instance by
+# calling its constructor:
+#
+#     scanner = TokenScanner()
+#
+# The next step is to call the set_input method to specify the string
+# from which tokens are read, as follows:
+#
+#     scanner.set_input(s)
+#
+# Once you have initialized the scanner, you can retrieve the next token
+# by calling
+#
+#    token = scanner.next_token()
+#
+# To determine whether any tokens remain to be read, you can either
+# call the predicate method scanner.has_more_tokens() or check to see
+# whether next_token returns the empty string.
+#
+# The following code fragment serves as a pattern for processing each
+# token in the string stored in the variable source:
+#
+#     scanner = TokenScanner(source)
+#     while scanner.has_more_tokens():
+#         token = scanner.next_token()
+#         . . . code to process the token . . .
+#
+# By default, the TokenScanner class treats whitespace characters
+# as operators and returns them as single-character tokens.  You
+# can set the token scanner to ignore whitespace characters by
+# making the following call:
+#
+#     scanner.ignore_whitespace()
+
+class TokenScanner:
+
+    """This class implements a simple token scanner."""
+
+# Constructor
+
+    def __init__(self, source=""):
+        """
+        Creates a new TokenScanner object that scans the specified string.
+        """
+        self.set_input(source)
+        self._ignore_whitespace_flag = False
+
+# Public methods
+
+    def set_input(self, source):
+        """
+        Resets the input so that it comes from source.
+        """
+        self._source = source
+        self._nch = len(source)
+        self._cp = 0
+
+    def next_token(self):
+        """
+        Returns the next token from this scanner.  If called when no
+        tokens are available, next_token returns the empty string.
+        """
+        if self._ignore_whitespace_flag:
+            self._skip_whitespace()
+        if self._cp == self._nch:
+            return ""
+        token = self._source[self._cp]
+        self._cp += 1
+        if token.isalnum():
+            while self._cp < self._nch and self._source[self._cp].isalnum():
+                token += self._source[self._cp]
+                self._cp += 1
+        return token
+
+    def has_more_tokens(self):
+        """
+        Returns True if there are more tokens for this scanner to read.
+        """
+        if self._ignore_whitespace_flag:
+            self._skip_whitespace()
+        return self._cp < self._nch
+
+    def ignore_whitespace(self):
+        """
+        Tells the scanner to ignore whitespace characters.
+        """
+        self._ignore_whitespace_flag = True
+
+# Private methods
+
+    def _skip_whitespace(self):
+        """
+        Skips over any whitespace characters before the next token.
+        """
+        while self._cp < self._nch and self._source[self._cp].isspace():
+            self._cp += 1</code></pre>
+</section>
+<section id="using-tokenscanner" class="slide level2">
+<h2>Using <code class="python">TokenScanner</code></h2>
+<ul>
+<li>Need to initialize the token scanner object</li>
+<li>Generally keep looping as long as there are still tokens
+<ul>
+<li>Each iteration, get the latest token and then do something with it</li>
+</ul></li>
+</ul>
+<!--## Using `TokenScanner` in `PigLatin`-->
+<pre ><code class="python" style="max-height:900px">from tokenscanner import TokenScanner
+
+def to_pig_latin(text):
+    translation = ""
+    scanner = TokenScanner()
+    scanner.set_input(text)
+    while scanner.has_more_tokens():
+        token = scanner.next_token()
+        if token.isalpha():
+            token = word_to_pig_latin(token)
+        translation += token
+    return translation</code></pre>
+</section>
+<section id="representing-data" class="slide level2">
+<h2>Representing Data</h2>
+<ul>
+<li>To use computation effectively, we frequently need to be able to represent real world data in a way that computers can easily work with
+<ul>
+<li>Real world data is often more complicated or nuanced than just “a list of numbers”</li>
+</ul></li>
+<li>Python’s existing data structures are <strong>tools</strong>, which you can use to help represent certain ideas
+<ul>
+<li><em>Lists</em> when you have sequential type data, wherein there is a logical ordering to the data in question (where position matters)
+<ul>
+<li>Example: GPA over the course of 4 years</li>
+</ul></li>
+<li><em>Tuples</em> or <em>classes</em> when you have elements that should be grouped together but which have no inherent ordering. Generally use tuples for simple records and write custom classes for more complex. Could potentially also use a dictionary.
+<ul>
+<li>Example: Student names in a class</li>
+</ul></li>
+<li><em>Maps</em> or <em>dictionaries</em> when you have specific keys corresponding to other values.
+<ul>
+<li>Example: Student grades</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="tricky-data" class="slide level2">
+<h2>Tricky Data</h2>
+<ul>
+<li>Human readable data is not always the best machine readable data!</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Class</th>
+<th>Q1</th>
+<th>Mid</th>
+<th>Q3</th>
+<th>Final</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sally</td>
+<td>Python</td>
+<td>A</td>
+<td>B</td>
+<td>B</td>
+<td>A</td>
+</tr>
+<tr class="even">
+<td>Jake</td>
+<td>Python</td>
+<td>B</td>
+<td>B</td>
+<td>B</td>
+<td>C</td>
+</tr>
+<tr class="odd">
+<td>James</td>
+<td>Astro</td>
+<td>B</td>
+<td>B</td>
+<td>A</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Lily</td>
+<td>Astro</td>
+<td>A</td>
+<td>A</td>
+<td>B</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Ben</td>
+<td>Python</td>
+<td>C</td>
+<td>B</td>
+<td>B</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="a-computer-friendly-approach" class="slide level2">
+<h2>A Computer Friendly Approach</h2>
+<ul>
+<li>Student grades are time ordered, so we could use a list for the grades</li>
+<li>Each student has a corresponding sequence of grades (and students are unordered), so we could use a dictionary where student names are the keys and the list of grades the values</li>
+<li>Each class corresponds to an unordered set of students. Could have another dictionary where the keys were the class names and the values were the dictionary of students/grades</li>
+</ul>
+</section>
+<section id="example-representation" class="slide level2">
+<h2>Example Representation</h2>
+<pre ><code class="python" style="max-height:900px">{
+    "Python": {
+        "Sally": ["A", "B", "B", "A"],
+        "Jake": ["B", "B", "B", "C"],
+        "Ben": ["C", "B", "B", "A"]
+    },
+    "Astro": {
+        "James": ["B", "B", "A"],
+        "Lily": ["A", "A", "B"]
+    }
+}</code></pre>
+</section>
+<section id="file-io" class="slide level2">
+<h2>File I/O</h2>
+<ul>
+<li>Frequently want to be able to read in or write data to files in a smooth way to preserve these data structures</li>
+<li>A variety of ways this can be done
+<ul>
+<li>XML, TOML, JSON</li>
+</ul></li>
+<li>JSON is particularly interesting to us, because its syntax almost exactly matches Python’s (even though it was made for Javascript)</li>
+<li>Python has a built in library to read and write JSON files
+<ul>
+<li><code class="python">json.load(file_handle)</code>
+<ul>
+<li>Loads the JSON data structure from the specified file into its Python equivalent</li>
+</ul></li>
+<li><code class="python">json.dump(data_object, file_handle)</code>
+<ul>
+<li>Writes a JSON text representation of the data object to the given file</li>
+</ul></li>
+<li>Both methods are used inside our normal <code class="python">with open() as fhandle:</code> syntax</li>
+</ul></li>
+</ul>
+</section>
+<section id="class-method-types" class="slide level2">
+<h2>Class Method Types</h2>
+<ul>
+<li>When creating classes, we have been looking at <em>instance methods</em> so far
+<ul>
+<li>Each method is tied to a particular object that it will act on</li>
+</ul></li>
+<li>There are class methods, but we won’t see or spend time with those</li>
+<li>An alternative type of method are called <em>static methods</em>
+<ul>
+<li>Static methods are <strong>not</strong> tied to a particular object</li>
+<li>They do <strong>not</strong> have self as the first parameter</li>
+<li>Makes them very similar to just a normal function</li>
+<li>Only in the class because they are related to everything else</li>
+</ul></li>
+</ul>
+</section>
+<section id="creating-static-methods" class="slide level2">
+<h2>Creating Static Methods</h2>
+<ul>
+<li>Create a static method using what is called a <em>decorator</em> in Python</li>
+<li>You can imagine that decorators are special flags to Python that it should treat a particular method in a certain fashion.</li>
+<li>Decorators come immediately <strong>before</strong> the method header line, and start with the <code class="python">@</code> symbol</li>
+</ul>
+<pre ><code class="python">class MyNewClass:
+    
+    @staticmethod
+    def my_method(not_self_1, not_self_2):
+        print(not_self_1, not_self_2)</code></pre>
+</section>
+<section id="calling-static-methods" class="slide level2">
+<h2>Calling Static Methods</h2>
+<ul>
+<li>Because the method is not attached to an object, you should not call it with the receiver dot syntax</li>
+<li>Must call them using the functional syntax, beginning with the class name
+<ul>
+<li><code class="python">MyNewClass.my_method(1,2)</code></li>
+</ul></li>
+<li>Frequently used for functions that are related to the class but could otherwise be independent of the class
+<ul>
+<li>Examples: <code class="python">GImage.get_red(pixel)</code> and <code class="python">GImage.create_rgb_pixel(a,r,g,b)</code></li>
+</ul></li>
+</ul>
+<!--
+## Examples
+- JSON formats tend to be the defacto way that the web passes around information, so easy to grab examples
+- [Oregon District Voter Registration](https://data.oregon.gov/Administrative/Voter-Registration-Data/6a4f-ecbi)
+-->
+</section>
+<section id="data-driven-programs" class="slide level2">
+<h2>Data-Driven Programs</h2>
+<ul>
+<li>In most programming languages, data structures are easier to manipulate than the code itself</li>
+<li>Often useful then to push as much of the program behavior as possible into data structures rather than methods and functions
+<ul>
+<li>Programs working in this fashion are said to be <em>data driven</em></li>
+</ul></li>
+<li>In a data-driven model, the actual program (commonly called the <em>driver</em>) is generally very small and simple simple managing:
+<ul>
+<li>Reading in data from a file into a suitable internal structure</li>
+<li>Using the data structure to control the flow of the program</li>
+</ul></li>
+</ul>
+</section>
+<section id="the-teaching-machine" class="slide level2">
+<h2>The Teaching Machine</h2>
+<ul>
+<li>Suppose you wanted to write a program that would give an “intelligent” quiz
+<ul>
+<li>Correct answers would move the client on to other, more difficult questions</li>
+<li>Incorrect answers might give some explanation and then ask some follow up questions</li>
+</ul></li>
+<li>Having the questions and answers in some sort of data structure would make sense</li>
+<li>The teacher would generally be who comes up with the questions and progression though, and most teachers are not experts at writing code
+<ul>
+<li>Need a format that is largely not code based where teachers could construct the questions and progression</li>
+<li>Need to translate that format into more common data structures that the computer can then understand and act on</li>
+</ul></li>
+</ul>
+</section>
+<section id="the-course-data-file" class="slide level2">
+<h2>The Course Data File</h2>
+<ul>
+<li>One common method of achieving this is to have configuration or data files</li>
+<li>The general format of a file is shown to the left, and an example question to the right</li>
+</ul>
+<div class="cols">
+<div class="col">
+<div class="pseudotext">
+<pre>
+Identifying name for first question
+Text of first question
+------
+responseA: name of next question
+responseB: name of next question
+responseC: name of next question
+responseD: name of next question
+
+...more questions/answers...
+</pre>
+</div>
+</div>
+<div class="col">
+<div class="text">
+<pre>
+RemQ1
+What is the value of 17 % 4?
+    a. 0
+    b. 1
+    c. 3
+    d. 4
+------
+a: RemQ2
+b: PrecQ1
+c: RemQ2
+d: RemQ2
+</pre>
+</div>
+</div>
+</div>
+</section>
+<section id="an-internal-representation" class="slide level2">
+<h2>An Internal Representation</h2>
+<p><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="495.32474mm"
+   height="252.65973mm"
+   viewBox="0 0 495.32473 252.65973"
+   version="1.1"
+   id="svg839"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
+   sodipodi:docname="TeachingMachine.svg">
+  <defs
+     id="defs833">
+    <marker
+       style="overflow:visible"
+       id="marker2383"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         style="fill:#ae81ff;fill-opacity:1;fill-rule:evenodd;stroke:#ae81ff;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path2381" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker2301"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="DotM"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(0.4,0,0,0.4,2.96,0.4)"
+         style="fill:#ae81ff;fill-opacity:1;fill-rule:evenodd;stroke:#ae81ff;stroke-width:1pt;stroke-opacity:1"
+         d="m -2.5,-1 c 0,2.76 -2.24,5 -5,5 -2.76,0 -5,-2.24 -5,-5 0,-2.76 2.24,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         id="path2299" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker2223"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         style="fill:#ae81ff;fill-opacity:1;fill-rule:evenodd;stroke:#ae81ff;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path2221" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker2153"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="DotM"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(0.4,0,0,0.4,2.96,0.4)"
+         style="fill:#ae81ff;fill-opacity:1;fill-rule:evenodd;stroke:#ae81ff;stroke-width:1pt;stroke-opacity:1"
+         d="m -2.5,-1 c 0,2.76 -2.24,5 -5,5 -2.76,0 -5,-2.24 -5,-5 0,-2.76 2.24,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         id="path2151" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker1475"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         style="fill:#ae81ff;fill-opacity:1;fill-rule:evenodd;stroke:#ae81ff;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1473" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker1417"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="DotM"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(0.4,0,0,0.4,2.96,0.4)"
+         style="fill:#ae81ff;fill-opacity:1;fill-rule:evenodd;stroke:#ae81ff;stroke-width:1pt;stroke-opacity:1"
+         d="m -2.5,-1 c 0,2.76 -2.24,5 -5,5 -2.76,0 -5,-2.24 -5,-5 0,-2.76 2.24,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         id="path1415" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker1309"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="DotM"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(0.4,0,0,0.4,2.96,0.4)"
+         style="fill:#ae81ff;fill-opacity:1;fill-rule:evenodd;stroke:#ae81ff;stroke-width:1pt;stroke-opacity:1"
+         d="m -2.5,-1 c 0,2.76 -2.24,5 -5,5 -2.76,0 -5,-2.24 -5,-5 0,-2.76 2.24,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         id="path1307" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker1269"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         style="fill:#ae81ff;fill-opacity:1;fill-rule:evenodd;stroke:#ae81ff;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1267" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="DotM"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="DotM"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(0.4,0,0,0.4,2.96,0.4)"
+         style="fill:#ae81ff;fill-opacity:1;fill-rule:evenodd;stroke:#ae81ff;stroke-width:1pt;stroke-opacity:1"
+         d="m -2.5,-1 c 0,2.76 -2.24,5 -5,5 -2.76,0 -5,-2.24 -5,-5 0,-2.76 2.24,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         id="path995" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="DotL"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="DotL"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(0.8,0,0,0.8,5.92,0.8)"
+         style="fill:#b877db;fill-opacity:1;fill-rule:evenodd;stroke:#b877db;stroke-width:1pt;stroke-opacity:1"
+         d="m -2.5,-1 c 0,2.76 -2.24,5 -5,5 -2.76,0 -5,-2.24 -5,-5 0,-2.76 2.24,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         id="path992" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Mend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         style="fill:#ae81ff;fill-opacity:1;fill-rule:evenodd;stroke:#ae81ff;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path940" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#3d3d3d"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="1381.0537"
+     inkscape:cy="-144.98949"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="2528"
+     inkscape:window-height="1381"
+     inkscape:window-x="1096"
+     inkscape:window-y="43"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata836">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-238.91306,-50.878314)">
+    <g
+       id="step1"
+       class="fragment"
+       transform="matrix(0.46836499,0,0,0.46692324,128.09234,27.560703)"
+       style="stroke-width:2.13838">
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect841"
+         width="99.210564"
+         height="34.371853"
+         x="242.45499"
+         y="79.446747"
+         ry="7.7560673" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.1023px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#66d9ef;fill-opacity:1;stroke:none;stroke-width:0.565782;"
+         x="237.92981"
+         y="72.408722"
+         id="text845"><tspan
+           sodipodi:role="line"
+           id="tspan843"
+           x="237.92981"
+           y="72.408722"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.1023px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#66d9ef;stroke-width:0.565782;">course</tspan></text>
+    </g>
+    <g
+       id="step2"
+       class="fragment"
+       transform="matrix(0.46836499,0,0,0.46692324,128.09234,27.560703)"
+       style="stroke-width:2.13838">
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:6.41514252;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect847"
+         width="235.6095"
+         height="93.940254"
+         x="403.255"
+         y="80.723518"
+         ry="2.9480522" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect849"
+         width="198.21927"
+         height="34.371853"
+         x="423.46606"
+         y="117.38282"
+         ry="7.7560673" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.1023px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#66d9ef;fill-opacity:1;stroke:none;stroke-width:0.565782;"
+         x="419.29355"
+         y="108.60177"
+         id="text853"><tspan
+           sodipodi:role="line"
+           id="tspan851"
+           x="419.29355"
+           y="108.60177"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.1023px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#66d9ef;stroke-width:0.565782;">questions</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:26.3376px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.565782;"
+         x="450.6214"
+         y="71.555321"
+         id="text857"><tspan
+           sodipodi:role="line"
+           id="tspan855"
+           x="450.6214"
+           y="71.555321"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:26.3376px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.565782;">TMCourse</tspan></text>
+      <path
+         style="fill:none;stroke:#ae81ff;stroke-width:3.20757;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#DotM);marker-end:url(#Arrow1Mend)"
+         d="M 288.19321,97.491234 H 394.09843"
+         id="path929" />
+    </g>
+    <g
+       id="step3"
+       class="fragment"
+       transform="matrix(0.46836499,0,0,0.46692324,128.09234,27.560703)"
+       style="stroke-width:2.13838">
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect883"
+         width="235.6095"
+         height="173.25279"
+         x="403.255"
+         y="411.95917"
+         ry="5.4370542" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect885"
+         width="198.21927"
+         height="34.371853"
+         x="423.46606"
+         y="430.00885"
+         ry="7.7560673" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect887"
+         width="198.21927"
+         height="34.371853"
+         x="423.46606"
+         y="464.38071"
+         ry="7.7560673" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect889"
+         width="198.21927"
+         height="34.371853"
+         x="423.46606"
+         y="498.75256"
+         ry="7.7560673" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect891"
+         width="198.21927"
+         height="34.371853"
+         x="423.46606"
+         y="533.12445"
+         ry="7.7560673" />
+      <path
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 520.8779,430.39169 V 567.52451"
+         id="path893" />
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.8546px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#f92672;fill-opacity:1;stroke:none;stroke-width:0.565779;"
+         x="459.57397"
+         y="395.67572"
+         id="text897"><tspan
+           sodipodi:role="line"
+           id="tspan895"
+           x="459.57397"
+           y="395.67572"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.8546px;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f92672;stroke-width:0.565779;">name : question</tspan></text>
+      <path
+         style="fill:none;stroke:#ae81ff;stroke-width:3.20757;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker1309);marker-end:url(#marker1269)"
+         d="m 524.43533,136.83736 v 185.47467 h -178.4345 v 124.91066 h 50.24028"
+         id="path1265"
+         sodipodi:nodetypes="ccccc" />
+    </g>
+    <g
+       id="step4"
+       class="fragment"
+       transform="matrix(0.46836499,0,0,0.46692324,128.09234,27.560703)"
+       style="stroke-width:2.13838">
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect859"
+         width="235.6095"
+         height="234.36769"
+         x="750.78754"
+         y="80.723518"
+         ry="7.3549743" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:27.1806px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.565779;"
+         x="792.30573"
+         y="71.48819"
+         id="text863"><tspan
+           sodipodi:role="line"
+           id="tspan861"
+           x="792.30573"
+           y="71.48819"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:27.1806px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.565779;">TMQuestion</tspan></text>
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect865"
+         width="198.21927"
+         height="34.371853"
+         x="769.3313"
+         y="117.38282"
+         ry="7.7560673" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.1023px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#66d9ef;fill-opacity:1;stroke:none;stroke-width:0.565782;"
+         x="765.15875"
+         y="108.60177"
+         id="text869"><tspan
+           sodipodi:role="line"
+           id="tspan867"
+           x="765.15875"
+           y="108.60177"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.1023px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#66d9ef;stroke-width:0.565782;">name</tspan></text>
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect871"
+         width="198.21927"
+         height="34.371853"
+         x="769.3313"
+         y="186.29816"
+         ry="7.7560673" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.1023px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#66d9ef;fill-opacity:1;stroke:none;stroke-width:0.565782;"
+         x="765.15875"
+         y="177.51711"
+         id="text875"><tspan
+           sodipodi:role="line"
+           id="tspan873"
+           x="765.15875"
+           y="177.51711"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.1023px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#66d9ef;stroke-width:0.565782;">text</tspan></text>
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect877"
+         width="198.21927"
+         height="34.371853"
+         x="769.3313"
+         y="258.15186"
+         ry="7.7560673" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.1023px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#66d9ef;fill-opacity:1;stroke:none;stroke-width:0.565782;"
+         x="765.15875"
+         y="249.37082"
+         id="text881"><tspan
+           sodipodi:role="line"
+           id="tspan879"
+           x="765.15875"
+           y="249.37082"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.1023px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#66d9ef;stroke-width:0.565782;">answers</tspan></text>
+      <path
+         style="fill:none;stroke:#ae81ff;stroke-width:3.20757117;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:16.79999924;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker1417);marker-end:url(#marker1475)"
+         d="M 571.46771,448.66372 H 680.70958 V 104.46793 h 60.19252"
+         id="path1413"
+         sodipodi:nodetypes="cccc" />
+    </g>
+    <g
+       id="step5"
+       class="fragment"
+       transform="matrix(0.46836499,0,0,0.46692324,128.09234,27.560703)"
+       style="stroke-width:2.13838">
+      <rect
+         style="fill:none;stroke:#fd971f;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect915"
+         width="235.6095"
+         height="173.25279"
+         x="1052.7207"
+         y="97.249626"
+         ry="5.4370542" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect917"
+         width="198.21927"
+         height="34.371853"
+         x="1070.4055"
+         y="117.38282"
+         ry="7.7560673" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect919"
+         width="198.21927"
+         height="34.371853"
+         x="1070.4055"
+         y="151.75467"
+         ry="7.7560673" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect921"
+         width="198.21927"
+         height="34.371853"
+         x="1070.4055"
+         y="186.12653"
+         ry="7.7560673" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect923"
+         width="198.21927"
+         height="34.371853"
+         x="1070.4055"
+         y="220.49838"
+         ry="7.7560673" />
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.8546px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#fd971f;fill-opacity:1;stroke:none;stroke-width:0.565779;"
+         x="1105.98"
+         y="78.802345"
+         id="text927"><tspan
+           sodipodi:role="line"
+           id="tspan925"
+           x="1105.98"
+           y="78.802345"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.8546px;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#fd971f;stroke-width:0.565779;">array of strings</tspan></text>
+      <path
+         style="fill:none;stroke:#ae81ff;stroke-width:3.20757;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker2301);marker-end:url(#marker2383)"
+         d="M 870.00341,204.5466 H 1015.808 v -84.23682 l 30.8209,0"
+         id="path2297"
+         sodipodi:nodetypes="cccc" />
+    </g>
+    <g
+       id="step6"
+       class="fragment"
+       transform="matrix(0.46836499,0,0,0.46692324,128.09234,27.560703)"
+       style="stroke-width:2.13838">
+      <rect
+         style="fill:none;stroke:#f92672;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect899"
+         width="235.6095"
+         height="173.25279"
+         x="749.82654"
+         y="411.95917"
+         ry="5.4370542" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect901"
+         width="198.21927"
+         height="34.371853"
+         x="770.0376"
+         y="430.00885"
+         ry="7.7560673" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect903"
+         width="198.21927"
+         height="34.371853"
+         x="770.0376"
+         y="464.38071"
+         ry="7.7560673" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect905"
+         width="198.21927"
+         height="34.371853"
+         x="770.0376"
+         y="498.75256"
+         ry="7.7560673" />
+      <rect
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect907"
+         width="198.21927"
+         height="34.371853"
+         x="770.0376"
+         y="533.12445"
+         ry="7.7560673" />
+      <path
+         style="fill:none;stroke:#66d9ef;stroke-width:6.41514235;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 867.44944,430.39169 V 567.52451"
+         id="path909" />
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.8546px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#f92672;fill-opacity:1;stroke:none;stroke-width:0.565779;"
+         x="806.14551"
+         y="395.67572"
+         id="text913"><tspan
+           sodipodi:role="line"
+           id="tspan911"
+           x="806.14551"
+           y="395.67572"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.8546px;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f92672;stroke-width:0.565779;">string : name</tspan></text>
+      <path
+         style="fill:none;stroke:#ae81ff;stroke-width:3.20757;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker2153);marker-end:url(#marker2223)"
+         d="m 872.56657,275.94483 v 82.54328 l -157.78835,0 v 86.66083 h 26.19644"
+         id="path2149"
+         sodipodi:nodetypes="ccccc" />
+    </g>
+  </g>
+</svg>
+</p>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

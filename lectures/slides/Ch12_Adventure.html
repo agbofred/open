@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-11-29">
+  <title>Adventure</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Adventure</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">November 29, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>If you are not caught up on the Projects, please send me an email so we can find a time to meet in the next 3 days to see what, if anything, can be done.</li>
+<li>Project 5 guidelines going out today
+<ul>
+<li>Can work on it with a partner if you want, but not required</li>
+<li>Email me if you’d like a partner but don’t currently have one and I’ll try to connect people</li>
+<li>Due the last Friday of classes (approx 2 weeks)</li>
+</ul></li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2" data-notes="Solution: {[&#39;A&#39;, &#39;B&#39;]: {1, 2}}">
+<h2 data-notes="Solution: {[&#39;A&#39;, &#39;B&#39;]: {1, 2}}">Review Question</h2>
+<p>Three of the below expressions are valid; one is not. Which one would return an error?</p>
+<div class="poll">
+<ol>
+<li><code class="python">{'A': {'B': (1,2)}, 'C': 3}</code></li>
+<li><code class="python">{1, 2, (3,4), 5 }</code></li>
+<li><code class="python">[{'Alpha': 1, 'Omega': 26}, {2, 3, 4, 5}]</code></li>
+<li><code class="python">{['A', 'B']: {1, 2}}</code></li>
+</ol>
+</div>
+<!--
+## Review Question
+::::::cols
+::::col
+The data file to the right is read in and run using the TeachingMachine. What question do you end up at if you choose B 4 times in a row?
+
+:::{.poll}
+#. Q1
+#. Q2
+#. Q3
+#. None of the above
+:::
+
+::::
+
+::::col
+
+:::{.text}
+<pre style='font-size:0.5em;'>
+Q1
+What is the square root of 36?
+    A) 0
+    B) 6
+    C) 10
+-----
+A: Q2
+B: Q3
+C: Q1
+
+Q2
+Are you happy?
+    A) Yes
+    B) No
+    C) What kind of question is this?
+-----
+B: Q1
+*: Q3
+
+Q3
+What is your age?
+    A) Young
+    B) Prime of my life
+    C) Old
+-----
+A: Q1
+*: Q2
+</pre>
+:::
+
+
+::::
+::::::
+-->
+</section>
+<section id="beginning-the-adventure" class="slide level2">
+<h2>Beginning the Adventure</h2>
+<ul>
+<li>One of the first computer games I ever played was Riven: The Sequel to Myst</li>
+</ul>
+<div class="cols">
+<div class="col">
+<p><img data-src="../images/Riven_cover.jpg" style="width:75.0%" /></p>
+</div>
+<div class="col">
+<video width="100%" controls src="../video/RivenOpening.webm">
+</video>
+</div>
+</div>
+</section>
+<section id="teaching-the-adventure" class="slide level2">
+<h2>Teaching the Adventure</h2>
+<ul>
+<li>The TeachingMachine program can process and run <em>any</em> data file that has the correct format
+<ul>
+<li>Does not need to technically be a series of educational questions</li>
+<li>This is part of the strength of the data driven model: data is easy to change, programs less so</li>
+</ul></li>
+<li>Could make a sort of “Choose your own adventure” game out of it!</li>
+</ul>
+</section>
+<section id="life-among-wizards" class="slide level2">
+<h2>Life among Wizards</h2>
+<ul>
+<li>The history of the early internet has been told in several books. One relates the following story:</li>
+</ul>
+<div class="cols">
+<div class="col">
+<figure class="r-stack">
+<img class="fragment fade-out visible" style="width:80.0%" alt="&nbsp;" data-fragment-index="0" src="../images/wizardsuplate.png" data-lazy-loaded=""></img> <img class="fragment fade-in visible" style="width:80.0%" alt="&nbsp;" data-fragment-index="0" src="../images/mirkwoodtales.png" data-lazy-loaded=""></img>
+</figure>
+</div>
+<div class="col" style="font-size:.7em; flex-grow:2">
+<blockquote>
+<p>A small circle of friends at BBN had gotten hooked on Dungeons and Dragons, an elaborate fantasy role-playing game in which one player invents a setting and populates it with monsters and puzzles, and the other players then make their way through that setting. The game exists only in the minds of the players.</p>
+<p>Dave Walden got his introduction to the game one night when Eric Roberts, a student from a class he was teaching at Harvard, took him to a D&amp;D session. Walden immediately rounded up a group of friends from the ARPANET team for continued sessions. Roberts created the Mirkwood Tales.</p>
+<p>One of the regulars was Will Crowther.</p>
+</blockquote>
+</div>
+</div>
+</section>
+<section id="the-team" class="slide level2">
+<h2>The Team</h2>
+<img data-src="../images/arpanetteam.png" title="fig:" class="stretch" alt="ARPANET D&amp;D Team" />
+</section>
+<section id="willie-crowthers-adventure-game" class="slide level2">
+<h2>Willie Crowther’s Adventure Game</h2>
+<video class="stretch" data-autoplay loop src="../video/Adventure_Intro.webm">
+</video>
+<!--## The Age of the Slow Machine-->
+<!--<video class='stretch' data-autoplay loop src="../video/Adventure_SlowMachine.webm"></video>-->
+</section>
+<section id="a-brief-history-of-adventure" class="slide level2">
+<h2>A Brief History of Adventure</h2>
+<ul>
+<li>Eric Roberts begins the Mirkwood Tales in early 1975</li>
+<li>Will Crowther creates Adventure later that year</li>
+<li>Will moves to Xerox/PARC in 1976</li>
+<li>Stanford graduate student Don Woods released an expanded version of Adventure in early 1977</li>
+<li>Dave Lebling and others from MIT release the first version of Zork in 1977
+<ul>
+<li>Game later becomes the foundation of the computer game company Infocom</li>
+</ul></li>
+<li>Adventure is ported to wide variety of platforms by 1980</li>
+<li>Eric Roberts creates an expanded version in 1984 and uses it as the basis for his first Adventure Project/Contest at Wellesley</li>
+</ul>
+</section>
+<section id="adventure-classes" class="slide level2">
+<h2>Adventure Classes</h2>
+<p><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="371.35715mm"
+   height="175.46977mm"
+   viewBox="0 0 371.35715 175.46977"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
+   sodipodi:docname="AdventureClasses.svg">
+  <defs
+     id="defs2">
+    <rect
+       x="414.5123"
+       y="202.74365"
+       width="84.620224"
+       height="30.187504"
+       id="rect859" />
+    <rect
+       x="326.483"
+       y="81.498177"
+       width="101.90501"
+       height="37.912415"
+       id="rect841" />
+    <rect
+       x="326.483"
+       y="81.498177"
+       width="101.90501"
+       height="37.912415"
+       id="rect855" />
+    <rect
+       x="326.483"
+       y="81.498177"
+       width="101.90501"
+       height="37.912415"
+       id="rect873" />
+    <rect
+       x="326.483"
+       y="81.498177"
+       width="101.90501"
+       height="37.912415"
+       id="rect885" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#474747"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="809.5044"
+     inkscape:cy="335.58264"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="2528"
+     inkscape:window-height="1381"
+     inkscape:window-x="1096"
+     inkscape:window-y="43"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-189.0686,-37.694654)">
+    <rect
+       style="fill:none;stroke:#66d9ef;stroke-width:2.565;stroke-linecap:round;stroke-linejoin:round"
+       id="rect833"
+       width="108.55933"
+       height="70.969917"
+       x="319.82867"
+       y="38.977154"
+       ry="5.979588" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.6px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#66d9ef;fill-opacity:1;stroke:none;stroke-width:0.264583;"
+       x="334.10443"
+       y="56.216038"
+       id="text837"><tspan
+         sodipodi:role="line"
+         id="tspan835"
+         x="334.10443"
+         y="56.216038"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.6px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#66d9ef;stroke-width:0.264583;">Adventure</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text839"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect841);fill:#ececec;fill-opacity:1;stroke:none;"
+       transform="translate(0.32302501,-12.668085)"><tspan
+         x="326.48242"
+         y="90.237567"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">The main program, </tspan></tspan><tspan
+         x="326.48242"
+         y="102.5848"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">which gets the </tspan></tspan><tspan
+         x="326.48242"
+         y="114.93203"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">program started.</tspan></tspan></text>
+    <rect
+       style="fill:none;stroke:#a6e22e;stroke-width:2.565;stroke-linecap:round;stroke-linejoin:round"
+       id="rect845"
+       width="108.55933"
+       height="70.969917"
+       x="319.82867"
+       y="140.912"
+       ry="5.979588" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.6px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.264583;"
+       x="342.94302"
+       y="158.15089"
+       id="text849"><tspan
+         sodipodi:role="line"
+         id="tspan847"
+         x="342.94302"
+         y="158.15089"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.6px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.264583;">AdvRoom</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text853"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect855);fill:#ececec;fill-opacity:1;stroke:none;"
+       transform="translate(1.1598406,89.266769)"><tspan
+         x="326.48242"
+         y="90.237567"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">Maintains the data </tspan></tspan><tspan
+         x="326.48242"
+         y="102.5848"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">structure for each </tspan></tspan><tspan
+         x="326.48242"
+         y="114.93203"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">room in the cave.</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       id="text857"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect859);fill:#000000;fill-opacity:1;stroke:none;" />
+    <rect
+       style="fill:none;stroke:#a6e22e;stroke-width:2.565;stroke-linecap:round;stroke-linejoin:round"
+       id="rect863"
+       width="108.55933"
+       height="70.969917"
+       x="190.3511"
+       y="140.912"
+       ry="5.979588" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.6px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.264583;"
+       x="213.61145"
+       y="158.15089"
+       id="text867"><tspan
+         sodipodi:role="line"
+         id="tspan865"
+         x="213.61145"
+         y="158.15089"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.6px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.264583;">AdvGame</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text871"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect873);fill:#ececec;fill-opacity:1;stroke:none;"
+       transform="translate(-130.58943,89.266769)"><tspan
+         x="326.48242"
+         y="90.237567"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">Contains the code </tspan></tspan><tspan
+         x="326.48242"
+         y="102.5848"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">and data necessary </tspan></tspan><tspan
+         x="326.48242"
+         y="114.93203"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">to play the game.</tspan></tspan></text>
+    <rect
+       style="fill:none;stroke:#a6e22e;stroke-width:2.565;stroke-linecap:round;stroke-linejoin:round"
+       id="rect875"
+       width="108.55933"
+       height="70.969917"
+       x="450.58392"
+       y="140.912"
+       ry="5.979588" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.6px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.264583;"
+       x="464.9046"
+       y="158.15089"
+       id="text879"><tspan
+         sodipodi:role="line"
+         id="tspan877"
+         x="464.9046"
+         y="158.15089"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.6px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.264583;">AdvObject</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text883"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect885);fill:#ececec;fill-opacity:1;stroke:none;"
+       transform="translate(130.52844,89.266769)"><tspan
+         x="326.48242"
+         y="90.237567"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">Maintains the data </tspan></tspan><tspan
+         x="326.48242"
+         y="102.5848"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">structure for each </tspan></tspan><tspan
+         x="326.48242"
+         y="114.93203"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;fill-opacity:1">object in the game.</tspan></tspan></text>
+  </g>
+</svg>
+</p>
+</section>
+<section id="milestone-1" class="slide level2">
+<h2>Milestone 1</h2>
+<ul>
+<li>Adapt the code from the Teaching Machine application so that it uses the class and method names for Adventure</li>
+<li>Once you finish this milestone, you should be able to wander around a bit in the game</li>
+</ul>
+<video width="70%" data-autoplay loop src="../video/Adventure_M1.webm">
+</video>
+</section>
+<section id="the-smallrooms.txt-data-file" class="slide level2">
+<h2>The <code class="python">SmallRooms.txt</code> Data File</h2>
+<div class="text">
+<pre>
+OutsideBuilding
+Outside building
+You are standing at the end of a road before a small brick
+building.  A small stream flows out of the building and
+down a gully to the south.  A road runs up a small hill
+to the west.
+-----
+WEST: EndOfRoad
+UP: EndOfRoad
+NORTH: InsideBuilding
+IN: InsideBuilding
+SOUTH: Valley
+DOWN: Valley
+
+EndOfRoad
+End of road
+You are at the end of a road at the top of a small hill.
+You can see a small building in the valley to the east.
+-----
+EAST: OutsideBuilding
+DOWN: OutsideBuilding
+</pre>
+</div>
+</section>
+<section id="milestone-2" class="slide level2">
+<h2>Milestone 2</h2>
+<ul>
+<li>Implement <code class="python">set_visited</code> and <code class="python">has_been_visited</code> to keep track of which rooms have been visited.</li>
+<li>Check this flag in the code that describes a room to know which description to show</li>
+</ul>
+<video width="70%" data-autoplay loop src="../video/Adventure_M2.webm">
+</video>
+</section>
+<section id="milestone-3" class="slide level2">
+<h2>Milestone 3</h2>
+<ul>
+<li>Implement the <code class="python">QUIT</code>, <code class="python">HELP</code>, and <code class="python">LOOK</code> commands</li>
+<li>Adds extra commands that let the player do more than just move</li>
+</ul>
+<p><br> <video width='70%' data-autoplay loop src="../video/Adventure_M3.webm"></video></p>
+</section>
+<section id="milestone-4" class="slide level2">
+<h2>Milestone 4</h2>
+<ul>
+<li>Implement the <code class="python">AdvObject</code> class</li>
+<li>Implement the methods in the <code class="python">AdvRoom</code> class that make it possible to keep track of the objects in a room</li>
+<li>In the <code class="python">AdvGame</code> class, write the code to put each object in its initial room (ignoring the <code class="python">"PLAYER"</code> room for now)</li>
+<li>Change the code for displaying a room so that it displays a list of the objects in the room as well</li>
+</ul>
+<p><br> <video width='70%' data-autoplay loop src="../video/Adventure_M4.webm"></video></p>
+</section>
+<section id="the-smallobjects-data-file" class="slide level2">
+<h2>The <code class="python">SmallObjects</code> data file</h2>
+<div class="text">
+<pre>
+KEYS
+a set of keys
+InsideBuilding
+
+LAMP
+a brightly shining brass lamp
+BeneathGrate
+
+ROD
+a black rod with a rusty star
+DebrisRoom
+
+WATER
+a bottle of water
+PLAYER
+</pre>
+</div>
+</section>
+<section id="milestone-5" class="slide level2">
+<h2>Milestone 5</h2>
+<ul>
+<li>Implement the <code class="python">TAKE</code>, <code class="python">DROP</code>, and <code class="python">INVENTORY</code> commands and any code you need to remember what the player is carrying</li>
+</ul>
+<p><br> <video width='70%' data-autoplay loop src="../video/Adventure_M5.webm"></video></p>
+</section>
+<section id="milestone-6" class="slide level2">
+<h2>Milestone 6</h2>
+<ul>
+<li>Implement synonym processing so that the player can use abbreviated forms of the directions and alternative names for the objects</li>
+</ul>
+<p><br> <video width='70%' data-autoplay loop src="../video/Adventure_M6.webm"></video></p>
+</section>
+<section id="the-smallsynonyms.txt-data-file" class="slide level2">
+<h2>The <code class="python">SmallSynonyms.txt</code> data file</h2>
+<div class="text">
+<pre>
+N=NORTH
+S=SOUTH
+E=EAST
+W=WEST
+U=UP
+D=DOWN
+Q=QUIT
+L=LOOK
+I=INVENTORY
+CATCH=TAKE
+RELEASE=DROP
+BOTTLE=WATER
+</pre>
+</div>
+</section>
+<section id="milestone-7" class="slide level2">
+<h2>Milestone 7</h2>
+<ul>
+<li>Implement <em>locked passages</em>, which are passages that require a particular object to use</li>
+<li>Making this change requires moving <code class="python">get_next_room</code> from <code class="python">AdvRoom</code> to <code class="python">AdvGame</code> so that it can see the objects</li>
+</ul>
+<p><br> <video width='70%' data-autoplay loop src="../video/Adventure_M7.webm"></video></p>
+</section>
+<section id="the-smallrooms.txt-data-file-1" class="slide level2">
+<h2>The <code class="python">SmallRooms.txt</code> data file</h2>
+<div class="text">
+<pre>
+OutsideGrate
+Outside grate
+You are in a 20-foot depression floored with bare dirt.
+Set into the dirt is a strong steel grate mounted in
+concrete.  A dry streambed leads into the depression from
+the north.
+-----
+NORTH: SlitInRock
+UP: SlitInRock
+DOWN: BeneathGrate/KEYS
+DOWN: MissingKeys
+
+MissingKeys
+-
+The grate is locked and you don't have any keys.
+-----
+FORCED: OutsideGrate
+</pre>
+</div>
+</section>
+<section id="milestone-8" class="slide level2">
+<h2>Milestone 8</h2>
+<ul>
+<li>Implement <em>forced motion</em>, in which the player is forced to immediately move from a room to a new room without issuing a command
+<ul>
+<li>Indicated by the verb <code class="python">FORCED</code></li>
+</ul></li>
+<li>Implementation of forced motion needs to allow some forced passages to still be locked</li>
+</ul>
+<p><br> <video width='70%' data-autoplay loop src="../video/Adventure_M8.webm"></video></p>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Loop the presentation
+        loop: false,
+        // Change the presentation direction to be RTL
+        rtl: false,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-11-12">
+  <title>#Hashes</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">#Hashes</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">November 12, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Keep making progress on Project 4!</li>
+<li>Lab today is about dictionaries</li>
+<li>I think we will <strong>not</strong> have a lab next Friday, but rather I’ll just keep things open for last minute Enigma questions</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2" data-notes="Solution: [100,167,173,204]">
+<h2 data-notes="Solution: [100,167,173,204]">Review Question</h2>
+<p>What is the printed value of the below code?</p>
+<pre ><code class="python">A = [
+    {'name': 'Jill',  'weight':125, 'height':62},
+    {'name': 'Sam',   'weight':156, 'height':68},
+    {'name': 'Bobby', 'weight':173, 'height':72},
+]
+A.append({'weight':204, 'height':70, 'name':'Jim'})
+B= A[1]
+B['weight'] = 167
+A[0].clear()
+print([d.get('weight',100) for d in A])</code></pre>
+<div class="cols">
+<div class="col poll">
+<ol>
+<li>
+<code class="python">[100,156,173,204]</code>
+</li>
+<li>
+<code class="python">[156,173,204]</code>
+</li>
+</ol>
+</div>
+<div class="col poll">
+<ol style="counter-reset: li 2">
+<li>
+<code class="python">[100,167,173,204]</code>
+</li>
+<li>
+<code class="python">[125,167,173,204]</code>
+</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="hash-codes-not-browns" class="slide level2">
+<h2>Hash Codes, not Browns</h2>
+<ul>
+<li>Python has a built-in function called <code class="python">hash</code> that takes an object and returns an integer, which is called the <em>hash code</em> for that object</li>
+<li>Hash codes must follow a set of guidelines (or a code of conduct):
+<ol>
+<li>The hash code must be relatively easy to compute</li>
+<li>The hash code for a particular object must always be the same for a given Python session</li>
+<li>If two objects are identical, they must have the same hash code</li>
+<li>The hash codes must be distributed as randomly/evenly as possible over the space of possible keys</li>
+</ol></li>
+<li>Maps using the hashing algorithm use the hash code for a key as a starting point to help find the associated value.</li>
+</ul>
+</section>
+<section id="bucket-hashing" class="slide level2">
+<h2>Bucket Hashing</h2>
+<ul>
+<li>One common strategy is to choose a certain number of <em>buckets</em> to make up an array, where each object’s hash will place it into a particular bucket
+<ul>
+<li>Would mean that, having checked a key’s hash, you’d know which bucket to look in!</li>
+</ul></li>
+<li>In practice, the number of buckets is smaller than the number of hash codes, so you need a way to decide on what hash code corresponds to which bucket.
+<ul>
+<li>Typically done with a remainder operation along the lines of</li>
+</ul>
+<pre ><code class="python">bucket = abs(hash(key)) % num_buckets</code></pre></li>
+<li>Some buckets will still end up with multiple key-value pairs. These are called <em>collisions</em> and lower the efficiency of the algorithm.</li>
+<li>Since hash codes are spread around equally, each bucket in theory would end up with similar numbers of key-value pairs</li>
+</ul>
+</section>
+<section id="bucket-hashing-examples" class="slide level2">
+<h2>Bucket Hashing Examples</h2>
+<pre ><code class="python" style="max-height:900px; font-size:0.8em;">class Dictionary:
+    NBUCKETS = 5
+
+    def __init__(self):
+        self.buckets = [ [] for _ in range(Dictionary.NBUCKETS)]
+
+    def get(self, key):
+        H = hash(key)
+        bucket_id = abs(H) % Dictionary.NBUCKETS
+        for pair in self.buckets[bucket_id]:
+            if pair[0] == key:
+                return pair[1]
+        return None
+
+    def put(self, key, value):
+        H = hash(key)
+        bucket_id = abs(H) % Dictionary.NBUCKETS
+        bucket = self.buckets[bucket_id]
+        for i in range(len(bucket)):
+            if bucket[i][0] == key:
+                bucket[i] = (key, value)
+                return
+        bucket.append((key,value))
+
+    def __repr__(self):
+        return repr(self.buckets)</code></pre>
+</section>
+<section id="ultimate-efficiency" class="slide level2">
+<h2>Ultimate Efficiency</h2>
+<ul>
+<li>The smaller the number of buckets, the more likely collisions are</li>
+<li>Want to minimize collisions so generally choose a large number of buckets
+<ul>
+<li>Too many buckets though, and you are just wasting memory with empty lists</li>
+</ul></li>
+<li>Ratio of number of keys over the number of buckets is called the <em>load factor</em> of a map
+<ul>
+<li>Generally need a load factor of around 0.7 or lower to get no collisions on average</li>
+</ul></li>
+<li>If the dictionary grows such that it needs more buckets, the buckets can be redone, in a process called <em>rehashing</em></li>
+</ul>
+</section>
+<section id="abstract-data-types" class="slide level2">
+<h2>Abstract Data Types</h2>
+<ul>
+<li>Have looked at compound objects like lists, tuples, dictionaries, and classes individually, but want to start to see how they could be brought together to represent larger data structures</li>
+<li>Types that are defined by their behavior are called <em>abstract data types</em> or <em>ADT</em> s which have the following advantages
+<ul>
+<li>Simplicity. The internal representation is hidden from the client</li>
+<li>Flexibility. If the internal representation needs to be changed by the programmer, they can do so without breaking outside compatibility</li>
+<li>Security. Keeping the internal representation away from clients prevents clients from directly altering values that may cause the type to behave unexpectedly</li>
+</ul></li>
+<li>Want to start to focus on how we can bring all these ideas together to define our own abstract types</li>
+</ul>
+</section>
+<section id="token-adt" class="slide level2">
+<h2>Token ADT</h2>
+<ul>
+<li>I find it helps to think of ADT’s as a type which helps to fulfill a particular objective or behavioral goal</li>
+<li>Cast your mind back to our Pig Latin translation program, which had two main pieces
+<ul>
+<li><code class="python">to_pig_latin</code> which was responsible for taking a phrase and breaking it up into words</li>
+<li><code class="python">word_to_pig_latin</code> which took a single word and translated into Pig Latin</li>
+</ul></li>
+<li>The first is an example of something that comes up often in computer science
+<ul>
+<li>Breaking a larger thing into particular smaller chunks</li>
+<li>Chunks can really be anything, so the more general term computer scientists use is a <em>token</em></li>
+</ul></li>
+</ul>
+</section>
+<section id="a-token-scanner" class="slide level2">
+<h2>A Token Scanner</h2>
+<ul>
+<li>A type that plucked out individual tokens might be called a <em>token scanner</em></li>
+<li>What would a client want from a token scanner?
+<ul>
+<li>A way to pass in the necessary input</li>
+<li>A way to retrieve the next individual token</li>
+<li>A way to know when there are no more tokens</li>
+<li>Maybe a way to tailor what tokens are desired</li>
+</ul></li>
+<li>These requirements help inform what methods should be incorporated into a token scanner class!
+<ul>
+<li>Still need to determine what internal attributes or method might be needed</li>
+</ul></li>
+</ul>
+</section>
+<section id="token-scanner-design" class="slide level2">
+<h2>Token Scanner Design</h2>
+<ul>
+<li>Frequently, specific wants or objectives make for good methods to include in the token scanner</li>
+<li>Chapter 12 includes an example of a common implementation</li>
+<li>Exports 4 main methods:
+<ol>
+<li><code class="python">scanner.set_input(str)</code>
+<ul>
+<li>Sets the input of the token scanner to the specified string or input stream</li>
+</ul></li>
+<li><code class="python">scanner.next_token()</code>
+<ul>
+<li>Returns the next token from the stream, or <code class="python">""</code> at the end</li>
+</ul></li>
+<li><code class="python">scanner.has_more_tokens</code>
+<ul>
+<li>Returns <code class="python">True</code> if more tokens exist, <code class="python">False</code> otherwise</li>
+</ul></li>
+<li><code class="python">scanner.ignore_whitespace()</code>
+<ul>
+<li>Customization option which tells the scanner to ignore whitespace characters</li>
+</ul></li>
+</ol></li>
+</ul>
+</section>
+<section id="token-scanner-code" class="slide level2">
+<h2>Token Scanner Code</h2>
+<pre ><code class="python" style="max-height:900px; font-size:.7em; font-spacing:2em;" data-line-numbers="7-46|54-59|63-69|71-86|88-94|96-100|104-109"># File: tokenscanner.py
+
+"""
+This file implements a simple version of a token scanner class.
+"""
+
+# A token scanner is an abstract data type that divides a string into
+# individual tokens, which are strings of consecutive characters that
+# form logical units.  This simplified version recognizes two token types:
+#
+#   1. A string of consecutive letters and digits
+#   2. A single character string
+#
+# To use this class, you must first create a TokenScanner instance by
+# calling its constructor:
+#
+#     scanner = TokenScanner()
+#
+# The next step is to call the set_input method to specify the string
+# from which tokens are read, as follows:
+#
+#     scanner.set_input(s)
+#
+# Once you have initialized the scanner, you can retrieve the next token
+# by calling
+#
+#    token = scanner.next_token()
+#
+# To determine whether any tokens remain to be read, you can either
+# call the predicate method scanner.has_more_tokens() or check to see
+# whether next_token returns the empty string.
+#
+# The following code fragment serves as a pattern for processing each
+# token in the string stored in the variable source:
+#
+#     scanner = TokenScanner(source)
+#     while scanner.has_more_tokens():
+#         token = scanner.next_token()
+#         . . . code to process the token . . .
+#
+# By default, the TokenScanner class treats whitespace characters
+# as operators and returns them as single-character tokens.  You
+# can set the token scanner to ignore whitespace characters by
+# making the following call:
+#
+#     scanner.ignore_whitespace()
+
+class TokenScanner:
+
+    """This class implements a simple token scanner."""
+
+# Constructor
+
+    def __init__(self, source=""):
+        """
+        Creates a new TokenScanner object that scans the specified string.
+        """
+        self.set_input(source)
+        self._ignore_whitespace_flag = False
+
+# Public methods
+
+    def set_input(self, source):
+        """
+        Resets the input so that it comes from source.
+        """
+        self._source = source
+        self._nch = len(source)
+        self._cp = 0
+
+    def next_token(self):
+        """
+        Returns the next token from this scanner.  If called when no
+        tokens are available, next_token returns the empty string.
+        """
+        if self._ignore_whitespace_flag:
+            self._skip_whitespace()
+        if self._cp == self._nch:
+            return ""
+        token = self._source[self._cp]
+        self._cp += 1
+        if token.isalnum():
+            while self._cp < self._nch and self._source[self._cp].isalnum():
+                token += self._source[self._cp]
+                self._cp += 1
+        return token
+
+    def has_more_tokens(self):
+        """
+        Returns True if there are more tokens for this scanner to read.
+        """
+        if self._ignore_whitespace_flag:
+            self._skip_whitespace()
+        return self._cp < self._nch
+
+    def ignore_whitespace(self):
+        """
+        Tells the scanner to ignore whitespace characters.
+        """
+        self._ignore_whitespace_flag = True
+
+# Private methods
+
+    def _skip_whitespace(self):
+        """
+        Skips over any whitespace characters before the next token.
+        """
+        while self._cp < self._nch and self._source[self._cp].isspace():
+            self._cp += 1</code></pre>
+</section>
+<section id="using-tokenscanner" class="slide level2">
+<h2>Using <code class="python">TokenScanner</code></h2>
+<ul>
+<li>Need to initialize the token scanner object</li>
+<li>Generally keep looping as long as there are still tokens
+<ul>
+<li>Each iteration, get the latest token and then do something with it</li>
+</ul></li>
+</ul>
+</section>
+<section id="using-tokenscanner-in-piglatin" class="slide level2">
+<h2>Using <code class="python">TokenScanner</code> in <code class="python">PigLatin</code></h2>
+<pre ><code class="python" style="max-height:900px">from tokenscanner import TokenScanner
+
+def to_pig_latin(text):
+    translation = ""
+    scanner = TokenScanner()
+    scanner.set_input(text)
+    while scanner.has_more_tokens():
+        token = scanner.next_token()
+        if token.isalpha():
+            token = word_to_pig_latin(token)
+        translation += token
+    return translation</code></pre>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

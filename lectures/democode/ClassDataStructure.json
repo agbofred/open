@@ -1,0 +1,11 @@
+{
+	"Python": {
+		"Sally": ["A", "B", "B", "A"],
+		"Jake": ["B", "B", "B", "C"],
+		"Ben": ["C", "B", "B", "A"]
+	},
+	"Astro": {
+		"James": ["B", "B", "A"],
+		"Lily": ["A", "A", "B"]
+	}
+}

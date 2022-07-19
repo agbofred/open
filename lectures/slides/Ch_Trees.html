@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2020-11-20">
+  <title>Trees</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/class_python.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/horizon-dark.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Trees</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">November 20, 2020</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Project 5 due Wednesday</li>
+<li>Lab today open for Project questions</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="family-trees" class="slide level2">
+<h2>Family Trees</h2>
+<div class="cols">
+<div class="col">
+<ul>
+<li>Family trees are common examples of a tree structure</li>
+<li>Useful for defining terminology
+<ul>
+<li>William I is the <em>root</em> of the tree</li>
+<li>Adela is a <em>child</em> of William I and the <em>parent</em> of Stephen</li>
+<li>Robert, William II, Adela, and Henry and <em>siblings</em></li>
+<li>Henry II is a <em>descendant</em> of William I, Henry I, and Matilda</li>
+<li>William I is an <em>ancestor</em> of everyone else in this tree</li>
+</ul></li>
+</ul>
+</div>
+<div class="col">
+<p><img data-src="../images/svg_cache/90f15585eb2f2bc38021bcbd3caf43bfd3686e25.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="binary-search-trees" class="slide level2">
+<h2>Binary Search Trees</h2>
+<ul>
+<li>Trees can be used to implement dictionaries using a structure called a <em>binary search trees</em> (or <em>BST</em>)</li>
+<li>Each node in a BST has exactl two subtrees:
+<ul>
+<li>A <em>left subtree</em> that contains all nodes before the current node</li>
+<li>A <em>right subtree</em> that contains all the nodes that come after it</li>
+</ul></li>
+<li>The classic example of a binary search tree uses the names of the seven dwarves:</li>
+</ul>
+<p><img data-src="../images/svg_cache/f4ecc0a6d4005507c83689fadb06abf6021b0ad6.svg" style="width:70.0%" /></p>
+</section>
+<section id="balance-your-trees" class="slide level2">
+<h2>Balance Your Trees</h2>
+<ul>
+<li>Ideally, a binary search tree would look similar to our last picture</li>
+<li>If you placed a different dwarf at the root, then the tree would end up unbalanced
+<ul>
+<li>If you placed Bashful at the root, the entire left subtree would be empty!</li>
+</ul></li>
+<li>Balancing BST’s is important for effectively and quickly finding the desired values</li>
+<li>If you go on to take CS 343 (Analysis of Algorithms), you will learn several strategies for maintaining balanced binary search trees</li>
+</ul>
+</section>
+<section id="graphs" class="slide level2">
+<h2>Graphs</h2>
+<ul>
+<li>Trees are more flexible than lists, but we can get more flexible yet</li>
+<li>Trees still require a single root, and no cycles.</li>
+<li>If we eliminate those restrictions, we get a more general structure called a <em>graph</em></li>
+<li>Graphs consists of a set of <em>nodes</em> connected in various relationships and links by <em>arcs</em></li>
+<li>Graphs are frequently used in many types of practical applications</li>
+</ul>
+</section>
+<section id="graph-examples" class="slide level2">
+<h2>Graph Examples</h2>
+<div class="cols">
+<div class="col">
+<p><img data-src="../images/svg_cache/53fa4fa4ce43a324035f76fbc9f74698195548bb.svg" style="width:80.0%" /></p>
+</div>
+<div class="col">
+<figure>
+<img data-src="../images/watercycle.jpeg" style="width:100.0%" alt="" /><figcaption> </figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="google-it" class="slide level2">
+<h2>Google It</h2>
+<div class="cols">
+<div class="col">
+<ul>
+<li>The big innovation of the late 1990s was the development of search engines
+<ul>
+<li>Beginning with Alta Vista</li>
+<li>Reaching its modern pinnacle with Google</li>
+</ul></li>
+<li>Google founded by Stanford graduate students Larry Page and Sergey Brin in 1998</li>
+<li>Heart of the Google search engine is the Page Rank algorithm, designed by Page and Brin under the direction of their advisors, Rajeev Motwani and Terry Winograd</li>
+</ul>
+</div>
+<div class="col">
+<figure>
+<img data-src="../images/GoogleLeaders.png" alt="" /><figcaption>Larry Page and Sergey Brin</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="the-page-rank-algorithm" class="slide level2">
+<h2>The Page Rank Algorithm</h2>
+<ul>
+<li>Gives each webpage a rating based on its <em>importance</em>, wherein a page becomes more important if other pages link to it
+<ul>
+<li>If a page that links to the page in question is itself important, this boosts the weight of that link</li>
+</ul></li>
+<li>Imagine a random person surfing the web, clicking on links randomly
+<ul>
+<li>The Page Rank of a page is roughly the probability that the person will land on a particular webpage</li>
+<li>More links pointing to a page mean that the individual is more likely to end up on that page, and thus that page has a greater important and Page Rank</li>
+</ul></li>
+<li>The behavior of the web surfer is an example of a <em>Markov process</em>
+<ul>
+<li>A random process that only depends on the current state of the system and not any of its history</li>
+</ul></li>
+</ul>
+</section>
+<section id="walking-the-algorithm" class="slide level2">
+<h2>Walking the Algorithm</h2>
+<div class="block" name="Step 1">
+<p>You start with a set of pages</p>
+</div>
+<p><img data-src="../images/svg_cache/dde7ba6d561349027dcb54411401b6c91fa64f9a.svg" style="width:80.0%" /></p>
+</section>
+<section id="walking-the-algorithm-1" class="slide level2">
+<h2>Walking the Algorithm</h2>
+<div class="block" name="Step 2">
+<p>Crawl the web to determine the link structure</p>
+</div>
+<p><img data-src="../images/svg_cache/d0e0edc1fdb96014632b0dc7e4fefd8d4c55fbe7.svg" style="width:80.0%" /></p>
+</section>
+<section id="walking-the-algorithm-2" class="slide level2">
+<h2>Walking the Algorithm</h2>
+<div class="block" name="Step 3">
+<p>Assign each page an initial rank of <span class="math inline">\(1/N\)</span></p>
+</div>
+<p><img data-src="../images/svg_cache/d6833011e888e0e69b806407b9897a057b0463f4.svg" style="width:80.0%" /></p>
+</section>
+<section id="walking-the-algorithm-3" class="slide level2">
+<h2>Walking the Algorithm</h2>
+<div class="block" name="Step 4">
+<p>Update the rank of each page by adding up the rank of every page that links to it divided by the number of links emanating from the referring page.</p>
+<ul>
+<li>Node E has two incoming links, one from C and one from D
+<ul>
+<li>Node C contributes 1/3 of its current rank</li>
+<li>Node D contributes 1/2 of its current rank</li>
+</ul></li>
+<li>New rank for Node E is: <span class="math display">\[PR(E) = \frac{PR(C)}{3} + \frac{PR(D)}{2} = \frac{0.2}{3} + \frac{0.2}{2} = 0.17\]</span></li>
+</ul>
+</div>
+</section>
+<section id="walking-the-algorithm-4" class="slide level2">
+<h2>Walking the Algorithm</h2>
+<div class="block" name="Step 5">
+<p>If a page (like Node E) has no outward links, redistribute its rank equally among the other pages in the graph</p>
+<ul>
+<li>Here, 1/4 of E’s page rank is distributes out to A, B, C and D</li>
+<li>The idea is that users will keep searching if they hit a dead end</li>
+</ul>
+</div>
+</section>
+<section id="walking-the-algorithm-5" class="slide level2">
+<h2>Walking the Algorithm</h2>
+<div class="block" name="Step 6">
+<p>Apply this redistribution to every page in the graph</p>
+</div>
+<p><img data-src="../images/svg_cache/442be18fc03af39ef9ecddca8b9a82fd3fc81f66.svg" style="width:80.0%" /></p>
+</section>
+<section id="walking-the-algorithm-6" class="slide level2">
+<h2>Walking the Algorithm</h2>
+<div class="block" name="Step 7">
+<p>Repeat process until ranks stabilize</p>
+</div>
+<p><img data-src="../images/svg_cache/5d69c2f846d26558f34f76763d73afcaa18be4ba.svg" style="width:80.0%" /></p>
+</section>
+<section id="enter-player-2" class="slide level2">
+<h2>Enter Player 2</h2>
+<ul>
+<li>A challenge of any search engine is ensuring that some commercial interest can not “game” the system</li>
+<li>Page Rank makes this difficult, since the ranking depends on the prestige of outside web pages normally outside the control of those looking to manipulate the system</li>
+<li>To ensure that rankings remain fair, Google keeps the details of the ranking algorithms secret and changes them often to outwit those trying to cheat the system</li>
+</ul>
+</section>
+<section id="actually-searching" class="slide level2">
+<h2>Actually Searching</h2>
+<ul>
+<li>For each page then, with its page rank, Google indexes the words that appear on that page</li>
+<li>When you search for a word, Google checks which pages contain that word, and then returns them for you sorted by page rank</li>
+<li>Fancy combinations like pairs of words can be determined by looking for pages when the words appear at successive indices on the page!</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: false,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

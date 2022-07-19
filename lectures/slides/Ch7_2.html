@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-10-13">
+  <title>Do You Comprehend?</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Do You Comprehend?</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">October 13, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Be making progress on Project 2!</li>
+<li>Graphical Contest is posted</li>
+<li>Section meetings today or tomorrow deal directly with problems that you’ll encounter in Project 2</li>
+<li>No class (or lab) on Friday!</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review" class="slide level2" data-notes="Solution: None of the above, as it errors">
+<h2 data-notes="Solution: None of the above, as it errors">Review!</h2>
+<p>What would the below expression evaluate to?</p>
+<center>
+<code>[‘One’, 2, True][-1:1:-1][1]</code>
+</center>
+<div class="poll">
+<ol>
+<li><code class="python">['One']</code></li>
+<li><code class="python">2</code></li>
+<li><code class="python">True</code></li>
+<li>None of the above, or this will error</li>
+</ol>
+</div>
+</section>
+<section id="a-tutorial-on-lists" class="slide level2">
+<h2>A Tutorial on Lists</h2>
+<div class="cols">
+<div class="col">
+<ul>
+<li>To better understand how Python works with strings, lets take a look at the code to the right in PythonTutor</li>
+<li><a href="http://www.pythontutor.com/visualize.html#code=cool%20%3D%20%5B&#39;blue&#39;,%20&#39;violet&#39;%5D%0Awarm%20%3D%20%5B&#39;red&#39;,%20&#39;orange&#39;%5D%0A%0Acolors%20%3D%20%5Bcool,%20warm%5D%0A%0Aother_colors%20%3D%20%5B%5B&#39;blue&#39;,%20&#39;violet&#39;%5D,%5B&#39;red&#39;,%20&#39;orange&#39;%5D%5D%0A%0Aprint%28colors%20%3D%3D%20other_colors%29%0Aprint%28colors%20is%20other_colors%29%0A%0A%0Acool%5B0%5D%20%3D%20&#39;indigo&#39;%0A%0Aprint%28colors%29%0Aprint%28other_colors%29%0Aprint%28colors%20%3D%3D%20other_colors%29%0Aprint%28colors%20is%20other_colors%29&amp;cumulative=false&amp;curInstr=0&amp;heapPrimitives=false&amp;mode=display&amp;origin=opt-frontend.js&amp;py=3&amp;rawInputLstJSON=%5B%5D&amp;textReferences=false">Link here</a></li>
+</ul>
+</div>
+<div class="col" style="flex-grow:2;">
+<pre ><code class="python" style="max-height:900px; font-size:.8em;">cool = ['blue', 'violet']
+warm = ['red', 'orange']
+
+colors = [cool, warm]
+other_colors = [['blue', 'violet'],
+                ['red', 'orange']]
+
+print(colors == other_colors)
+print(colors is other_colors)
+
+cool[0] = 'indigo'
+
+print(colors)
+print(other_colors)
+print(colors == other_colors)
+print(colors is other_colors)</code></pre>
+</div>
+</div>
+</section>
+<section id="lists-as-arguments" class="slide level2">
+<h2>Lists as Arguments</h2>
+<ul>
+<li>When you pass a list as an argument to a function or return a list as a result, only the <strong>reference</strong> to the list is actually passed back and forth</li>
+<li>Means that the elements of the list are effectively shared between the function and the caller
+<ul>
+<li>Changes that the function makes to the elements <strong>will</strong> persist after the function returns</li>
+</ul></li>
+<li>Example of reversing a list in PythonTutor: <a href="http://www.pythontutor.com/visualize.html#code=def%20reverse_in_place%28array%29%3A%0A%20%20%20%20for%20lh%20in%20range%28len%28array%29//2%29%3A%0A%20%20%20%20%20%20%20%20rh%20%3D%20len%28array%29%20-%20lh%20-%201%0A%20%20%20%20%20%20%20%20array%5Blh%5D,%20array%5Brh%5D%20%3D%20array%5Brh%5D,%20array%5Blh%5D%0A%0Aarray%20%3D%20%5B0,%201,%202,%203,%204,%205,%206,%207,%208,%209%5D%0Aprint%28f%22Forward%3A%20%7Barray%7D%22%29%0Areverse_in_place%28array%29%0Aprint%28f%22Reverse%3A%20%7Barray%7D%22%29&amp;cumulative=false&amp;curInstr=0&amp;heapPrimitives=false&amp;mode=display&amp;origin=opt-frontend.js&amp;py=3&amp;rawInputLstJSON=%5B%5D&amp;textReferences=false">here</a></li>
+</ul>
+</section>
+<section id="common-useful-list-methods" class="slide level2">
+<h2>Common Useful List Methods</h2>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">list.copy()</code></td>
+<td>Returns a new list whose elements are the same as the original</td>
+</tr>
+<tr class="even">
+<td><code class="python">list.append(value)</code></td>
+<td>Adds <code class="python">value</code> to the end of the list</td>
+</tr>
+<tr class="odd">
+<td><code class="python">list.insert(idx, val)</code></td>
+<td>Inserts <code class="python">val</code> before the specified <code class="python">idx</code></td>
+</tr>
+<tr class="even">
+<td><code class="python">list.remove(value)</code></td>
+<td>Removes the first instance of <code class="python">value</code> from the list, or errors</td>
+</tr>
+<tr class="odd">
+<td><code class="python">list.reverse()</code></td>
+<td>Reverses the order of the elements in the list</td>
+</tr>
+<tr class="even">
+<td><code class="python">list.sort()</code></td>
+<td>Sorts the elements of the list. Can take an optional argument <code class="python">key</code> to specify how to sort</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sneaky-mutability" class="slide level2">
+<h2>Sneaky Mutability</h2>
+<ul>
+<li>List’s mutability can frequently be very nice to work with, but as with lists as arguments to functions, you need to be careful in some instances to ensure you understand how Python is treating the list</li>
+<li>I’ve encountered a few other problems where it can be easy to mess up:
+<ul>
+<li>Initializing a list to look like another list, wanting to make changes and then compare it to the original
+<ul>
+<li><a href="http://www.pythontutor.com/visualize.html#code=A%20%3D%20%5B&#39;Aardvark&#39;,%20&#39;Butterfly&#39;,%20&#39;Centipede&#39;%5D%0AB%20%3D%20A%0A%0AB.append%28&#39;Deer&#39;%29%0AB.remove%28&#39;Butterfly&#39;%29%0A%0Aprint%28A%29%0Aprint%28B%29&amp;cumulative=false&amp;curInstr=0&amp;heapPrimitives=false&amp;mode=display&amp;origin=opt-frontend.js&amp;py=3&amp;rawInputLstJSON=%5B%5D&amp;textReferences=false">Example</a></li>
+</ul></li>
+<li>Looping over a mutating list
+<ul>
+<li><a href="http://www.pythontutor.com/visualize.html#code=A%20%3D%20%5B1,2,3,4,5,6,7,8,9%5D%0A%0Afor%20i%20in%20range%28len%28A%29%29%3A%0A%20%20%20%20print%28&#39;Current%20index%3A%20%7B%7D,%20Current%20value%3A%20%7B%7D&#39;.format%28i,A%5Bi%5D%29%29%0A%20%20%20%20if%203%20%3C%20A%5Bi%5D%20%3C%206%3A%0A%20%20%20%20%20%20%20%20A.remove%28A%5Bi%5D%29%0A%20%20%20%0Aprint%28A%29&amp;cumulative=false&amp;curInstr=0&amp;heapPrimitives=false&amp;mode=display&amp;origin=opt-frontend.js&amp;py=3&amp;rawInputLstJSON=%5B%5D&amp;textReferences=false">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="cloning" class="slide level2">
+<h2>Cloning</h2>
+<ul>
+<li>What can we do in these sorts of instances to not let mutability trip us up?</li>
+<li><em>Clone</em> the list instead of just assigning a reference
+<ul>
+<li>Creates a <strong>new</strong> object in memory</li>
+</ul></li>
+<li>Several ways you can make a clone (in code)
+<ul>
+<li>Using the <code class="python">.copy()</code> method</li>
+<li>Any slice returns a clone</li>
+<li>Using the <code class="python">list()</code> function will return a clone</li>
+</ul></li>
+</ul>
+</section>
+<section id="functions-on-iterators" class="slide level2">
+<h2>Functions on Iterators</h2>
+<ul>
+<li>The <code class="python">.sort</code> and <code class="python">.reverse</code> methods reorder the list <strong>in place</strong> and do not return anything</li>
+<li>Commonly, you might want to loop through a list in a particular order, but not change the original list</li>
+<li>Python gives you two matching functions to do this, which return a new ordered version of the list, without changing the original
+<ul>
+<li>The <code class="python">reversed()</code> function creates a new iterable object that returns its elements in the opposite order</li>
+<li>The <code class="python">sorted()</code> function creates a new iterable object that returns its elements in ascending order</li>
+</ul></li>
+</ul>
+</section>
+<section id="understanding-check" class="slide level2" data-notes="Solution: [&#39;Fox&#39;, &#39;Hippo&#39;, &#39;Iguana&#39;]">
+<h2 data-notes="Solution: [&#39;Fox&#39;, &#39;Hippo&#39;, &#39;Iguana&#39;]">Understanding Check</h2>
+<div class="cols">
+<div class="col">
+<p>Given the code to the right, what would be the final printed value of <code class="python">A</code>?</p>
+<div class="poll">
+<ol>
+<li><code class="python">['Fox', 'Giraffe', 'Hippo', 'Iguana']</code></li>
+<li><code class="python">['Fox', 'Hippo', 'Iguana']</code></li>
+<li><code class="python">['Iguana', 'Fox']</code></li>
+<li><code class="python">['Fox', 'Iguana']</code></li>
+</ol>
+</div>
+</div>
+<div class="col">
+<pre ><code class="python" style="max-height:900px">A = [
+     'Fox',
+     'Giraffe', 
+     'Hippo'
+    ]
+A.append('Iguana')
+A[:].reverse()
+B = A
+for anim in B:
+    if anim[1] == 'i':
+        B.remove(anim)
+print(A)</code></pre>
+</div>
+</div>
+</section>
+<section id="list-building-with-loops" class="slide level2">
+<h2>List building with loops</h2>
+<ul>
+<li><p>Commonly will make lists with a simple:</p>
+<pre ><code class="python">even_digits = [ 2, 4, 6, 8 ]</code></pre></li>
+<li><p>But in many cases, it is easier to specify the elements of a list using a sequence of values generated by a <code class="python">for</code> loop. For instance</p>
+<pre ><code class="python">even_digits = [ ]
+for i in range(0, 10, 2):
+    even_digits.append(i)</code></pre></li>
+<li><p>Python gives us a shorthand notation to achieve this:</p>
+<pre ><code class="python">even_digits = [ i for i in range(0, 10, 2) ]</code></pre>
+<ul>
+<li>Called <em>list comprehension</em></li>
+</ul></li>
+</ul>
+</section>
+<section id="comprehending-lists" class="slide level2">
+<h2>Comprehending Lists</h2>
+<ul>
+<li><p>The simplest list comprehension syntax is:</p>
+<pre ><code class="python">[ expression iterator ]</code></pre>
+<p>where <code class="python">expression</code> is any Python expression and <code class="python">iterator</code> is a <code class="python">for</code> loop header</p></li>
+<li><p>The iterator component can be followed by any number of additional modifiers</p>
+<ul>
+<li>More <code class="python">for</code> loop headers for nested loops</li>
+<li>or <code class="python">if</code> statements to select specific values</li>
+</ul></li>
+<li><p>Example: all even numbers to 20 not also visible by 3</p>
+<pre ><code class="python">[i for i in range(0,2,20) if i % 3 != 0]</code></pre></li>
+</ul>
+</section>
+<section id="where-strings-and-lists-meet" class="slide level2">
+<h2>Where Strings and Lists Meet</h2>
+<ul>
+<li>There are a handful of methods that transition between strings and lists</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 66%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">str.split()</code></td>
+<td>Splits a string into a list of its components using whitespace as a separator</td>
+</tr>
+<tr class="even">
+<td><code class="python">str.split(sep)</code></td>
+<td>Sprits a string into a list using the specified separator <code class="python">sep</code></td>
+</tr>
+<tr class="odd">
+<td><code class="python">str.splitlines()</code></td>
+<td>Splits a string into of list of strings at the newline character</td>
+</tr>
+<tr class="even">
+<td><code class="python">str.join(list)</code></td>
+<td>Joins the elements of the <code class="python">list</code> into a string, using <code class="python">str</code> as the separator</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reading" class="slide level2">
+<h2>Reading</h2>
+<ul>
+<li>Programs often need to work with lists that are too large to reasonable exist typed all out in the code
+<ul>
+<li>Easier to read in the values of a list from some external data file</li>
+</ul></li>
+<li>A <em>file</em> is the generic name for any named collection of data maintained on some permanent storage media attached to a computer</li>
+<li>Files can contain information of many different types and encodings
+<ul>
+<li>Most common is the <em>text file</em></li>
+<li>Contains character data like you’d fine in a string</li>
+</ul></li>
+</ul>
+</section>
+<section id="strings-vs-text-files" class="slide level2">
+<h2>Strings vs Text Files</h2>
+<ul>
+<li>While strings and text files both store characters, there are some important differences:
+<ul>
+<li><strong>The longevity of the data stored</strong>
+<ul>
+<li>The value of a string variable lasts only as long as the string exists, is not overridden, or is not thrown out when a function completes</li>
+<li>Information in a text file exists until the file is deleted</li>
+</ul></li>
+<li><strong>How data is read in</strong>
+<ul>
+<li>You have access to all the characters in a string variable pretty much immediately</li>
+<li>Data from text files is generally read in sequentially, starting from the beginning and proceeding until the end of the file is reached</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

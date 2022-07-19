@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-11-10">
+  <title>Dictionaries</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Dictionaries</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">November 10, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>If you haven’t yet, you absolutely should get a start on Enigma today
+<ul>
+<li>That would leave about one milestone per day, which is very doable, even accounting for the fact that some will take more time than others.</li>
+</ul></li>
+<li>Section questions today and tomorrow will focus on common sticking points that people have with the Enigma Project</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2" data-notes="Solution: hnktge">
+<h2 data-notes="Solution: hnktge">Review Question</h2>
+<div class="cols">
+<div class="col">
+<p>Let’s consider a greatly simplified Enigma machine, which only has one rotor that is not turning. So the signal goes through the rotor then the reflector and back through the rotor. Given the rotor and reflector mappings shown to the right, what would the word <code class="python">python</code> encrypt to?</p>
+<div class="poll">
+<ol>
+<li><code class="python">aicmnz</code></li>
+<li><code class="python">hnktge</code></li>
+<li><code class="python">rfqbls</code></li>
+<li><code class="python">zghpmy</code></li>
+</ol>
+</div>
+</div>
+<div class="col">
+<p><img data-src="../images/svg_cache/eabfaa6d95faaf0fd14e2c4cbf20720676bb912d.svg" style="height:100.0%" /></p>
+</div>
+</div>
+<!--
+## Review Question
+::::::cols
+::::col
+```{.python style='max-height:900px'}
+class MyClass:
+    varA = 3
+    varB = True
+
+    def __init__(self):
+        self.v = MyClass.varA
+        if MyClass.varB:
+            self.v += 1
+
+A = MyClass()
+B = MyClass()
+MyClass.varB = False
+C = MyClass()
+print(MyClass.varA)
+```
+::::
+
+::::col
+Suppose the code to the left was written and executed. What would be the output of the printed statement?
+
+:::{.poll}
+#. 3
+#. 5
+#. 6
+#. None of the above
+:::
+
+::::
+::::::
+-->
+</section>
+<section id="maps-and-dictionaries" class="slide level2">
+<h2>Maps and Dictionaries</h2>
+<ul>
+<li>A common form of information associates pairs of data values
+<ul>
+<li>Commonly called a <em>map</em> in computer science</li>
+<li>Python calls such a structure a <em>dictionary</em></li>
+</ul></li>
+<li>A dictionary associates two different values:
+<ul>
+<li>A simple value called the <em>key</em>, which is often a string but doesn’t need to be</li>
+<li>A larger and more complex object called the <em>value</em></li>
+</ul></li>
+<li>This idea of associating pairs of values is exhibited all over in the real world
+<ul>
+<li>Actual dictionaries! The words are the keys, the definitions the values.</li>
+<li>Web addresses! Keys are the urls, the values are the webpage contents.</li>
+</ul></li>
+</ul>
+</section>
+<section id="pythonic-dictionaries" class="slide level2">
+<h2>Pythonic Dictionaries</h2>
+<ul>
+<li>Similar in syntax to lists:
+<ul>
+<li>Fundamental operation is selection, which we indicate with square brackets: <code class="python">[]</code></li>
+<li>Differences:
+<ul>
+<li>Created with squiggly brackets: <code class="python">{}</code></li>
+<li>Index values are the keys, which can be any immutable data type</li>
+</ul></li>
+</ul></li>
+<li>When creating a dictionary from scratch, the key and value pairings are separated by a colon <code class="python">:</code></li>
+</ul>
+<pre ><code class="python">empty_dict = {}
+normal_dict = {'Bob': 21, 'Nancy': 32}</code></pre>
+</section>
+<section id="dictionary-selections" class="slide level2">
+<h2>Dictionary Selections</h2>
+<ul>
+<li>We still select an element with square brackets, but provide the key of the desired value instead of a numeric index</li>
+</ul>
+<pre ><code class="python-repl">>>> A = normal_dict['Bob']
+>>> print(A)
+21</code></pre>
+<ul>
+<li>Dictionary selections are assignable! That is, dictionaries are mutable.</li>
+</ul>
+<pre ><code class="python-repl">>>> normal_dict['Bob'] = 33
+>>> print(normal_dict['Bob'])
+33</code></pre>
+<ul>
+<li>Note that keys must be unique! Or else it would be unclear what element should be selected.</li>
+</ul>
+</section>
+<section id="grade-sheet-example" class="slide level2">
+<h2>Grade Sheet Example</h2>
+<ul>
+<li>Suppose we had a file of student ids and accompanying scores that we wanted to read into a dictionary and then access.</li>
+</ul>
+<pre ><code class="python" style="max-height:700px; font-size:.8em; line-heigh:2em;">def read_to_dict(filename):
+    dictionary = {}
+    with open(filename) as f:
+        for line in f:
+            ID, score = line.strip().split(',')
+            dictionary[ID] = score
+    return dictionary
+
+def get_student_score():
+    scores = read_to_dict('SampleGrades.txt')
+    done = False
+    while not done:
+        student_id = input('Enter a student id number: ')
+        if student_id == "":
+            done = True
+        else:
+            if student_id in scores:
+                print(f"Student got a {scores[student_id]}.")
+            else:
+                print(f"Student id {student_id} was not found in classlist")</code></pre>
+</section>
+<section id="iterating-through-a-dictionary" class="slide level2">
+<h2>Iterating through a Dictionary</h2>
+<ul>
+<li>Frequently we might want to iterate through a dictionary, checking either its values or its keys</li>
+<li>Python supports iteration with the <code class="python">for</code> statement, which has the form of:</li>
+</ul>
+<pre ><code class="python">for key in dictionary:
+    value = dictionary[key]
+    # Then code to work with that key and value</code></pre>
+<ul>
+<li>You can also use the <code class="python">.items</code> method to grab both key and values together:</li>
+</ul>
+<pre ><code class="python">for key, value in dictionary.items():
+    # Then code to work with that key and value</code></pre>
+</section>
+<section id="finding-students-by-grade" class="slide level2">
+<h2>Finding Students by grade</h2>
+<pre ><code class="python" style="max-height:900px">def get_students_with_score():
+    scores = read_to_dict('SampleGrades.txt')
+    done = False
+    while not done:
+        des_grade = input('Enter a letter grade: ')
+        if des_grade == "":
+            done = True
+        else:
+            for st_id, grade in scores.items():
+                if grade == des_grade.strip().upper():
+                    print(f"{st_id} got a {grade}")</code></pre>
+</section>
+<section id="common-dictionary-methods" class="slide level2">
+<h2>Common Dictionary Methods</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method call</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">len(dict)</code></td>
+<td>Returns the number of key-value pairs in the dictionary</td>
+</tr>
+<tr class="even">
+<td><code class="python">dict.get(key, value)</code></td>
+<td>Returns the value associated with the <code class="python">key</code> in the dictionary. If the key is not found, returns the specified value, which is <code class="python">None</code> by default)</td>
+</tr>
+<tr class="odd">
+<td><code class="python">dict.pop(key)</code></td>
+<td>Removes the key-value pair corresponding to <code class="python">key</code> and returns the associated value. Will raise an error if the key is not found.</td>
+</tr>
+<tr class="even">
+<td><code class="python">dict.clear()</code></td>
+<td>Removes all key-value pairs from the dictionary, leaving it empty.</td>
+</tr>
+<tr class="odd">
+<td><code class="python">dict.items()</code></td>
+<td>Returns an iterable object that cycles through the successive tuples consisting of a key-value pair.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="losing-the-keys" class="slide level2">
+<h2>Losing the Keys</h2>
+<ul>
+<li>Dictionaries are unordered, all the lookup information comes from the key</li>
+<li>When you ask for an value corresponding to a certain key, the computer needs to search the dictionary for a matching key</li>
+<li>There are several possible approaches to doing this, which we’ll talk a bit more about later in the semester
+<ul>
+<li>Most strategies take longer the larger the dictionary is (which probably makes sense)</li>
+<li>One strategy though, called <em>hashing</em>, implements a function on the space of possible keys, which ends up telling the implementation exactly where to look for the matching item. The result being that this strategy does <em>not</em> take more time for a larger dictionary!</li>
+</ul></li>
+</ul>
+<!--
+- Possible implementations:
+    - _Linear search_: This implementation keeps track of the name-value pairs in an array, and just loops through the array to find or place new keys in $\mathcal{O}(N)$ time
+    - _Binary search_: This implementation keeps track of the name-value pairs in an array but keeps them sorted by some method. Then uses binary search to find or place new keys in $\mathcal{O}{\log N}$ time
+-->
+</section>
+<section id="hashing" class="slide level2">
+<h2>Hashing</h2>
+<ul>
+<li>Can seem surprising or magical that we could have a method that takes a constant amount of time to look up a value independent of the length of the map or dictionary!</li>
+<li>Envision finding a word in a dictionary
+<ul>
+<li>Most have markings along the edge where each section of letters starts, so you know where to start looking</li>
+</ul></li>
+<li>The most common map and dictionary implementations use a strategy called <em>hashing</em>, which is conceptually similar to using the section markings on a dictionary.
+<ul>
+<li>Critical idea is that can you massively improve performance if you use the key itself to help you figure out where to look</li>
+</ul></li>
+</ul>
+</section>
+<section id="hash-codes-not-browns" class="slide level2">
+<h2>Hash Codes, not Browns</h2>
+<ul>
+<li>Hash codes must follow a set of guidelines (or a code of conduct):
+<ol>
+<li>The hash code must be relatively easy to compute</li>
+<li>The hash code for a particular object must always be the same for a given Python session</li>
+<li>If two objects are identical, they must have the same hash code</li>
+<li>The hash codes must be distributed as randomly/evenly as possible over the space of possible keys</li>
+</ol></li>
+<li>Python has a built-in function called <code class="python">hash</code> that takes an object and returns an integer, which is called the <em>hash code</em> for that object</li>
+<li>Maps using the hashing algorithm use the hash code for a key as a starting point to help find the associated value.</li>
+</ul>
+</section>
+<section id="bucket-hashing" class="slide level2">
+<h2>Bucket Hashing</h2>
+<ul>
+<li>One common strategy is to choose a certain number of <em>buckets</em> to make up an array, where each object’s hash will place it into a particular bucket
+<ul>
+<li>Would mean that, having checked a key’s hash, you’d know which bucket to look in!</li>
+</ul></li>
+<li>In practice, the number of buckets is smaller than the number of hash codes, so you need a way to decide on what hash code corresponds to which bucket.
+<ul>
+<li>Typically done with a remainder operation along the lines of</li>
+</ul>
+<pre ><code class="python">bucket = abs(hash(key)) % num_buckets</code></pre></li>
+<li>Some buckets will still end up with multiple key-value pairs. These are called <em>collisions</em> and lower the efficiency of the algorithm.</li>
+<li>Since hash codes are spread around equally, each bucket in theory would end up with similar numbers of key-value pairs</li>
+</ul>
+</section>
+<section id="bucket-hashing-example" class="slide level2">
+<h2>Bucket Hashing Example</h2>
+<pre ><code class="python" style="max-height:900px; font-size:0.8em;">class Dictionary:
+    NBUCKETS = 10
+
+    def __init__(self):
+        self.buckets = [ [] for _ in range(Dictionary.NBUCKETS)]
+
+    def get(self, key):
+        H = hash(key)
+        bucket_id = abs(H) % Dictionary.NBUCKETS
+        for pair in self.buckets[bucket_id]:
+            if pair[0] == key:
+                return pair[1]
+        return None
+
+    def put(self, key, value):
+        H = hash(key)
+        bucket_id = abs(H) % Dictionary.NBUCKETS
+        bucket = self.buckets[bucket_id]
+        for i in range(len(bucket)):
+            bkey, bvalue = bucket[i]
+            if bkey == key:
+                bucket[i] = (key, value)
+                return
+        bucket.append((key,value))
+
+    def __repr__(self):
+        return repr(self.buckets)</code></pre>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

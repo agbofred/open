@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-11-08">
+  <title>Enigma</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Enigma</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">November 8, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Project 3 due tonight!</li>
+<li>Project 4 Guidelines will be posted by the end of today</li>
+<li>Extra Credit PS6 problem posted and will be due next Monday night</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2">
+<h2>Review Question</h2>
+<div class="cols">
+<div class="col" style="flex-grow:1">
+<pre ><code class="python" style="max-height:800px; font-size:.75em">class Symbol(GCompound):
+  def __init__(self, col1, col2):
+    GCompound.__init__(self)
+    A = GOval(-10,-10,20,20)
+    A.set_filled(True)
+    A.set_color(col1)
+    B = GRect(-10,-10,20,20)
+    B.set_filled(True)
+    B.set_color(col2)
+
+gw = GWindow(100,100)
+gw.add(Symbol("red", "blue"))</code></pre>
+<p>What would be output to the window when the above code is run? You can assume all necessary imports were made initially.</p>
+</div>
+<div class="col">
+<div class="hpoll">
+<ol>
+<li><img data-src="../images/GCompoundExtensionA.png" width="250" /></li>
+<li><img data-src="../images/GCompoundExtensionB.png" width="250" /></li>
+<li><img data-src="../images/GCompoundExtensionC.png" width="250" /></li>
+<li><img data-src="../images/GCompoundExtensionD.png" width="250" /></li>
+</ol>
+</div>
+</div>
+</div>
+<!--
+## Review Question
+::::::cols
+::::col
+What expression below would best fill in the gap in the code to the right?
+
+:::{.poll}
+#. `self.wage = wage`
+#. `TechJob.__init__(self, wage)`
+#. `TechJob.__init__(wage)`
+#. `Job.__init__(wage)`
+:::
+
+::::
+
+::::{.col style='flex-grow:1'}
+```{.python style='max-height:900px; font-size:0.8em;'}
+class Job:
+    def __init__(self, wage):
+        self.wage = wage
+
+class TechJob(Job):
+    def __init__(self, wage):
+        self.wage = wage
+        self.codes = True
+
+class SeniorDev(TechJob):
+    def __init__(self, wage, exp):
+        # What goes here?
+        self.exp = exp
+```
+
+::::
+::::::
+-->
+</section>
+<section id="alan-turing" class="slide level2">
+<h2>Alan Turing</h2>
+<div class="cols">
+<div class="col" style="flex-grow: 2;">
+<ul>
+<li>One of the most important contributors to computer science is Alan Turing, who made critical contributions in the theory of computation, hardware design, and artificial intelligence</li>
+<li>During WW2, Turing headed the mathematics division at Bletchley Park in England, which broke the German Enigma code</li>
+<li>Tragically, Turing committed suicide in 1954 after being convicted on a charge of “gross indecency” as a homosexual
+<ul>
+<li>Prime Minister Gordon Brown issued a public apology in 2009</li>
+</ul></li>
+</ul>
+</div>
+<div class="col">
+<figure>
+<img data-src="../images/Turing.jpg" width="500" alt="Alan Turing (1912-1954)" /><figcaption aria-hidden="true">Alan Turing (1912-1954)</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="cryptography" class="slide level2">
+<h2>Cryptography</h2>
+<ul>
+<li>The science of encoding messages to keep their contents secret–and the symmetric problem of decoding those messages–is called <em>cryptography</em>.</li>
+<li>First recorded cryptographic algorithm attributed to Julius Caesar. The Roman historian Suitonius writes that:</li>
+</ul>
+<blockquote>
+<p>If [Caesar] had anything confidential to say, he wrote it in cipher, that is, by so changing the order of the letters of the alphabet, that not a word could be made out.</p>
+</blockquote>
+<ul>
+<li>In a <em>Caesar Cipher</em>, each letter in advanced a fixed distance in the alphabet, wrapping around to the start if necessary
+<ul>
+<li>A +3 Caesar cipher would make the following mappings</li>
+</ul></li>
+</ul>
+<p><img data-src="../images/svg_cache/8a1b82f64fc7fe556fb848c9debec5a34eec692f.svg" style="width:80.0%" /></p>
+</section>
+<section id="letter-substitution-ciphers" class="slide level2">
+<h2>Letter Substitution Ciphers</h2>
+<ul>
+<li>A <em>letter-substitution cipher</em> (informally called a <em>cryptogram</em>) is a code in which each letter in the original text is replaced with some other letter.
+<ul>
+<li>The substitution pattern remains the same throughout the message</li>
+<li>Any letter can be mapped to any other unused letter, no order is necessary</li>
+</ul></li>
+<li>One of the more famous cryptograms was written by Edgar Allen Poe in his short story “The Gold Bug”
+<ul>
+<li>Described in his story how the message could be decoded by mapping the most common letters in the message to the most commonly used letters in the English language</li>
+</ul></li>
+</ul>
+</section>
+<section id="the-enigma-machine" class="slide level2">
+<h2>The Enigma Machine</h2>
+<div class="cols">
+<div class="col" style="flex-grow:.6">
+<figure>
+<img data-src="../images/EnigmaMachinePhoto.png" style="width:100.0%" alt="Actual Enigma Machine" /><figcaption aria-hidden="true">Actual Enigma Machine</figcaption>
+</figure>
+</div>
+<div class="col">
+<figure>
+<img data-src="../images/EnigmaDiagram.png" style="width:100.0%" alt="Enigma Diagram" /><figcaption aria-hidden="true">Enigma Diagram</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="section" class="slide level2" data-background-video="../video/EnigmaD.mp4">
+<h2 data-background-video="../video/EnigmaD.mp4"></h2>
+</section>
+<section id="section-1" class="slide level2" data-background-iframe="https://willamette.edu/~esroberts/cs151/projects/Enigma/index.html">
+<h2 data-background-iframe="https://willamette.edu/~esroberts/cs151/projects/Enigma/index.html"></h2>
+</section>
+<section id="the-enigma-internals" class="slide level2">
+<h2>The Enigma Internals</h2>
+<figure>
+<img data-src="../images/EnigmaInternals1.png" style="width:80.0%" alt=" " /><figcaption aria-hidden="true"> </figcaption>
+</figure>
+</section>
+<section id="the-enigma-rotors" class="slide level2">
+<h2>The Enigma Rotors</h2>
+<figure>
+<img data-src="../images/EnigmaInternals2.png" style="width:80.0%" alt=" " /><figcaption aria-hidden="true"> </figcaption>
+</figure>
+</section>
+<section id="operation-of-the-enigma-machine" class="slide level2">
+<h2>Operation of the Enigma Machine</h2>
+<ul>
+<li>Whenever a letter is typed, the following happens:
+<ol>
+<li>The force of the key press advances the fast rotor one position. If the rotor wraps from Z to A, this advances the next rotor by one increment as well.</li>
+<li>An electric signal is fed into the wire corresponding to the key, which then flows through seven letter-substitution steps
+<ul>
+<li>Through the fast rotor from right to left</li>
+<li>Through the medium rotor from right to left</li>
+<li>Through the slow rotor from right to left</li>
+<li>Through the reflector, which turns the signal around</li>
+<li>Through the slow rotor from left to right</li>
+<li>Through the medium rotor from left to right</li>
+<li>Through the fast rotor from left to right and on to the lamp</li>
+</ul></li>
+</ol></li>
+</ul>
+</section>
+<section id="encoding-a" class="slide level2" data-transition="slide-in fade-out">
+<h2 data-transition="slide-in fade-out">Encoding “A”</h2>
+<figure>
+<img data-src="../images/EnigmaInternals3.png" style="width:80.0%" alt=" " /><figcaption aria-hidden="true"> </figcaption>
+</figure>
+</section>
+<section id="encoding-a-again" class="slide level2" data-transition="fade-in slide-out">
+<h2 data-transition="fade-in slide-out">Encoding “A” Again</h2>
+<figure>
+<img data-src="../images/EnigmaInternals4.png" style="width:80.0%" alt=" " /><figcaption aria-hidden="true"> </figcaption>
+</figure>
+</section>
+<section id="project-4-milestones" class="slide level2">
+<h2>Project 4 Milestones</h2>
+<div style="font-size:.9em;">
+<ul>
+<li>Project 4 has a few more milestones than past projects, but each is still meant to give you a testable aspect of the program that you can bite off one piece at a time
+<ul>
+<li>Milestone 1: Create the keyboard</li>
+<li>Milestone 2: Get mouse responsive keyboard keys</li>
+<li>Milestone 3: Create the lamp panel</li>
+<li>Milestone 4: Connect the keyboard to the lamp</li>
+<li>Milestone 5: Add initial rotors</li>
+<li>Milestone 6: Implement click actions for rotors</li>
+<li>Milestone 7: Implement one stage in the encryption</li>
+<li>Milestone 8: Implement the full encryption path</li>
+<li>Milestone 9: Make the rotors advance properly each keypress</li>
+</ul></li>
+<li>Web examples exist for helping you test each step of the process, linked <a href="https://willamette.edu/~esroberts/cs151/projects/Enigma/index.html">here</a> and in the guide.</li>
+</ul>
+</div>
+</section>
+<section id="virtual-enigma-machine-pieces" class="slide level2">
+<h2>Virtual Enigma Machine Pieces</h2>
+<p><img data-src="../images/svg_cache/b0efde23298ef09883c51e8da2f6474e0f90a951.svg" style="width:80.0%" /></p>
+</section>
+<section id="who-talks-to-whom" class="slide level2">
+<h2>Who talks to Whom?</h2>
+<ul>
+<li>It will be important to maintain an effective separation between the parts of the program responsible for storing state information and parts of the program responsible for updating the graphics window.
+<ul>
+<li>Failing to maintain this separation is a good way to find yourself in a convoluted mess real quick!</li>
+</ul></li>
+<li>The <code class="python">EnigmaMachine</code> class is the brain of the operation and stores the model for the Enigma machine, serving as a relay point for information flow.
+<ul>
+<li>The <code class="python">EnigmaKey</code> class should not communicate directly with <code class="python">EnigmaLamp</code> or <code class="python">EnigmaRotor</code>, but instead contact <code class="python">EnigmaMachine</code>.</li>
+<li><code class="python">EnigmaMachine</code> stores the relevant information and then passes on a message to the appropriate <code class="python">EnigmaLamp</code> or <code class="python">EnigmaRotor</code> object.</li>
+</ul></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

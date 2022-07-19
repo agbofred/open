@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-09-24">
+  <title>Clicky Clicky</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Clicky Clicky</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">September 24, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Problem Set 3 due on Monday!</li>
+<li>I will be posting the Project 1 guide sometime tomorrow, so if you are a little ahead of the game you can get going on it sooner.
+<ul>
+<li>At the latest, you should plan to start work on Project 1 <strong>Tuesday</strong> next week</li>
+<li>Projects take time, and setting aside some time each day to work on another piece is the best way to ensure you don’t reach the end of the week in panic mode</li>
+</ul></li>
+<li>Lab today!</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2">
+<h2>Review Question</h2>
+<div class="cols">
+<div class="col">
+<p>Which of the below images is the mostly likely output of the code to the right?</p>
+<div style="display: flex; flex-wrap: wrap; justify-content:center;">
+<div>
+<img src="../images/random_revq1.png" style="flex-grow:1; object-fit:cover; height:380px; border:solid white 2px;"/>
+</div>
+<div>
+<img src="../images/random_revq2.png" style="flex-grow:1; object-fit:cover; height:380px; border:solid white 2px;"/>
+</div>
+<div>
+<img src="../images/random_revq3.png" style="flex-grow:1; object-fit:cover; height:380px; border:solid white 2px;"/>
+</div>
+<div>
+<img src="../images/random_revq4.png" style="flex-grow:1; object-fit:cover; height:380px; border:solid white 2px;"/>
+</div>
+</div>
+</div>
+<div class="col" style="flex-grow:1.2;">
+<pre ><code class="python" style="max-height:950px; font-size:.75em;">def make_circle(x,y,r):
+    c = GOval(x-r, y-r, 2*r, 2*r)
+    c.set_filled(True)
+    if randint(1, 100) > 75:
+        c.set_color("#F92672") #pink
+    else:
+        c.set_color("#66D9EF") #blue
+    return c
+
+gw = GWindow(500, 500)
+for i in range(50):
+    gw.add(make_circle(
+        randint(50,450), 
+        randint(50,450), 
+        randint(5,50)
+        ))</code></pre>
+</div>
+</div>
+<!--
+## Understanding Check
+::::cols
+:::col
+```python
+def f(x,y):
+    return x**2 + y
+
+def g(z,n):
+    x = 2
+    for i in range(n):
+        x += z(i,n)
+    return x
+
+print(g(f,2))
+```
+:::
+:::col
+What value will be printed to the screen when the code to the left is run?
+
+:::::{.poll}
+#. 2
+#. 4
+#. 7
+#. This will give an error
+:::::
+
+:::
+::::
+-->
+</section>
+<section id="new-methods" class="slide level2">
+<h2>New Methods</h2>
+<ul>
+<li>A new method that acts on a <code class="python">GWindow</code>:</li>
+</ul>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code class="no-highlight">get_element_at(x,y)</code></td>
+<td style="text-align: left;">Returns the frontmost object at (x,y) or <code class="python">None</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>And more new methods that act on any <code class="python">GObject</code></li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 71%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code class="no-highlight">set_location(x,y)</code></td>
+<td style="text-align: left;">Resets the location of the object to the specified point</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code class="no-highlight">move(dx,dy)</code></td>
+<td style="text-align: left;">Moves the object <code class="python">dx</code> and <code class="python">dy</code> pixels from its current position</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code class="no-highlight">move_polar(dr,theta)</code></td>
+<td style="text-align: left;">Moves the object <code class="python">dr</code> pixel units in direction <code class="python">theta</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code class="no-highlight">contains(x,y)</code></td>
+<td style="text-align: left;">Returns <code class="python">True</code> if the object contains the specified point</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code class="no-highlight">get_color()</code></td>
+<td style="text-align: left;">Returns the color currently assigned to the object</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-python-event-model" class="slide level2">
+<h2>The Python Event Model</h2>
+<ul>
+<li>Graphical applications usually make it possible for the user to control the action of a program by using an input device such a mouse.
+<ul>
+<li>Programs supporting this type of control are called <em>interactive programs</em>.</li>
+</ul></li>
+<li>User actions such as clicking the mouse are called <em>events</em>.</li>
+<li>Programs that respond to events are said to be <em>event driven</em>.</li>
+<li>User input does not generally occur at predictable times. As the events are not controlled by the program, they are said to be <em>asynchronous</em>.</li>
+<li>In Python, you write a function that acts as a <em>listener</em> for a particular event type. When the event happens, the listener is called.</li>
+</ul>
+</section>
+<section id="first-class-functions" class="slide level2">
+<h2>First Class Functions</h2>
+<ul>
+<li>Functions in Python are treated as data values just like anything else!
+<ul>
+<li>We will need to take advantage of this to write listener functions.</li>
+</ul></li>
+<li>You can assign a function to a variable, pass it as a parameter, return it as a result, etc</li>
+<li>Functions treated like any other data value are called <em>first-class functions</em></li>
+<li>To work with a function itself, you leave off the <code class="python">()</code>. Including the parentheses is how you <em>call</em> the function!</li>
+</ul>
+</section>
+<section id="a-first-class-example" class="slide level2">
+<h2>A First Class Example</h2>
+<pre ><code class="python" style="max-height:900px">import math
+
+def evaluate_numbers(func):
+    print(func)
+    print(func(0))
+    print(func(2))
+    print(func(10))
+
+A = evaluate_numbers
+
+A(math.sqrt)
+A(math.exp)</code></pre>
+</section>
+<section id="closures" class="slide level2">
+<h2>Closures</h2>
+<div class="cols">
+<div class="col">
+<p>Consider the code to the right.</p>
+<div>
+<ul>
+<li class="fragment">Why does the line 12 not error?</li>
+<li class="fragment"><a href="http://www.pythontutor.com/visualize.html#code=b%20%3D%201%0Adef%20f1%28a%29%3A%0A%20%20%20%20print%28a%29%0A%20%20%20%20print%28b%29%0A%20%20%20%20def%20f2%28%29%3A%0A%20%20%20%20%20%20%20%20c%20%3D%20a%20%2B%20b%0A%20%20%20%20%20%20%20%20return%20c%20*%203%0A%20%20%20%20return%20f2%20%0Af2%20%3D%20f1%2810%29%0Ac%20%3D%20f2%28%29&amp;cumulative=false&amp;curInstr=0&amp;heapPrimitives=false&amp;mode=display&amp;origin=opt-frontend.js&amp;py=3&amp;rawInputLstJSON=%5B%5D&amp;textReferences=false">Python Tutor</a></li>
+<li class="fragment"><code class="python">f2</code> must also keep track of any local variables!</li>
+<li class="fragment">The local variables that are included as part of a function are called its <em>closure</em></li>
+</ul>
+</div>
+</div>
+<div class="col">
+<pre ><code class="python" style="max-height:800px" data-line-numbers="">b = 1
+def f1(a):
+    print(a)
+    print(b)
+
+    def f2():
+        c = a + b
+        return c * 3
+    return f2 
+
+f2 = f1(10) 
+c = f2()</code></pre>
+</div>
+</div>
+</section>
+<section id="our-first-interactive-example" class="slide level2">
+<h2>Our First Interactive Example</h2>
+<ul>
+<li>Consider the simple program below, where we’ve imported the basics and some of our helper functions</li>
+</ul>
+<pre ><code class="python">def draw_dots():
+    def click_action(event):
+        c = create_filled_rect(
+            event.get_x(), event.get_y(), 
+            10,10, random_color())
+        gw.add(c)
+
+    gw = GWindow(500, 500)
+    gw.add_event_listener("click", click_action)</code></pre>
+<ul>
+<li>The <code class="python">click_action</code> function specifies what to do when the mouse is clicked
+<ul>
+<li>Note that it has access to the <code class="python">gw</code> variable since it is in the enclosing function and thus in the closure.</li>
+</ul></li>
+</ul>
+</section>
+<section id="registering-a-listener" class="slide level2">
+<h2>Registering a Listener</h2>
+<ul>
+<li><p>The last line of our example function:</p>
+<pre ><code class="python">gw.add_event_listener("click", click_action)</code></pre>
+<p>tells the graphics window (<code class="python">gw</code>) to call the <code class="python">click_action</code> function whenever a mouse “click” occurs within the window.</p></li>
+<li><p>When the user clicks the mouse, the graphics window, in essense, calls the client back to let them know that a click has occured. Thus, functions such as <code class="python">click_action</code> are known as <em>callback functions</em>.</p></li>
+<li><p>The parameter <code class="python">event</code> given to the callback function is a special data structure called a <em>mouse event</em>, which contains details about the specifics of the event that triggered the action.</p></li>
+</ul>
+</section>
+<section id="mouse-events" class="slide level2">
+<h2>Mouse Events</h2>
+<ul>
+<li>We have a fairly comprehensive list of mouse-events that we can trigger callbacks on:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Name</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code class="python">"click"</code></td>
+<td style="text-align: left;">The user clicks the mouse in the window</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code class="python">"dblclk"</code></td>
+<td style="text-align: left;">The user double-clicks the mouse in the window</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code class="python">"mousedown"</code></td>
+<td style="text-align: left;">The user presses the mouse button down</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code class="python">"mouseup"</code></td>
+<td style="text-align: left;">The user releases the mouse button</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code class="python">"mousemove"</code></td>
+<td style="text-align: left;">The user moves the mouse</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code class="python">"drag"</code></td>
+<td style="text-align: left;">The user moves the mouse with the button down</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="event-details" class="slide level2">
+<h2>Event Details</h2>
+<ul>
+<li>Certain actions can trigger more than one event
+<ul>
+<li>Clicking generates a “mousedown”, “mouseup”, and then “click” event, in that order</li>
+</ul></li>
+<li>Events trigger no action unless the window is listening for that event
+<ul>
+<li>If I drag my mouse in the <code class="python">draw_dots()</code> function, you’ll notice that nothing happens</li>
+</ul></li>
+<li>You can setup however many listeners you feel you need in order to make your program behave as desired</li>
+</ul>
+<pre ><code class="python">gw.add_event_listener("click", click_action)
+gw.add_event_listener("dblclk", dblclk_action)</code></pre>
+</section>
+<section id="line-drawing" class="slide level2">
+<h2>Line Drawing</h2>
+<ul>
+<li>Say we wanted to write a simple program that allows the user to draw lines by clicking and dragging the mouse</li>
+<li>Using two event listeners would be useful:
+<ul>
+<li>“mousedown” could start drawing a zero-length line at the current mouse position (and add it to the window)</li>
+<li>“drag” could update the end-point of that line</li>
+</ul></li>
+<li>The strategy would allow the user to have visual feedback as they drag around, helping them to position the line
+<ul>
+<li>Since the line stretches and contracts as you move the cursor around, the technique is commonly called <em>rubber-banding</em></li>
+</ul></li>
+</ul>
+</section>
+<section id="attempt-1" class="slide level2">
+<h2>Attempt #1</h2>
+<pre ><code class="python badcode" style="max-height:900px;">from pgl import GWindow, GLine
+
+WIDTH = 500
+HEIGHT = 500
+
+def draw_lines():
+    def mousedown_event(e):
+        x = e.get_x()
+        y = e.get_y()
+        line = GLine(x,y,x,y)
+        gw.add(line)
+
+    def drag_action(e):
+        line.set_end_point(e.get_x(), e.get_y())
+
+    gw = GWindow(WIDTH, HEIGHT)
+    line = None
+    gw.add_event_listener("mousedown", mousedown_event)
+    gw.add_event_listener("drag", drag_action)
+
+if __name__ == '__main__':
+    draw_lines()</code></pre>
+</section>
+<section id="what-happened" class="slide level2">
+<h2>What Happened?</h2>
+<ul>
+<li>Remember that if you define a variable in a function, that variable is assumed to be local!
+<ul>
+<li>Keeps you from accidentally overwriting variables you may not have meant to</li>
+<li>It works against us here, since we WANT to override the original value</li>
+</ul></li>
+<li>We can’t pass in the info as a parameter, since it is not part of the event information</li>
+<li>Python <em>does</em> have a <code class="python">nonlocal</code> keyword, which allows you to state that a specific variable is <em>not</em> local, but it tends to just confuse students</li>
+<li>In this class, we’ll store all variables that need to be shared between two or more functions in a <em>state object</em>
+<ul>
+<li>Just a collection of values stored as a single object</li>
+<li>The object is defined in the main function, and then we can access and insert or recall values from it</li>
+</ul></li>
+</ul>
+</section>
+<section id="using-gstate" class="slide level2">
+<h2>Using <code class="python">GState</code></h2>
+<ul>
+<li>The PGL library has a <code class="python">GState</code> object type that we can import to use for sharing data between callback functions</li>
+<li>Create a variable, conventionally called <code class="python">gs</code> immediately after creating the window:</li>
+</ul>
+<pre ><code class="python">gw = GWindow(WIDTH, HEIGHT)
+gs = GState()</code></pre>
+<ul>
+<li>Value to be shared can be stored as part of the <code class="python">gs</code> variable as an object attribute, which we will talk much more about in Ch 9
+<ul>
+<li>For now, shared variables should include <code class="python">gs</code> and then a period before the variable name.</li>
+<li>So <code class="python">line</code> will become <code class="python">gs.line</code> everywhere in our example</li>
+</ul></li>
+</ul>
+</section>
+<section id="fixed-line-drawing" class="slide level2">
+<h2>Fixed Line-Drawing</h2>
+<pre ><code class="python" style="max-height:900px;">from pgl import GWindow, GLine, GState
+
+WIDTH = 500
+HEIGHT = 500
+
+def draw_lines():
+    def mousedown_event(e):
+        x = e.get_x()
+        y = e.get_y()
+        gs.line = GLine(x,y,x,y)
+        gw.add(gs.line)
+
+    def drag_action(e):
+        gs.line.set_end_point(e.get_x(), e.get_y())
+
+    gw = GWindow(WIDTH, HEIGHT)
+    gs = GState()
+    gs.line = None
+    gw.add_event_listener("mousedown", mousedown_event)
+    gw.add_event_listener("drag", drag_action)
+
+if __name__ == '__main__':
+    draw_lines()</code></pre>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-08-30">
+  <title>Introducing Karel</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Introducing Karel</h1>
+  <p class="author">Instructor: Fred Agbo <br><br>  <strong>Slides by: Jed Rembold</strong>  </p>
+  <p class="date">August 29, 2022</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Welcome to CS-151: Intro to Programming with Python!</li>
+<li>Things to do:
+<ul>
+<li>Access the course webpage at <a href="http://www.willamette.edu/~jjrembold/classes/cs151/cs151/">here!</a>
+<ul>
+<li>There is also a link to the course webpage from <a href="../../resources/syllabus.pdf" target="_blank">this link here</a></li>
+</ul></li>
+<li>Read over the full syllabus</li>
+<li>Get yourself a copy of the book</li>
+<li><!--Make sure you can find and access the class forum on Campuswire 
+<ul>
+<li>You should have gotten an email</li>
+</ul></li>
+<li>Bring phone or computer for polling questions in the future</li>
+</ul></li>!-->
+<li>Homework
+<ul>
+<li>HW0 will be posted by the end of the day, due at the end of Sunday</li>
+<li>Will work in lab today to make sure you are setup with everything you need and have been introduced to the process</li>
+</ul></li>
+</ul>
+</section>
+<section id="my-vitals" class="slide level2">
+<h2>My Vitals</h2>
+<dl>
+<dt>Name</dt>
+<dd>Fred Agbo
+</dd>
+<dt>Office</dt>
+<dd><strong>T</strong> BD
+</dd>
+<dt>TBD</dt>
+<dd><!--M, W 4:15-5:15pm 
+<dd>T, Th 2:00-4:00pm
+</dd>
+<dd>Online or anytime I’m around
+</dd>
+<dt>Email:</dt>
+<dd>jjrembold at willamette.edu
+</dd>
+<dt>Office Phone:</dt>
+<dd>503-370-6860
+</dd>-->
+</dd>
+</dl>
+</section>
+<section id="motivations" class="slide level2">
+<h2>Motivations</h2>
+<ul>
+<li>The field of computing today is scarcely recognizable compared to the field 50 years ago.</li>
+<li>Many feel the pace of the field is only accelerating as we move forwards.</li>
+<li>Studying computing now lets you take part in driving forward not only the field of computing, but of all the modern fields with utilize computing.
+<ul>
+<li>Almost all fields!</li>
+</ul></li>
+</ul>
+</section>
+<section id="squad-goals" class="slide level2">
+<h2>Squad Goals</h2>
+<div class="block" name="Primary Objective">
+<p>To gain the skills, knowledge, and confidence necessary to write, test, and debug Python programs requiring several hundred lines of code.</p>
+</div>
+<p>Doing so will require that students be able to:</p>
+<ul>
+<li>implement simple algorithms using Python control structures,</li>
+<li>apply decomposition and step-wise refinement techniques,</li>
+<li>make effective use of recursing computing strategies,</li>
+<li>design data structures to model information,</li>
+<li>execute all phases of the programming process, including design, implementation, testing and debugging,</li>
+<li>and defend the argument that computer science is far more than just programming.</li>
+</ul>
+</section>
+<section id="grading" class="slide level2">
+<h2>Grading</h2>
+<ul>
+<li>Standard 90/80/70 etc grade cut-offs
+<ul>
+<li>Top 2% get +’s, bottom 2% get -’s</li>
+</ul></li>
+</ul>
+<table>
+<tbody>
+<tr class="odd">
+<td>Participation</td>
+<td style="text-align: right;">5%</td>
+</tr>
+<tr class="even">
+<td>Problem Sets</td>
+<td style="text-align: right;">15%</td>
+</tr>
+<tr class="odd">
+<td>Projects</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr class="even">
+<td>Lab</td>
+<td style="text-align: right;">10%</td>
+</tr>
+<tr class="odd">
+<td>Midterm</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr class="even">
+<td>Final Exam</td>
+<td style="text-align: right;">25%</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="participation" class="slide level2">
+<h2>Participation</h2>
+<ul>
+<li>Scored through active participation in class quizes, asking and answering questions or in contacting me with a question about a specific slide.</li>
+<li>Generally 1-2 polls per day</li>
+<li>Answering any poll gets you full points for the day (even if you are wrong!)</li>
+<li>Answering correctly gets you bits of extra credit</li>
+<li>Score from active participation will add up (15%) to your overall grade at the end of the course</li>
+<!--<li>Polling website at <a href="http://rembold-class.ddns.net">http://rembold-class.ddns.net</a></li> -->
+<li>Will start officially on Wednesday</li>
+</ul>
+</section>
+<section id="homework" class="slide level2">
+<h2>Homework</h2>
+<ul>
+<li>Falls into two categories:
+<ul>
+<li><em>Problem Sets:</em> smaller, more focused assignments
+<ul>
+<li>Graded on standard, numeric scales</li>
+</ul></li>
+<li><em>Projects:</em> larger, more integrative assignments
+<ul>
+<li>Graded on a more qualitative scale (next slide)</li>
+</ul></li>
+</ul></li>
+<li>All will be due on Sundays at 11:59pm</li>
+<li>Submissions of <em>both</em> will be handled through Github Classroom
+<ul>
+<li>Learning how to do this is part to today’s lab</li>
+</ul></li>
+<li>Late submission for any reason needs to be communicated to me before the 11:59pm and approval must be given by me</li>
+<li>Extensions for any reason must not exceed 24 hours after the deadline, otherwise, the student forfeit the grade </li>
+</ul>
+</section>
+<section id="project-sneak-peeks" class="slide level2">
+<h2>Project Sneak Peeks!</h2>
+<div class="r-stack">
+<p><video data-src="../video/project1_demo.webm" class="fragment current-visible" loop="True" height="800" controls=""><a href="../video/project1_demo.webm">Breakout game</a></video><br />
+</p>
+<p><video data-src="../video/project2_demo.webm" class="fragment current-visible" loop="True" width="1500" controls=""><a href="../video/project2_demo.webm">Hive puzzle</a></video><br />
+</p>
+<p><video data-src="../video/project3_demo.webm" class="fragment current-visible" loop="True" height="800" controls=""><a href="../video/project3_demo.webm">Imageshop program</a></video><br />
+</p>
+<p><video data-src="../video/project4_demo.webm" class="fragment current-visible" loop="True" height="800" controls=""><a href="../video/project4_demo.webm">Enigma machine</a></video><br />
+</p>
+<p><video data-src="../video/project5_demo.webm" class="fragment current-visible" loop="True" height="900" controls=""><a href="../video/project5_demo.webm">Adventure game</a></video><br />
+</p>
+</div>
+</section>
+<section id="project-scoring" class="slide level2">
+<h2>Project Scoring</h2>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"> </td>
+<td>A submission so good it “makes you weep”</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td>Exceeds requirements</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"> </td>
+<td>Satisfies all assignment requirements</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td>Meets most requirements, but some issues</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"> </td>
+<td>Some more serious problems evident</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td>Even worse…</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"> </td>
+<td>Why even bother turning this in?</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="labs" class="slide level2">
+<h2>Labs</h2>
+<ul>
+<li>For the most part, we will only have lab on Wednesdays</li>
+<li>You are somewhat split across the sections</li>
+<li>Exercises involving what we discussed in class the previous day</li>
+<li>Many will involve pair programming</li>
+<li>I’ll check people off as the finish for your credit</li>
+<li>If you finish early, any remaining time will be your own to work on homework, ask questions, or leave</li>
+</ul>
+</section>
+<section id="sections" class="slide level2">
+<h2>Sections</h2>
+<ul>
+<li>New pilot program just started last semester!</li>
+<li>Everyone will be placed into small sections of 5-7 students, with one section leader</li>
+<li>All section leaders are students who recently took and excelled in this course</li>
+<li>Will meet as a group with your section leader once a week for an hour to go over and work on problems
+<ul>
+<li>Figuring these times out, but they will largely be on Monday or Tuesday afternoons and evenings</li>
+</ul></li>
+<li>Section leaders will also serve as a secondary source you can ask for help or guidance from</li>
+<li>Hopefully starting up next week</li>
+</ul>
+</section>
+<section id="tests" class="slide level2">
+<h2>Tests</h2>
+<ul>
+<li>Tests are necessary to assure retention of material and ensure that some are not getting too much help on the assignments.</li>
+<li>Just two this semester:
+<ul>
+<li>Midterm on October 22</li>
+<li>Final on Dec 17</li>
+</ul></li>
+<li>Tests will be taken in class and will actually not allow the use of a computer
+<ul>
+<li>This policy has actually been seen to <em>improve</em> student scores, as it prevents you from wasting tons of time obsessing about a small mistake!</li>
+</ul></li>
+<li>Example tests and study materials will be given out a week in advance.</li>
+</ul>
+</section>
+<section id="communication" class="slide level2">
+<h2>Communication</h2>
+<ul>
+<li>I tend to find WISE lacking both from a polish perspective and from an ease of use perspective</li>
+<li>I will be using a 3rd-party forum to focus class communication, announcements, and questions: <a href="https://campuswire.com/c/GA23B6ED8/feed">Campuswire</a>
+<ul>
+<li>You should have gotten an email with invite instructions. Let me know if you have not!</li>
+<li>Totally free to sign up and use</li>
+</ul></li>
+<li>Will be the main online location for announcements and questions and answers.</li>
+<li>Has support for code-blocks when talking about code by surrounding code in triple backticks: ```<code class="python">this is code</code> ```</li>
+</ul>
+</section>
+<section id="academic-honesty" class="slide level2">
+<h2>Academic Honesty</h2>
+<ol type="1">
+<li>You must not look at solutions or program code that is not your own.</li>
+<li>You must not share your solution code with other students.
+<ul>
+<li>But you are welcome (and encouraged!) to work alongside others enroute to finding a solution.</li>
+</ul></li>
+<li>You must indicate on your submitted assignment any assistance you received or who you worked alongside.</li>
+</ol>
+</section>
+<section id="diving-in" class="slide level2">
+<h2>Diving In</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>This course is an introduction on <em>computer science</em>, and covers more than just programming!</li>
+<li>Python is used to teach the programming portion of the course, but the focus is less on Python itself and more on general computer science principles.</li>
+<li>If you come across situations where you need to know a bit more about specific Python details, there are plenty of resources online, or just ask me!</li>
+</ul>
+</div><div class="column">
+<!--<p class="stretch"><img src="../images/book_cover.png"></p>-->
+<p><img data-src="../images/book_cover.png" style="width:70.0%" /></p>
+</div>
+</div>
+</section>
+<section id="effective-communication" class="slide level2">
+<h2>Effective Communication</h2>
+<div>
+<ul>
+<li class="fragment">To communicate effectively with someone or something, you really need two layers of communication:
+<ul>
+<li class="fragment">A shared language or method of conveying information
+<ul>
+<li class="fragment">French, for instance</li>
+<li class="fragment">In our case, Python</li>
+</ul></li>
+<li class="fragment">A joint agreement about what constitutes meaning and ways to limit confusion or misunderstanding
+<ul>
+<li class="fragment">Being able to explain things clearly and unambiguously</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="giving-clear-instructions" class="slide level2">
+<h2>Giving Clear Instructions</h2>
+<ul>
+<li>We will initially make the language <em>extremely</em> simple so that we can focus on the second layer</li>
+<li>Karel the Robot exists in a very simple 2D world</li>
+<li>Has a very limited set of actions:
+<ul>
+<li>Can move forward one space</li>
+<li>Can rotate counter-clockwise (turn left) 90 degrees</li>
+<li>Can pick up a beeper</li>
+<li>Can drop off a beeper</li>
+</ul></li>
+<li>We will be spending the first several class days just interested in how we can take these simple instructions and get Karel to solve a wide variety of problems
+<ul>
+<li>This content is not in your book, but more in-depth descriptions can be found <a href="https://willamette.edu/~esroberts/pykarel/reader/01-IntroducingKarel.html">here</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="the-world" class="slide level2">
+<h2>The World</h2>
+<div class="cols">
+<div class="col">
+<ul>
+<li>Karel’s world is defined on a grid
+<ul>
+<li><em>avenues</em> run north-south</li>
+<li><em>streets</em> run east-west</li>
+<li>The <em>intersection</em> between a street and avenue is called a corner</li>
+</ul></li>
+<li>Compass directions are as you’d have them on a map, with North pointing upwards</li>
+<li>Walls are impassable</li>
+<li>Beepers are diamonds</li>
+<li>Karel is a house-shaped polygon</li>
+</ul>
+</div>
+<div class="col">
+<p><img data-src="../images/svg_cache/0269a24c69cc3928f2bb73044e5e3d1970624894.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="commands" class="slide level2">
+<h2>Commands</h2>
+<ul>
+<li>As we mentioned before, Karel is a simple robot, and can really only do 4 potential actions</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Command</th>
+<th style="text-align: left;">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code class="python">move()</code></td>
+<td style="text-align: left;">Moves Karel forward one corner in whatever direction they are facing</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code class="python">turn_left()</code></td>
+<td style="text-align: left;">Rotates Karel 90 deg counter-clockwise</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code class="python">pick_beeper()</code></td>
+<td style="text-align: left;">Picks up a beeper on the ground</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code class="python">put_beeper()</code></td>
+<td style="text-align: left;">Places a beeper on the ground</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Our commands are just sequences of these actions</li>
+</ul>
+</section>
+<section id="example" class="slide level2">
+<h2>Example</h2>
+<div class="cols">
+<div class="col">
+<ul>
+<li>Suppose we had the situation to the right and wanted to navigate to the beeper, pick it up, and then drop it at the corner of 1st avenue and 1st street.</li>
+<li>Take a moment to write out your instructions.
+<ul>
+<li>Remember you can only move, rotate left, and pick up or drop the beeper</li>
+</ul></li>
+<li>Note that there are multiple ways to do this! Which is better?</li>
+</ul>
+</div>
+<div class="col">
+<p><img data-src="../images/svg_cache/2f23aa67af9dd68dfb3635c94e79e7f1f75413b0.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="one-solution" class="slide level2">
+<h2>One Solution</h2>
+<pre ><code class="python" style="max-height:800px">def main():
+    move()
+    turn_left()
+    turn_left()
+    turn_left()
+    move()
+    turn_left()
+    move()
+    turn_left()
+    turn_left()
+    turn_left()
+    move()
+    pick_beeper()
+    turn_left()
+    turn_left()
+    turn_left()
+    move()
+    move()
+    put_beeper()</code></pre>
+<!--
+## Getting the right mindset
+::: {.columns}
+:::: {.column}
+- Katherine Johnson worked as a "computer" at NASA, when the term still referred to humans doing the calculations.
+    - One of the three black women portrayed in the 2016 film _Hidden Figures_
+    - Awarded the Presidential Medal of Freedom in 2015
+    - Passed away in February of this year at the age of 101
+::::
+:::: {.column}
+![](../images/katherine_johnson.jpg){width=500px}
+::::
+:::
+
+---
+
+## Data Types
+- Generally, the data processed by computers can take on many forms
+- A _data type_ defines the common characteristics of some data values that have a certain form or purpose.
+    - Ex: a whole number or integer has certain characteristics
+- A data type has a _domain_, which is the set of all potential values that would belong to that type.
+    - Ex: 0,1,2,3,4,5,6,7,...
+- A data type has a _set of operations_ that define how those values can be manipulated
+    - Ex: You can add two whole numbers (5+2)
+
+## Numeric Types
+- Initially, we'll just focus on the numeric types
+- Python has 3 data types for numbers:
+    - `int`{.python} for integers and whole numbers
+
+        ```python
+        1, 2, 3, 10, 1001010101
+        ```
+
+    - `float`{.python} for numbers containing a decimal point
+
+        ```python
+        1.23, 3.14, 10.001, 0.0
+        ```
+
+    - `complex`{.python} for numbers with an imaginary component (which we won't deal with)
+
+---
+
+## Expressions
+- Like most languages, Python describes computation using _arithmetic expressions_, which consist of _terms_ joined by _operators_
+    - Very similar to how a logical English sentence has nouns connected by verbs
+- A term in an expression can be:
+    - an explicit numeric value (1 or 3.14)
+    - a variable name serving as a placeholder to a value
+    - a value resulting from the output of a function call
+    - another expression enclosed in parentheses
+- Operators are mostly the common ones found from arithmetic, but with a few extras, as we'll see on the next slide
+- The result of an expression will have a data type that generally depends on both the operation done and the input data types
+
+---
+
+## Integer and Float Operations
+- `i + j`  the _sum_ of `i` and `j`[留]{.orange}
+- `i - j`  the _difference_ between `i` and `j`[留]{.orange}
+- `i * j`  the _product_ of `i` and `j`[留]{.orange}
+- `i // j`  the _floor division_ of `i` by `j`[留]{.orange}
+- `i / j`  the _division_ of `i` by `j`[†]{.orange}
+- `i % j`  the _remainder_ when `i` is divided by `j`[留]{.orange}
+- `i ** j`  `i` to the _power_ of `j`[留]{.orange}
+
+<br>
+<hr>
+<br>
+[留]{.orange} -- Returns `int` if both `i` and `j` are integers, `float` otherwise
+
+[†]{.orange} -- Returns `float` always
+
+---
+
+## Order of Operations
+- Basic order of operations applies just like in math!
+- Operations in parentheses done first
+- Without parentheses, order of operations proceeds as:
+    - `**` (exponents)
+    - `-n` (negative numbers)
+    - `*`, `/`, `//`, `%`, executed from left to right
+    - `+` and `-`, executed from left to right
+-->
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Loop the presentation
+        loop: false,
+        // Change the presentation direction to be RTL
+        rtl: false,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: true,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

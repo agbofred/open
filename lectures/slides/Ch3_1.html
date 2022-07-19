@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-09-13">
+  <title>Logical Collages</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Logical Collages</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">September 13, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>I’m almost through all the scoring on PS0, working on the rest today
+<ul>
+<li>In the future, I’ll score in the order of submission</li>
+</ul></li>
+<li>You have Problem Set 1 due by the end of the day!</li>
+<li>Problem Set 2 will be posted by tomorrow</li>
+<li>No lab today! I’ll be in my office (grading) if you have questions!</li>
+<li>Moving into some Chapter 3 content today probably</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="boolean-expressions" class="slide level2">
+<h2>Boolean Expressions</h2>
+<ul>
+<li><p>Python defines two types of operators that work with Boolean data: <em>relational operators</em> and <em>logical operators</em></p></li>
+<li><p>Relational operators compare values of other types and produce a <code class="python">True</code>/<code class="python">False</code> result:</p>
+<table>
+<tbody>
+<tr class="odd">
+<td><code class="python">==</code></td>
+<td style="text-align: left;">Equals</td>
+<td></td>
+<td></td>
+<td></td>
+<td><code class="python">!=</code></td>
+<td style="text-align: left;">Not equals</td>
+</tr>
+<tr class="even">
+<td><code class="python"><</code></td>
+<td style="text-align: left;">Less than</td>
+<td></td>
+<td></td>
+<td></td>
+<td><code class="python"><=</code></td>
+<td style="text-align: left;">Less than or equal too</td>
+</tr>
+<tr class="odd">
+<td><code class="python">></code></td>
+<td style="text-align: left;">Greater than</td>
+<td></td>
+<td></td>
+<td></td>
+<td><code class="python">>=</code></td>
+<td style="text-align: left;">Greater than or equal to</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>Be careful! <code class="python">==</code> <em>compares</em> two booleans. A single <code class="python">=</code> <em>assigns</em> a variable. The odds are high you’ll use one when you meant the other at least once this semester!</p></li>
+</ul>
+</section>
+<section id="the-vulcan-way" class="slide level2">
+<h2>The Vulcan Way</h2>
+<ul>
+<li><p>Logical operators act on Boolean pairings</p>
+<table>
+<thead>
+<tr class="header">
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">A and B</code></td>
+<td>True if both terms True, False otherwise</td>
+</tr>
+<tr class="even">
+<td><code class="python">A or B</code></td>
+<td>True if <em>any</em> term is True, False otherwise</td>
+</tr>
+<tr class="odd">
+<td><code class="python">not A</code></td>
+<td>True if A False, False if A True (opposite)</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<div>
+<ul>
+<li class="fragment">Order of operations follows parentheses and then proceeds left to right</li>
+<li class="fragment">Careful that <code class="python">or</code> is still <code class="python">True</code> if both options are <code class="python">True</code> which is a little different than common English use</li>
+<li class="fragment">Similarly, careful with combining <code class="python">not</code> with <code class="python">and</code> and <code class="python">or</code>
+<ul>
+<li class="fragment">“Not A or B” in common English is not the same as <code class="python">not A or B</code></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="understanding-check" class="slide level2" data-notes="Solution: True">
+<h2 data-notes="Solution: True">Understanding Check</h2>
+<p>What is the final printed value in the code below?</p>
+<div class="cols">
+<div class="col">
+<div class="poll">
+<ol>
+<li><code class="python">True</code></li>
+<li><code class="python">False</code></li>
+<li><code class="python">"4Quiz"</code></li>
+<li>This would give an error</li>
+</ol>
+</div>
+</div>
+<div class="col" style="flex-grow:2;">
+<pre ><code class="python">A = 10
+B = 4
+C = "Quiz"
+A *= len(C)
+if A > 40 and C != "C":
+    print(str(B)+C)
+else:
+    print(A < B or not (C == "C"))
+</code></pre>
+</div>
+</div>
+<!--
+## Review Question! {data-notes="Answer is 16"}
+::::: cols
+
+:::: col
+```python
+x = 7
+y = 0
+while x >= 0:
+    y += x
+    x -= 2
+print(y)
+```
+::::
+
+:::: col
+What will the printed output of the code to the left?
+
+:::{.poll}
+#. 15
+#. 16
+#. 28
+#. Infinite Loop
+:::
+::::
+
+:::::
+-->
+</section>
+<section id="shorting-the-circuit" class="slide level2">
+<h2>Shorting the Circuit</h2>
+<ul>
+<li>Python evaluates <em>and</em> and <em>or</em> operators using a strategy called <em>short-circuit mode</em></li>
+<li>Only evaluates the right operand if it actually needs to
+<ul>
+<li><p>Example: Consider the statement</p>
+<pre ><code class="python">n != 0 and x % n == 0</code></pre>
+<p>If <code class="python">n=0</code>, then the <code class="python">x % n == 0</code> is never actually checked in the statement since <code class="python">n != 0</code> is already <code class="python">False</code> and <code class="python">False and</code> <em>anything</em> is always <code class="python">False</code>!</p></li>
+</ul></li>
+<li>Can use short-circuit to prevent errors: the above <code class="python">x % n == 0</code> statement would have erred out if <code class="python">n=0</code></li>
+</ul>
+</section>
+<section id="sentinels" class="slide level2">
+<h2>Sentinels</h2>
+<ul>
+<li>Many programs in programming can be approched similarly by using a particular <em>idiom</em> or <em>pattern</em></li>
+<li>A common one with repetition is to use a variable to keep track of the loop state until something particular happens (the sentinel is triggered) <br><br></li>
+</ul>
+<pre ><code class="python">finished = False
+while not finished:
+    line = input("Enter a number: ")
+    if line == "":
+        finished = True
+    else:
+        print(line)</code></pre>
+</section>
+<section id="for-loop-anatomy" class="slide level2">
+<h2>For Loop Anatomy</h2>
+<ul>
+<li><p>We know that <code class="python">for</code> loops have a simple syntax:</p>
+<pre ><code class="python">for variable_name in sequence:
+    # code to loop over</code></pre></li>
+<li><p><code class="python">variable_name</code> is a variable name that will be assigned every value in the sequence over the course of the loop</p></li>
+<li><p><code class="python">sequence</code> is any expression that produces a variable that supports iteration</p></li>
+</ul>
+</section>
+<section id="the-range-iterable" class="slide level2">
+<h2>The <code class="python">range()</code> iterable</h2>
+<ul>
+<li>Need an easy way to produce or describe a range of numeric values</li>
+<li>The built-in <code class="python">range()</code> function handles this and produces the needed iterable object</li>
+<li>Takes 1, 2, or 3 arguments (or inputs):
+<ul>
+<li>Start (default 0): where to start the sequence at</li>
+<li>Stop (mandatory): the sequence ends just <em>below</em> this value (does not include it!)</li>
+<li>Step (default 1): what value the sequence counts by <br><br></li>
+</ul></li>
+</ul>
+<div class="block" name="Warning!">
+<p>Be careful, the <code class="python">range</code> function will stop one step <em>before</em> the final stop value.</p>
+</div>
+</section>
+<section id="for-ranging-examples" class="slide level2">
+<h2>For ranging examples</h2>
+<ul>
+<li><p>Providing just a stop argument:</p>
+<pre ><code class="python">for n in range(5):
+    print(n)</code></pre></li>
+<li><p>Providing a start and stop:</p>
+<pre ><code class="python">for n in range(1,11):
+    print(n)</code></pre></li>
+<li><p>Providing a start, stop, and step:</p>
+<pre ><code class="python">for n in range(10,0,-1):
+    print(n)</code></pre></li>
+</ul>
+</section>
+<section id="iterating-over-sequences" class="slide level2">
+<h2>Iterating over sequences</h2>
+<ul>
+<li><p>We can also use a <code class="python">for</code> loop to iterate directly over a sequence of values</p></li>
+<li><p>Python supports many different types of sequences, but thus far we only know about one: strings!</p>
+<ul>
+<li>Recall strings are just a sequence of individual characters</li>
+</ul></li>
+<li><p>We can loop through a string to examine each individual character</p></li>
+<li><p>Example looping through to count occurances of a given letter:</p>
+<pre ><code class="python">def count_letters(letter, string):
+    count = 0
+    for character in string:
+        if character == letter:
+            count += 1
+    return count</code></pre></li>
+</ul>
+</section>
+<section id="understanding-check-1" class="slide level2" data-notes="Answer is B, as it would not print the 0">
+<h2 data-notes="Answer is B, as it would not print the 0">Understanding Check</h2>
+<p>Which of the below blocks of code would print something different than the others?</p>
+<div class="cols">
+<div class="col">
+<div class="block" name="A">
+<pre ><code class="python">for n in range(10):
+    if n % 2 == 0:
+        print(n)</code></pre>
+</div>
+<div class="block" name="B">
+<pre ><code class="python">for i in range(0,10,2):
+    if i > 0:
+        print(i)</code></pre>
+</div>
+</div>
+<div class="col">
+<div class="block" name="C">
+<pre ><code class="python">for j in range(0,20,4):
+    L = j // 2
+    print(L)
+</code></pre>
+</div>
+<div class="block" name="D">
+<pre ><code class="python">for k in range(0,10):
+    if not k % 2 > 0:
+        print(k)</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="nesting-loops" class="slide level2">
+<h2>Nesting Loops</h2>
+<ul>
+<li>Most anything can go in the repeating block of a loop, <em>including other loops</em></li>
+<li>The inner most loop must finish <strong>all</strong> of its iterations before the outer loop finishes a <strong>single</strong> iteration</li>
+<li>Useful when you need to iterate over multiple different values
+<ul>
+<li>Example: generating multiplication tables</li>
+</ul>
+<pre ><code class="python">for a in range(1,5):
+    for b in range(1,5):
+        print(a*b)</code></pre></li>
+</ul>
+</section>
+<section id="the-worth-of-a-picture" class="slide level2">
+<h2>The Worth of a Picture</h2>
+<ul>
+<li>There comes a time when reading and entering text on a terminal doesn’t cut it
+<ul>
+<li>Maybe you need more complicated input</li>
+<li>Maybe you need a more complicated interface that pure text can manage</li>
+<li>Maybe you have output that can not be shown as text</li>
+</ul></li>
+<li>Standard Python really only deals with the terminal interface</li>
+<li>Lots of outside libraries give Python more visual input/output
+<ul>
+<li>Turtle</li>
+<li>Matplotlib</li>
+<li>Tkinter <span class="fragment">← PGL</span></li>
+<li>PyGame</li>
+<li>Arcade</li>
+</ul></li>
+</ul>
+</section>
+<section id="the-portable-graphics-library" class="slide level2">
+<h2>The Portable Graphics Library</h2>
+<ul>
+<li>Built atop Tkinter</li>
+<li>The library (<code class="python">pgl.py</code>) is available on the website
+<ul>
+<li>Put it in the same folder as your code, and then you can import it</li>
+</ul></li>
+<li>Operates on the idea of a collage or cork-board</li>
+</ul>
+<p><?xml version="1.0" encoding="UTF-8"?>
+<svg width="181.22mm" height="99.559mm" version="1.1" viewBox="0 0 181.22 99.559" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="translate(-8.9528 -14.081)">
+  <rect x="10.235" y="15.363" width="178.66" height="96.994" ry="3.352" fill="#c8beb7" stroke="#784421" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.565"/>
+  <rect class="fragment" x="53.589" y="37.213" width="101.09" height="50.546" ry="3.352" fill="#0cf"/>
+  <ellipse class="fragment" cx="121.16" cy="74.931" rx="43.368" ry="22.284" fill="#2aff80"/>
+ </g>
+</svg>
+</p>
+<ul>
+<li>Note that newer objects can obscure older objects. This layering arrangement is called the <em>stacking order</em>.</li>
+</ul>
+</section>
+<section id="the-pieces" class="slide level2">
+<h2>The Pieces</h2>
+<ul>
+<li>At its simplest then, we have two main parts:
+<ul>
+<li>The window (or felt-board/cork-board)
+<ul>
+<li>Created with the <code class="python">GWindow</code> function</li>
+<li>Takes two arguments: a width and a height in pixels</li>
+</ul></li>
+<li>The contents
+<ul>
+<li>A wide assortment of shapes that can be added to the scene</li>
+<li>Control over where they are placed, how large they are, what color they are, etc</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="blue-rectangle" class="slide level2">
+<h2>Blue Rectangle!</h2>
+<pre ><code class="python" data-line-numbers="1|3,4|6|7|8|9|10|11">from pgl import GWindow, GRect
+
+GW_WIDTH = 500
+GW_HEIGHT = 200
+
+gw = GWindow(GW_WIDTH, GW_HEIGHT)
+rect = GRect(150, 50 ,200, 100)
+rect.set_color("Blue")
+rect.set_filled(True)
+gw.add(rect)</code></pre>
+<!--![Variable Tracker](../images/blue_rectangle.svg)-->
+</section>
+<section id="the-coordinate-system" class="slide level2">
+<h2>The Coordinate System</h2>
+<p><?xml version="1.0" encoding="UTF-8"?>
+<svg width="390.46mm" height="146.14mm" version="1.1" viewBox="0 0 390.46 146.14" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <marker id="marker1717" overflow="visible" orient="auto">
+   <path transform="scale(.8)" d="m0 5.65v-11.3" fill="#008080" fill-rule="evenodd" stroke="#008080" stroke-width="1pt"/>
+  </marker>
+  <marker id="StopL" overflow="visible" orient="auto">
+   <path transform="scale(.8)" d="m0 5.65v-11.3" fill="#008080" fill-rule="evenodd" stroke="#008080" stroke-width="1pt"/>
+  </marker>
+ </defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="translate(-14.342 -8.9911)">
+  <image x="64.843" y="18.88" width="339.96" height="136.25" stroke-width=".39225" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAADKCAYAAABJ7VJtAAAABHNCSVQICAgIfAhkiAAAA3hJREFU eJzt11FxQkEURMH7UoghgsAKkYAWDEXOxgTUwkm3gvk7Ncf5clszM7+P+wAAn+37+jMzM1+bdwAA LyDwABAk8AAQJPAAECTwABAk8AAQJPAAECTwABAk8AAQJPAAECTwABAk8AAQJPAAECTwABAk8AAQ JPAAECTwABAk8AAQJPAAECTwABAk8AAQJPAAECTwABAk8AAQJPAAECTwABAk8AAQJPAAECTwABAk 8AAQJPAAECTwABAk8AAQJPAAECTwABAk8AAQJPAAECTwABAk8AAQJPAAECTwABAk8AAQJPAAECTw ABAk8AAQJPAAECTwABAk8AAQJPAAEHTaPYC249i9AN7bWrsXUOXBA0CQwANAkMADQJDAA0CQwANA kMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQ wANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDA A0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMAD QJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANA kMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQ wANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDA A0CQwANAkMADQJDAA0CQwANAkMADQJDAA0CQwANAkMADQJDAA0DQafcA2tbavQDgf/LgASBI4AEg SOABIEjgASBI4AEgSOABIEjgASBI4AEgSOABIEjgASBI4AEgSOABIEjgASBI4AEgSOABIEjgASBI 4AEgSOABIEjgASBI4AEgSOABIEjgASBI4AEgSOABIEjgASBI4AEgSOABIEjgASBI4AEgSOABIEjg ASBI4AEgSOABIEjgASBI4AEgSOABIEjgASBI4AEgSOABIEjgASBI4AEgSOABIEjgASBI4AEgSOAB IEjgASBI4AEgSOABIOg4X25r9wgA4Lk8eAAI+gMgAAx7yl/0WgAAAABJRU5ErkJggg== "/>
+  <g>
+   <rect x="64.843" y="8.9911" width="339.96" height="9.8886" ry=".86466" fill="#285577"/>
+   <text x="206.63153" y="15.925928" fill="#ffffff" font-family="sans-serif" font-size="7.5986px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="206.63153" y="15.925928" fill="#ffffff" stroke-width=".26458">blue_rectangle</tspan></text>
+   <circle cx="65.636" cy="18.866" r="3.3161" fill="#f60"/>
+   <text x="12.586732" y="25.491901" fill="#ff6600" font-family="sans-serif" font-size="20.426px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="12.586732" y="25.491901" fill="#ff6600" stroke-width=".26458">(0,0)</tspan></text>
+  </g>
+  <g fill="#008080">
+   <circle cx="167.29" cy="52.578" r="3.3161"/>
+   <text x="76.350014" y="59.203312" font-family="sans-serif" font-size="20.426px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="76.350014" y="59.203312" fill="#008080" stroke-width=".26458">(150,50)</tspan></text>
+   <path d="m167.68 126.82h134.9" marker-end="url(#StopL)" marker-start="url(#StopL)" stroke="#008080" stroke-width="1.119"/>
+   <path d="m311.2 121.13v-68.122" marker-end="url(#marker1717)" marker-start="url(#marker1717)" stroke="#008080" stroke-width="1.119"/>
+   <text x="199.44638" y="145.48874" font-family="sans-serif" font-size="20.426px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="199.44638" y="145.48874" fill="#008080" stroke-width=".26458">200 px</tspan></text>
+   <text x="313.77524" y="92.521362" font-family="sans-serif" font-size="20.426px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="313.77524" y="92.521362" fill="#008080" stroke-width=".26458">100 px</tspan></text>
+  </g>
+ </g>
+</svg>
+</p>
+<ul>
+<li>Positions and distances on the screen are measured in terms of pixels</li>
+<li>The location of the origin and orientation of the y-axis are <strong>different from math</strong>!
+<ul>
+<li>Origin is in the upper left instead of lower left</li>
+<li>Y-values increase as you move downwards</li>
+</ul></li>
+</ul>
+</section>
+<section id="other-simple-objects" class="slide level2">
+<h2>Other Simple Objects</h2>
+<p>Functions to create simple geometric objects: <br></p>
+<ul>
+<li>Rectangles!
+<ul>
+<li><code class="python">GRect( x, y, width, height )</code></li>
+<li>Creates a rectangle whose upper left corner is at (x,y) of the specified size</li>
+</ul></li>
+<li>Circles/Ovals!
+<ul>
+<li><code class="python">GOval( x, y, width, height )</code></li>
+<li>Creates an oval that fits inside the rectangle with the same dimensions</li>
+</ul></li>
+<li>Lines!
+<ul>
+<li><code class="python">GLine( x1, y1, x2, y2 )</code></li>
+<li>Creates a line extending from (x1,y1) to (x2,y2)</li>
+</ul></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Loop the presentation
+        loop: false,
+        // Change the presentation direction to be RTL
+        rtl: false,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

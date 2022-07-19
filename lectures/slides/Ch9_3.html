@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-11-01">
+  <title>Parent Classes</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Parent Classes</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">November 1, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Project 3 due a week from today!
+<ul>
+<li>As a milestone goal, I’d shoot for definitely having 1 and 2 done by the time you have your section (MS3 will go very fast, and that leaves you lots of time for 4 and 5 and extensions)</li>
+</ul></li>
+<li>Midterms are back to you! I’ll be finishing scoring PS3 and then seeing about getting current grade reports distributed.</li>
+<li>Section Leaders are working on scoring Project 2 this week, so stay tuned for feedback on that</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2">
+<h2>Review Question</h2>
+<div class="cols">
+<div class="col">
+<p>What is printed out on the final line of code to the right?</p>
+<div class="poll">
+<ol>
+<li><code class="no-highlight">Honda red 2006</code></li>
+<li><code class="no-highlight">Honda blue 2006</code></li>
+<li><code class="no-highlight">Toyota blue 2008</code></li>
+<li><code class="no-highlight">Honda red 2008</code></li>
+</ol>
+</div>
+</div>
+<div class="col" style="flex-grow:2">
+<pre ><code class="python" style="max-height:800px">class Car:
+  def __init__(self, color, year):
+    self.color = color
+    self.year = year
+    self.make = 'Toyota'
+
+A = Car('blue', 2008)
+A.make = 'Honda'
+B = Car('red', 2006)
+A.year = B.year
+print(A.make, A.color, A.year)</code></pre>
+</div>
+</div>
+</section>
+<section id="whats-your-method" class="slide level2">
+<h2>What’s your Method?</h2>
+<ul>
+<li>Most classes define additional functions called methods to allow clients to read or update attributes or manipulate the object</li>
+<li>Methods look like a normal function definition but will <strong>always</strong> declare the parameter <code class="python">self</code> at the beginning of the parameter list
+<ul>
+<li>This is true even if the method has no other parameters</li>
+</ul></li>
+<li>Methods are defined in the body of the class and would thus look something like:</li>
+</ul>
+<pre ><code class="python">def method_name (self, other_parameters):
+    ...body of the method...</code></pre>
+<ul>
+<li>For example</li>
+</ul>
+<pre ><code class="python">def give_raise(self, amount):
+    self.salary += amount</code></pre>
+</section>
+<section id="accessing-and-using-methods" class="slide level2">
+<h2>Accessing and Using Methods</h2>
+<ul>
+<li>After definition, there are two mains ways you can access and use the method
+<ul>
+<li><strong>Dot Notation (Conventional)</strong>
+<ul>
+<li>Python sets <code class="python">self</code> to be a reference to the <em>receiver</em>, which is the object to which the method is applied</li>
+</ul>
+<pre ><code class="python">C = Employee('Bob', 'clerk', 15)
+C.give_raise(15)</code></pre></li>
+<li><strong>Function Notation</strong>
+<ul>
+<li>You retrieve the method from the class itself, and then provide self manually</li>
+</ul>
+<pre ><code class="python">C = Employee('Bob', 'clerk', 15)
+Employee.give_raise(C, 15)</code></pre></li>
+</ul></li>
+</ul>
+</section>
+<section id="visualization-summary" class="slide level2">
+<h2>Visualization Summary</h2>
+<ul>
+<li>To summarize in a visual manner, we can look at everything together on <a href="http://pythontutor.com/live.html#code=class%20Employee%3A%0A%20%20%20%20def%20__init__%28self,%20name,%20title,%20salary%29%3A%0A%20%20%20%20%20%20%20%20self.name%20%3D%20name%0A%20%20%20%20%20%20%20%20self.title%20%3D%20title%0A%20%20%20%20%20%20%20%20self.salary%20%3D%20salary%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20def%20give_raise%28self,%20amount%29%3A%0A%20%20%20%20%20%20%20%20current%20%3D%20self.salary%0A%20%20%20%20%20%20%20%20self.salary%20%2B%3D%20amount%0A%20%20%20%20%20%20%20%20%0A%0Aclerk%20%3D%20Employee%28%22Bob%20Cratchit%22,%20%22clerk%22,%2015%29%0Aboss%20%3D%20Employee%28%22Scrooge%22,%20%22founder%22,%201000%29%0A%0Aclerk.give_raise%2820%29&amp;cumulative=false&amp;curInstr=1&amp;heapPrimitives=nevernest&amp;mode=display&amp;origin=opt-live.js&amp;py=3&amp;rawInputLstJSON=%5B%5D&amp;textReferences=false">PythonTutor</a></li>
+</ul>
+<p><img data-src="../images/ConstructorPythonTutor.png" style="width:50.0%" /></p>
+</section>
+<section id="getters-and-setters" class="slide level2">
+<h2>Getters and Setters</h2>
+<ul>
+<li>In the object-oriented model, the client is not supposed to muck-about with the object internals</li>
+<li>The implementation should therefore provide methods to retrieve desired attributes (called <em>getters</em>) or to make changes to desired attributes (called <em>setters</em>)</li>
+<li>Setting up getters and setters for the attribute <code class="python">salary</code> might look like:</li>
+</ul>
+<pre ><code class="python">def get_salary(self):
+    return self.salary
+
+def set_salary(self, new_salary):
+    self.salary = new_salary</code></pre>
+<ul>
+<li>Getters are far more common than setters, as you don’t always want the client to have the freedom to change attributes on a whim</li>
+</ul>
+</section>
+<section id="internal-representation" class="slide level2">
+<h2>Internal Representation</h2>
+<ul>
+<li>The idea behind object oriented programming is that we interact with the class though methods, and the class takes care of the internal representation</li>
+<li>Python works well with this, but it doesn’t really enforce it
+<ul>
+<li>We can freely access, change, or even add new attributes to the class</li>
+<li>But <strong>we really should not</strong>
+<ul>
+<li>Maybe the class will get updated in a way that changes all the internal variable names. Now all our code refering to them is broken!</li>
+</ul></li>
+<li>Use (and define) getters and setters for your classes!</li>
+</ul></li>
+<li>Convention is that we preface a class attribute with an underscore if we really want to make clear that the client should <strong>not</strong> mess with that attribute
+<ul>
+<li>This is just convention. Python will still allow it to be altered, but it is a really bad practice to get in the habit of doing</li>
+</ul></li>
+</ul>
+</section>
+<section id="understanding-check" class="slide level2">
+<h2>Understanding Check</h2>
+<div class="cols">
+<div class="col">
+<p>The code block to the right starts defining a class. Only 1 of the below options for defining an <code class="python">increment</code> method will work. Which one?</p>
+</div>
+<div class="col">
+<pre ><code class="python">class BestCounter:
+  def __init__(self, start):
+    self.counter = start</code></pre>
+</div>
+</div>
+<div class="cols">
+<div class="col">
+<div class="block" name="A">
+<pre ><code class="python">def increment(self, value):
+    counter += value</code></pre>
+</div>
+<div class="block" name="C">
+<pre ><code class="python">def increment(value):
+    counter += self.value</code></pre>
+</div>
+</div>
+<div class="col">
+<div class="block" name="B">
+<pre ><code class="python">def increment(self, value):
+    self.counter += self.value</code></pre>
+</div>
+<div class="block" name="D">
+<pre ><code class="python">def increment(self, value):
+    self.counter += value</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="representation" class="slide level2">
+<h2>Representation</h2>
+<ul>
+<li>Printing out an object that you just created as an instance of a custom class will look ugly:</li>
+</ul>
+<pre ><code class="python-repl">>>> C = Employee('Bob', 'clerk', 15)
+>>> print(C)
+<__main__.Employee object at 0x7f942ba13550></code></pre>
+<ul>
+<li>You can define special methods for a class that specify how your object should be converted to a string (or anything else really)
+<ul>
+<li>All these special methods have double underscores before and after</li>
+<li>Define the <code class="python">__str__</code> method to specify how your object should be printed</li>
+</ul></li>
+</ul>
+</section>
+<section id="get-the-point" class="slide level2">
+<h2>Get the Point?</h2>
+<ul>
+<li>The <code class="python">GPoint</code> class in PGL is a simple class that showcases private attributes and a <code class="python">__str__</code> method</li>
+</ul>
+<pre ><code class="python" style="max-height:800px;">class GPoint:
+    def __init__(self, x=0.0, y=0.0):
+        """ Initializes the GPoint with the specified coordinate.  """
+        self._x = x
+        self._y = y
+
+    def get_x(self):
+        """ Returns the x-component of the point. """
+        return self._x
+
+    def get_y(self):
+        """ Returns the y-component of the point. """
+        return self._y
+
+    def __str__(self):
+        return "(" + str(self._x) + ", " + str(self._y) + ")"</code></pre>
+</section>
+<section id="yarn-patterns-example" class="slide level2">
+<h2>Yarn Patterns Example</h2>
+<pre ><code class="python" style="max-height:900px">from pgl import GWindow, GPoint, GLine
+
+
+PEG_SEP = 10
+N_ACROSS = 50
+N_DOWN = 32
+
+def create_pegs():
+    pegs = []
+    for i in range(N_ACROSS):
+        pegs.append(GPoint(PEG_SEP * i, 0))
+    for j in range(N_DOWN):
+        pegs.append(GPoint(N_ACROSS * PEG_SEP, j * PEG_SEP))
+    for i in range(N_ACROSS, 0, -1):
+        pegs.append(GPoint(PEG_SEP * i, PEG_SEP * N_DOWN))
+    for j in range(N_DOWN, 0, -1):
+        pegs.append(GPoint(0, j * PEG_SEP))
+    return pegs
+
+def yarn_pattern(delta, color="red"):
+    pegs = create_pegs()
+    current_index = 0
+    next_index = -1
+    while current_index != 0 or next_index == -1:
+        next_index = (current_index + delta) % len(pegs)
+        p_start = pegs[current_index]
+        p_end = pegs[next_index]
+        line = GLine(p_start.get_x(), p_start.get_y(),
+                     p_end.get_x(), p_end.get_y())
+        line.set_color(color)
+        gw.add(line)
+        current_index = next_index
+
+
+gw = GWindow(N_ACROSS * PEG_SEP, N_DOWN * PEG_SEP)
+yarn_pattern(122)
+yarn_pattern(321, "blue")
+yarn_pattern(921, "green")</code></pre>
+</section>
+<section id="class-hierarchies" class="slide level2">
+<h2>Class Hierarchies</h2>
+<ul>
+<li>Much of the power of modern object-oriented languages comes from them supporting the idea of <em>class hierarchies</em>
+<ul>
+<li>Any class can be designated as a <em>subclass</em> of another class, which is then called its <em>superclass</em></li>
+</ul></li>
+<li>Each subclass represents some sort of <strong>specialization</strong> of its superclass
+<ul>
+<li>Creating an object of a subclass also means that object is an instance of all the other classes above it in the superclass chain</li>
+</ul></li>
+<li>When defining a new class in Python, it <em>inherits</em> the behavior of its superclass</li>
+<li>Python does support <em>multiple inheritance</em>, but most class hierarchies operation on <em>single inheritance</em>, where a subclass has only one unique superclass</li>
+</ul>
+</section>
+<section id="recalling-the-gobject-hierarchy" class="slide level2">
+<h2>Recalling the <code class="python">GObject</code> Hierarchy</h2>
+<p><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="GObject_Hierarchy.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07, custom)"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 288.75107 138.18124"
+   height="138.18124mm"
+   width="288.75107mm">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     inkscape:window-maximized="1"
+     inkscape:window-y="43"
+     inkscape:window-x="1096"
+     inkscape:window-height="1381"
+     inkscape:window-width="2528"
+     inkscape:showpageshadow="false"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="mm"
+     inkscape:cy="247.79783"
+     inkscape:cx="732.22492"
+     inkscape:zoom="0.9899495"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#4d4d4d"
+     id="base" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-217.70676,-33.885044)"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <path
+       sodipodi:nodetypes="cccccc"
+       d="M 361.26594,98.229926 V 59.650267 M 248.28711,146.39855 V 80.547709 h 223.32154 v 65.079271"
+       style="fill:none;stroke:#66d9ef;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path974" />
+    <path
+       sodipodi:nodetypes="cccccc"
+       d="m 361.70422,134.19507 v -11.39636 m -36.96412,23.3191 v -12.01496 h 74.40916 v 11.85956"
+       style="fill:none;stroke:#66d9ef;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path968" />
+    <g
+       style="stroke-width:1.24545;stroke:#a6e22e"
+       transform="matrix(0.80375953,0,0,0.80208372,44.982492,33.781385)"
+       id="g860">
+      <rect
+         style="fill:none;stroke:#a6e22e;stroke-width:3.44368;stroke-linecap:round;stroke-linejoin:round"
+         id="rect833"
+         width="75.025894"
+         height="30.082256"
+         x="357.00778"
+         y="1.8510774"
+         ry="4.2922554" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.329525;"
+         x="363.17523"
+         y="21.115273"
+         id="text837"><tspan
+           sodipodi:role="line"
+           id="tspan835"
+           x="363.17523"
+           y="21.115273"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.329525;stroke:none;">GObject</tspan></text>
+    </g>
+    <g
+       style="stroke-width:1.24545"
+       id="g873"
+       transform="matrix(0.80375953,0,0,0.80208372,15.940215,97.032237)">
+      <rect
+         ry="4.2922554"
+         y="1.8510802"
+         x="356.1077"
+         height="30.082256"
+         width="149.09215"
+         id="rect862"
+         style="fill:none;stroke:#a6e22e;stroke-width:3.44368;stroke-linecap:round;stroke-linejoin:round" />
+      <text
+         id="text866"
+         y="21.115273"
+         x="363.17523"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.329525;"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.329525;"
+           y="21.115273"
+           x="363.17523"
+           id="tspan864"
+           sodipodi:role="line">GFillableObject</tspan></text>
+    </g>
+    <g
+       style="stroke-width:1.24545"
+       transform="matrix(0.80375953,0,0,0.80208372,8.0020355,145.07202)"
+       id="g889">
+      <g
+         style="stroke-width:1.24545"
+         transform="translate(2.4734124)"
+         id="g887">
+        <g
+           style="stroke-width:1.24545"
+           transform="translate(-3.2608895)"
+           id="g894">
+          <rect
+             ry="4.2922554"
+             y="1.8510774"
+             x="357.00778"
+             height="30.082256"
+             width="75.025894"
+             id="rect881"
+             style="fill:none;stroke:#a6e22e;stroke-width:3.44368;stroke-linecap:round;stroke-linejoin:round" />
+          <text
+             id="text885"
+             y="22.071293"
+             x="372.20853"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.329525;"
+             xml:space="preserve"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.329525;"
+               y="22.071293"
+               x="372.20853"
+               id="tspan883"
+               sodipodi:role="line">GRect</tspan></text>
+        </g>
+        <g
+           style="stroke-width:1.24545"
+           transform="translate(90.332768,-0.34814689)"
+           id="g902">
+          <rect
+             style="fill:none;stroke:#a6e22e;stroke-width:3.44368;stroke-linecap:round;stroke-linejoin:round"
+             id="rect896"
+             width="75.025894"
+             height="30.082256"
+             x="357.00778"
+             y="1.8510774"
+             ry="4.2922554" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.329525;"
+             x="372.32144"
+             y="22.364876"
+             id="text900"><tspan
+               id="tspan904"
+               sodipodi:role="line"
+               x="372.32144"
+               y="22.364876"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.329525;">GOval</tspan></text>
+        </g>
+        <g
+           style="stroke-width:1.24545"
+           transform="translate(-96.854547)"
+           id="g914">
+          <rect
+             style="fill:none;stroke:#a6e22e;stroke-width:3.44368;stroke-linecap:round;stroke-linejoin:round"
+             id="rect908"
+             width="75.025894"
+             height="30.082256"
+             x="357.00778"
+             y="1.8510774"
+             ry="4.2922554" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.329525;"
+             x="372.17844"
+             y="22.624582"
+             id="text912"><tspan
+               sodipodi:role="line"
+               id="tspan910"
+               x="372.17844"
+               y="22.624582"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.329525;">GLine</tspan></text>
+        </g>
+        <g
+           style="stroke-width:1.24545"
+           id="g922"
+           transform="translate(183.92643,-0.34814689)">
+          <rect
+             ry="4.2922554"
+             y="1.8510774"
+             x="357.00778"
+             height="30.082256"
+             width="75.025894"
+             id="rect916"
+             style="fill:none;stroke:#a6e22e;stroke-width:3.44368;stroke-linecap:round;stroke-linejoin:round" />
+          <text
+             id="text920"
+             y="22.443916"
+             x="367.80481"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;line-height:1.25;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#a6e22e;fill-opacity:1;stroke:none;stroke-width:0.329525;"
+             xml:space="preserve"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.6791px;font-family:'FiraCode Nerd Font Mono';-inkscape-font-specification:'FiraCode Nerd Font Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a6e22e;stroke-width:0.329525;"
+               y="22.443916"
+               x="367.80481"
+               sodipodi:role="line"
+               id="tspan918">GLabel</tspan></text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
+</p>
+</section>
+<section id="specifying-inheritance" class="slide level2">
+<h2>Specifying Inheritance</h2>
+<ul>
+<li>Subclass definitions in Python differ from standalone classes in two ways:
+<ol>
+<li>A subclass definition includes the name of its superclass in parentheses after the name of the subclass</li>
+<li>The constructor for the subclass explicitly calls the constructor for its superclass before doing its own initialization</li>
+</ol></li>
+<li>Together, they form the following pattern:</li>
+</ul>
+<pre ><code class="python">class subclass(superclass):
+    def __init__(self, parameters):
+        superclass.__init__(self, any_relevant_parameters)
+        # Rest of subclass initialization</code></pre>
+</section>
+<section id="a-swashbuckling-example" class="slide level2">
+<h2>A Swashbuckling Example</h2>
+<p><img data-src="../images/svg_cache/1ccd60531bb203127a1111ae26d97dbd820713c2.svg" style="width:70.0%" /></p>
+</section>
+<section id="some-swashbuckling-code" class="slide level2">
+<h2>Some Swashbuckling Code</h2>
+<pre ><code class="python" style="max-height:900px">class Human:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+        self.legs = 2
+
+    def __str__(self):
+        return f'Human({self.name},{self.age})'
+
+    def agree(self):
+        print('Sure!')
+
+class Pirate(Human):
+    def agree(self):
+        print("Aye matey!")
+
+    def __str__(self):
+        return f'Pirate({self.name},{self.age})'
+
+class Pegleg(Pirate):
+    def __init__(self, name, age):
+        Pirate.__init__(self, name, age)
+        self.legs = 1
+    
+    def __repr__(self):
+        return f'Pegleg({self.name},{self.age})'
+
+class Patch(Pirate):
+    def __init__(self, age):
+        Pirate.__init__(self, name, age)
+        self.eyes = 1
+
+    def __repr__(self):
+        return f'Patch({self.name}, {self.age})'
+
+</code></pre>
+</section>
+<section id="overusing-inheritance" class="slide level2">
+<h2>Overusing Inheritance</h2>
+<ul>
+<li>Inheritance is often used in situations where it does not really apply
+<ul>
+<li>A common example you might see in textbooks is a <code class="python">Pizza</code> class with various subclasses of pizza, like Pepperoni or Hawaiian.</li>
+<li>This is silly, there is only one point of difference between those: the ingredients
+<ul>
+<li>Just make a pizza class with a list of ingredients as an attribute</li>
+</ul></li>
+</ul></li>
+<li>Inheritance makes sense when subclasses share behavior</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Loop the presentation
+        loop: false,
+        // Change the presentation direction to be RTL
+        rtl: false,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

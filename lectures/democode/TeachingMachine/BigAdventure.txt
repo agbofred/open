@@ -1,0 +1,116 @@
+OutsideBuilding
+You are standing at the end of a road before a
+small brick building.  A small stream flows out
+of the building and down a gully to the south.
+A road runs up a small hill to the west.
+-----
+SOUTH: Valley
+S: Valley
+NORTH: InsideBuilding
+N: InsideBuilding
+IN: InsideBuilding
+WEST: EndOfRoad
+W: EndOfRoad
+UP: EndOfRoad
+U: EndOfRoad
+QUIT: EXIT
+Q: EXIT
+
+Valley
+You are in a valley in the forest beside a stream
+tumbling along a rocky bed.  The stream is flowing
+to the south.
+-----
+SOUTH: SlitInRock
+S: SlitInRock
+DOWN: SlitInRock
+D: SlitInRock
+NORTH: OutsideBuilding
+N: OutsideBuilding
+QUIT: EXIT
+Q: EXIT
+
+SlitInRock
+At your feet all the water of the stream splashes
+down a two-inch slit in the rock.  To the south,
+the streambed is bare rock.
+-----
+NORTH: Valley
+N: Valley
+SOUTH: OutsideGrate
+S: OutsideGrate
+DOWN: OutsideGrate
+QUIT: EXIT
+Q: EXIT
+
+OutsideGrate
+You are in a 20-foot depression floored with bare
+dirt.  Set into the dirt is a strong steel grate
+mounted in concrete.  A dry streambed leads into
+the depression from the north.
+The grate is open.
+-----
+NORTH: SlitInRock
+N: SlitInRock
+UP: SlitInRock
+U: SlitInRock
+DOWN: BeneathGrate
+D: BeneathGrate
+QUIT: EXIT
+Q: EXIT
+
+BeneathGrate
+You are in a small chamber beneath a 3x3 steel grate
+to the surface.  A low crawl leads over cobbles to
+the west.
+The grate is open.
+-----
+WEST: CobbleCrawl
+W: CobbleCrawl
+UP: OutsideGrate
+U: OutsideGrate
+QUIT: EXIT
+Q: EXIT
+
+CobbleCrawl
+You are crawling over cobbles into a low east/west
+passage.  There is a dim light to the east.
+-----
+EAST: BeneathGrate
+E: BeneathGrate
+WEST: Darkness
+W: Darkness
+QUIT: EXIT
+Q: EXIT
+
+Darkness
+It is now pitch dark.  If you proceed you will likely
+fall into a pit.
+-----
+EAST: CobbleCrawl
+E: CobbleCrawl
+XYZZY: InsideBuilding
+*: EXIT
+
+InsideBuilding
+You are inside a building, a well house for a large
+spring.
+-----
+OUT: OutsideBuilding
+SOUTH: OutsideBuilding
+S: OutsideBuilding
+XYZZY: Darkness
+QUIT: EXIT
+Q: EXIT
+
+EndOfRoad
+You are on a road at the top of a small hill.  You
+can see a small brick building at the end of the road
+to the east.
+-----
+EAST: OutsideBuilding
+E: OutsideBuilding
+DOWN: OutsideBuilding
+D: OutsideBuilding
+QUIT: EXIT
+Q: EXIT

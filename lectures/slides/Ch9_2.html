@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-10-29">
+  <title>Constructors</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Constructors</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">October 29, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Project 3 guide will be posted this weekend in case you want to get an early start</li>
+<li>I didn’t quite make it all the way through the midterm. I’m sorry :(
+<ul>
+<li>Midway through the last problem</li>
+<li>If you needed a grade check for potential withdrawal reasons, I’ve scored those and you should have heard back from me</li>
+</ul></li>
+<li>I’ve decided to not have an organized lab today
+<ul>
+<li>Everyone I think could use a break (myself included)</li>
+<li>I need to be around the office some today to meet with people about any potential withdrawals</li>
+</ul></li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2" data-notes="Solution: (1, &#39;a&#39;)">
+<h2 data-notes="Solution: (1, &#39;a&#39;)">Review Question</h2>
+<div class="cols">
+<div class="col">
+<p>What would be the output of the printed statement in the code to the right?</p>
+<div class="poll">
+<ol>
+<li><code class="no-highlight">(1, 'a', 'b')</code></li>
+<li><code class="no-highlight">(1, 'a')</code></li>
+<li>Error: can’t add strings and tuples</li>
+<li>Error: index out of range</li>
+</ol>
+</div>
+</div>
+<div class="col">
+<pre ><code class="python">A = (1, 3, 5)
+B = (2*A, ('a', ) )
+C = B + ('b', 'c', 'd')
+D = ()
+for v in C[:2]:
+    D += v[:1]
+print(D)</code></pre>
+</div>
+</div>
+</section>
+<section id="classes-as-templates" class="slide level2">
+<h2>Classes as Templates</h2>
+<ul>
+<li>Since they share the same attributes, it is natural to regard the two employees at Scrooge and Marley as two instances of the same class</li>
+<li>Could view the class as a template or empty form:
+<p><img data-src="../images/svg_cache/9bcb1ffdf3cd3190e1cadd402c51eba5047ac258.svg" style="width:35.0%" /></p></li>
+<li>Each data entry is what we would call an <em>attribute</em> of the class</li>
+<li>Can help initially to just start with an empty template and then fill in the necessary fields/attributes</li>
+</ul>
+</section>
+<section id="starting-empty" class="slide level2">
+<h2>Starting Empty</h2>
+<ul>
+<li>Class definitions in Python start with a header line consisting of the keyword <code class="python">class</code> and then the class name</li>
+<li>The body of the class will later contain definitions, but initially can just leave blank
+<ul>
+<li>Python does not allow an empty body, so need to include a docstring or <code class="python">pass</code></li>
+</ul>
+<pre ><code class="python">class Employee:
+  """This class is currently empty!"""</code></pre></li>
+<li>Once the class is defined, you can create an object of this class type by calling the class as if it were a function:</li>
+</ul>
+<pre ><code class="python">clerk = Employee()</code></pre>
+</section>
+<section id="more-references" class="slide level2">
+<h2>More References</h2>
+<ul>
+<li>Objects, like all values, are stored as <em>references</em> to that information in memory</li>
+<li>Any code with access to this reference can manipulate the object
+<ul>
+<li>Can get or set the contents of any attributes or create new ones <br><br></li>
+</ul></li>
+</ul>
+<figure>
+<img data-src="../images/ObjectRepresentations.png" alt="Objects are references!" /><figcaption aria-hidden="true">Objects are references!</figcaption>
+</figure>
+</section>
+<section id="selecting-object-attributes" class="slide level2">
+<h2>Selecting Object Attributes</h2>
+<ul>
+<li><p>You can select an attribute from an object by writing out the object name, followed by a dot and then the attribute name.</p>
+<ul>
+<li><p>As an example</p>
+<pre ><code class="python">clerk.name</code></pre>
+<p>would select the <code class="python">name</code> attribute for the <code class="python">clerk</code> object</p></li>
+</ul></li>
+<li><p>Attributes are assignable, so</p>
+<pre ><code class="python">clerk.salary *= 2</code></pre>
+<p>would double the clerk’s current salary</p></li>
+<li><p>You can create a new attribute in Python by simply assigning a name and a value, just like you’d define a new variable</p></li>
+</ul>
+</section>
+<section id="assigning-clerk-attributes" class="slide level2">
+<h2>Assigning Clerk Attributes</h2>
+<ul>
+<li>We could, for instance, create a <code class="python">clerk</code> in the following fashion:</li>
+</ul>
+<pre ><code class="python">def create_clerk():
+    clerk = Employee()
+    clerk.name = "Bob Cratchit"
+    clerk.title = "clerk"
+    clerk.salary = 15</code></pre>
+<ul>
+<li>Note that none of these assigned attributes affect the <code class="python">Employee</code> class in any way</li>
+</ul>
+</section>
+<section id="constructors" class="slide level2">
+<h2>Constructors</h2>
+<ul>
+<li>While the previous method works, it is not ideal
+<ul>
+<li>Forces the client to tinker with the internal workings of the Employee</li>
+<li>Details of the data structure are the property of the implementation, not the client</li>
+</ul></li>
+<li>Better to add a method to the <code class="python">Employee</code> class called a <em>constructor</em>, which is responsible for initializing attributes to a newly created object
+<ul>
+<li>In Python, a constructor is created by defining a special function named <code class="python">__init__</code></li>
+<li>The constructor function is called automatically whenever a new object of that type is created</li>
+</ul></li>
+<li>The first parameter to <code class="python">__init__</code> is called <code class="python">self</code>, which is a reference to the newly created object
+<ul>
+<li>Any other arguments provided are passed in as additional parameters</li>
+</ul></li>
+</ul>
+</section>
+<section id="an-employee-constructor" class="slide level2">
+<h2>An Employee Constructor</h2>
+<pre ><code class="python">class Employee:
+    def __init__(self, name, title, salary):
+        self.name = name
+        self.title = title
+        self.salary = salary
+
+
+clerk = Employee('Bob Cratchit', 'clerk', 15)</code></pre>
+<ul>
+<li>Note that you do not need to provide an argument for <code class="python">self</code>, Python supplies this reference automatically</li>
+</ul>
+</section>
+<section id="understanding-check" class="slide level2">
+<h2>Understanding Check</h2>
+<div class="cols">
+<div class="col">
+<p>What is printed out on the final line of code to the right?</p>
+<div class="poll">
+<ol>
+<li><code class="no-highlight">Honda red 2006</code></li>
+<li><code class="no-highlight">Honda blue 2006</code></li>
+<li><code class="no-highlight">Toyota blue 2008</code></li>
+<li><code class="no-highlight">Honda red 2008</code></li>
+</ol>
+</div>
+</div>
+<div class="col" style="flex-grow:2">
+<pre ><code class="python" style="max-height:800px">class Car:
+    def __init__(self, color, year):
+        self.color = color
+        self.year = year
+        self.make = 'Toyota'
+
+A = Car('blue', 2008)
+B = Car('red', 2006)
+A.make = 'Honda'
+A.year = B.year
+print(A.make, A.color, A.year)</code></pre>
+</div>
+</div>
+</section>
+<section id="whats-your-method" class="slide level2">
+<h2>What’s your Method?</h2>
+<ul>
+<li>Most classes define additional functions called methods to allow clients to read or update attributes or manipulate the object</li>
+<li>Methods look like a normal function definition but will <strong>always</strong> declare the parameter <code class="python">self</code> at the beginning of the parameter list
+<ul>
+<li>This is true even if the method has no other parameters</li>
+</ul></li>
+<li>Methods are defined in the body of the class and would thus look something like:</li>
+</ul>
+<pre ><code class="python">def method_name (self, other_parameters):
+    ...body of the method...</code></pre>
+<ul>
+<li>For example</li>
+</ul>
+<pre ><code class="python">def give_raise(self, amount):
+    self.salary += amount</code></pre>
+</section>
+<section id="accessing-and-using-methods" class="slide level2">
+<h2>Accessing and Using Methods</h2>
+<ul>
+<li>After definition, there are two mains ways you can access and use the method
+<ul>
+<li><strong>Dot Notation (Conventional)</strong>
+<ul>
+<li>Python sets <code class="python">self</code> to be a reference to the <em>receiver</em>, which is the object to which the method is applied</li>
+</ul>
+<pre ><code class="python">C = Employee('Bob', 'clerk', 15)
+C.give_raise(15)</code></pre></li>
+<li><strong>Function Notation</strong>
+<ul>
+<li>You retrieve the method from the class itself, and then provide self manually</li>
+</ul>
+<pre ><code class="python">C = Employee('Bob', 'clerk', 15)
+Employee.give_raise(C, 15)</code></pre></li>
+</ul></li>
+</ul>
+</section>
+<section id="visualization-summary" class="slide level2">
+<h2>Visualization Summary</h2>
+<ul>
+<li>To summarize in a visual manner, we can look at everything together on <a href="http://pythontutor.com/live.html#code=class%20Employee%3A%0A%20%20%20%20def%20__init__%28self,%20name,%20title,%20salary%29%3A%0A%20%20%20%20%20%20%20%20self.name%20%3D%20name%0A%20%20%20%20%20%20%20%20self.title%20%3D%20title%0A%20%20%20%20%20%20%20%20self.salary%20%3D%20salary%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20def%20give_raise%28self,%20amount%29%3A%0A%20%20%20%20%20%20%20%20current%20%3D%20self.salary%0A%20%20%20%20%20%20%20%20self.salary%20%2B%3D%20amount%0A%20%20%20%20%20%20%20%20%0A%0Aclerk%20%3D%20Employee%28%22Bob%20Cratchit%22,%20%22clerk%22,%2015%29%0Aboss%20%3D%20Employee%28%22Scrooge%22,%20%22founder%22,%201000%29%0A%0Aclerk.give_raise%2820%29&amp;cumulative=false&amp;curInstr=1&amp;heapPrimitives=nevernest&amp;mode=display&amp;origin=opt-live.js&amp;py=3&amp;rawInputLstJSON=%5B%5D&amp;textReferences=false">PythonTutor</a></li>
+</ul>
+<p><img data-src="../images/ConstructorPythonTutor.png" style="width:50.0%" /></p>
+</section>
+<section id="getters-and-setters" class="slide level2">
+<h2>Getters and Setters</h2>
+<ul>
+<li>In the object-oriented model, the client is not supposed to muck-about with the object internals</li>
+<li>The implementation should therefore provide methods to retrieve desired attributes (called <em>getters</em>) or to make changes to desired attributes (called <em>setters</em>)</li>
+<li>Setting up getters and setters for the attribute <code class="python">salary</code> might look like:</li>
+</ul>
+<pre ><code class="python">def get_salary(self):
+    return self.salary
+
+def set_salary(self, new_salary):
+    self.salary = new_salary</code></pre>
+<ul>
+<li>Getters are far more common than setters, as you don’t always want the client to have the freedom to change attributes on a whim</li>
+</ul>
+</section>
+<section id="representation" class="slide level2">
+<h2>Representation</h2>
+<ul>
+<li>Printing out an object that you just created as an instance of a custom class will look ugly:</li>
+</ul>
+<pre ><code class="python-repl">>>> C = Employee('Bob', 'clerk', 15)
+>>> print(C)
+<__main__.Employee object at 0x7f942ba13550></code></pre>
+<ul>
+<li>You can define special methods for a class that specify how your object should be converted to a string (or anything else really)
+<ul>
+<li>All these special methods have double underscores before and after</li>
+<li>Define the <code class="python">__str__</code> method to specify how your object should be printed</li>
+</ul></li>
+</ul>
+</section>
+<section id="a-good-employee" class="slide level2">
+<h2>A Good Employee</h2>
+<pre ><code class="python" style="max-height:900px">class Employee:
+    def __init__(self, name, title, salary):
+        self.name = name
+        self.title = title
+        self.salary = salary
+
+    def __str__(self):
+        return f"{self.name} ({self.title}): {self.salary}"
+
+    def get_salary(self):
+        return self.salary
+
+    def set_salary(self, new_salary):
+        self.salary = new_salary</code></pre>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

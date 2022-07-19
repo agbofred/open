@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-09-27">
+  <title>Getting Animated</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Getting Animated</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">September 27, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Problem Set 3 due tonight!
+<ul>
+<li>I’m working through PS2 feedback still, so keep an eye out for that.</li>
+</ul></li>
+<li>Project 1 guide is posted!
+<ul>
+<li>Due a week from today</li>
+<li>Get started on it tomorrow! If you can have the first two milestones completed before heading into your section meetings in the middle of the week, you’ll be in a great place.</li>
+<li>Last info that you really need for it is discussed today</li>
+</ul></li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2" data-notes="Solution: Shrinks and then filled">
+<h2 data-notes="Solution: Shrinks and then filled">Review Question!</h2>
+<div class="cols">
+<div class="col">
+<p>When the function <code class="python">rev_q</code> is called, what happens when the mouse is clicked?</p>
+<div class="poll">
+<ol>
+<li>The square shrinks</li>
+<li>The square gets filled</li>
+<li>The square shrinks and then gets filled</li>
+<li>The square gets filled and then shrinks</li>
+</ol>
+</div>
+</div>
+<div class="col" style="flex-grow:2">
+<pre ><code class="python" style="max-height:900px; font-size:.75em">def rev_q():
+    def act_A(e):
+        sq.set_filled(True)
+    def act_B(e):
+        sq.set_size(
+            sq.get_width() - 10,
+            sq.get_height() - 10
+        )
+    gw = GWindow(500, 500)
+    sq = GRect(200, 200, 100, 100)
+    sq.set_color("blue")
+    gw.add(sq)
+    gw.add_event_listener("mousedown", act_B)
+    gw.add_event_listener("click", act_A)</code></pre>
+</div>
+</div>
+</section>
+<section id="using-gstate" class="slide level2">
+<h2>Using <code class="python">GState</code></h2>
+<ul>
+<li>The PGL library has a <code class="python">GState</code> object type that we can import to use for sharing data between callback functions</li>
+<li>Create a variable, conventionally called <code class="python">gs</code> immediately after creating the window:</li>
+</ul>
+<pre ><code class="python">gw = GWindow(WIDTH, HEIGHT)
+gs = GState()</code></pre>
+<ul>
+<li>Value to be shared can be stored as part of the <code class="python">gs</code> variable as an object attribute, which we will talk much more about in Ch 9
+<ul>
+<li>For now, shared variables should include <code class="python">gs</code> and then a period before the variable name. Eg: <code class="python">gs.my_variable</code></li>
+<li>So <code class="python">line</code> will become <code class="python">gs.line</code> everywhere in our example</li>
+</ul></li>
+</ul>
+</section>
+<section id="fixed-line-drawing" class="slide level2">
+<h2>Fixed Line-Drawing</h2>
+<pre ><code class="python" style="max-height:900px;">from pgl import GWindow, GLine, GState
+
+WIDTH = 500
+HEIGHT = 500
+
+def draw_lines():
+    def mousedown_event(e):
+        x = e.get_x()
+        y = e.get_y()
+        gs.line = GLine(x,y,x,y)
+        gw.add(gs.line)
+
+    def drag_action(e):
+        gs.line.set_end_point(e.get_x(), e.get_y())
+
+    gw = GWindow(WIDTH, HEIGHT)
+    gs = GState()
+    gs.line = None
+    gw.add_event_listener("mousedown", mousedown_event)
+    gw.add_event_listener("drag", drag_action)
+
+if __name__ == '__main__':
+    draw_lines()</code></pre>
+</section>
+<section id="timer-events" class="slide level2">
+<h2>Timer Events</h2>
+<ul>
+<li>Previously we looked at how to our programs could react to mouse events</li>
+<li>Can also listen for <em>timer events</em>, which occur after a specific time interval</li>
+<li>You specify the listener for a timer event in the form of a callback function that is invoked at the end of the time interval</li>
+<li>Can add animation to our graphics by creating a timer whose callback makes small updates to the graphical objects in the window
+<ul>
+<li>If the time interval is short enough (usually sub 30 milliseconds), the animations will appear smooth to the human eye</li>
+</ul></li>
+</ul>
+</section>
+<section id="timer-types" class="slide level2">
+<h2>Timer Types</h2>
+<ul>
+<li>PGL supports two kinds of timers:
+<ul>
+<li>A <em>one-shot timer</em> invokes its callback only once after a specified delay
+<ul>
+<li><p>Created with</p>
+<pre ><code class="python">gw.set_timeout(function, delay)</code></pre>
+<p>where <code class="python">function</code> is the callback function and <code class="python">delay</code> is the time interval in milliseconds</p></li>
+</ul></li>
+<li>An <em>interval timer</em> invokes its callback function repeatedly at regular intervals
+<ul>
+<li><p>Created with</p>
+<pre ><code class="python">gw.set_interval(function, delay)</code></pre></li>
+</ul></li>
+</ul></li>
+<li>Both methods return a <code class="python">GTimer</code> object that identifies the timer, and can be stopped by invoking the <code class="python">.stop()</code> method on that timer</li>
+</ul>
+</section>
+<section id="moving-square" class="slide level2">
+<h2>Moving Square</h2>
+<pre ><code class="python" style="max-height:900px">def moving_square():
+    def step():
+        square.move(dx, dy)
+        if square.get_x() > 500:
+            timer.stop()
+
+    gw = GWindow(500, 200)
+    dx = 1
+    dy = 0
+    square = create_filled_rect(12, 100, 24, 24, "red")
+    gw.add(square)
+    timer = gw.set_interval(step, 20)</code></pre>
+</section>
+<section id="growing-circles" class="slide level2">
+<h2>Growing Circles</h2>
+<figure>
+<img data-src="../images/GrowingCircles.gif" style="width:60.0%" alt="These circles are growing!" /><figcaption aria-hidden="true">These circles are growing!</figcaption>
+</figure>
+</section>
+<section id="waiting-vs-events" class="slide level2">
+<h2>Waiting vs Events</h2>
+<ul>
+<li>Many would probably try to approach this doing something like as follows:</li>
+</ul>
+<pre ><code class="python">def growing_circles():
+    gw = GWindow(WIDTH, HEIGHT)
+    for i in range(NUM_CIRCLES):
+        # Create a new circle
+        # Animate the circle to grow it
+        # Wait for the animation to complete</code></pre>
+<ul>
+<li>The problem here is that there is no clear way to “wait” for an animation to complete
+<ul>
+<li>There leaves no point in the program where a new event could “butt-in”</li>
+</ul></li>
+<li>Instead need an event that takes care of all the circle creation and animations</li>
+</ul>
+</section>
+<section id="using-events-wisely" class="slide level2">
+<h2>Using Events Wisely</h2>
+<ul>
+<li>Need to keep track of what the program <strong>should</strong> be doing, and then have the timer callback function handle whatever is needed</li>
+<li>Conceptually, for these circles, might look more like this:</li>
+</ul>
+<pre ><code class="python">def step():
+    if """ there is a circle still growing """
+        """then increase its size """
+    elif """ a new circle needs to be created """
+        """ then create one """
+    else:
+        timer.stop()</code></pre>
+</section>
+<section id="making-those-circles-grow" class="slide level2">
+<h2>Making those circles grow!</h2>
+<pre ><code class="python" style="max-height:900px;">from pgl import GWindow, GState, GOval
+import random
+
+GWIDTH = 500
+GHEIGHT = 400
+N_CIRCLES = 20
+MIN_RADIUS = 15
+MAX_RADIUS = 100
+DELTA_TIME = 10
+DELTA_SIZE = 1
+
+def random_color():
+    color = "#"
+    for i in range(6):
+        color += random.choice("0123456789ABCDEF")
+    return color
+
+def create_filled_circle(x, y, r, color="black"):
+    circ = Goval(x-r, y-r, 2*r, 2*r)
+    circ.set_filled(True)
+    circ.set_color(color)
+    return circ
+
+def growing_circles():
+    def start_new_circle():
+        r = random.uniform(MIN_RADIUS, MAX_RADIUS)
+        x = random.uniform(r, GWIDTH - r)
+        y = random.uniform(r, GHEIGHT - r)
+        gs.circle = create_filled_circle(
+                            x, y, 
+                            0, random_color()
+                        )
+        gs.desired_size = 2 * r
+        gs.current_size = 0
+        gs.circles_created += 1
+        return gs.circle
+
+    def step():
+        # Grow a circle if needed
+        if gs.current_size < gs.desired_size:
+            gs.current_size += DELTA_SIZE
+            x = gs.circle.get_x() - DELTA_SIZE / 2
+            y = gs.circle.get_y() - DELTA_SIZE / 2
+            gs.circle.set_bounds(
+                            x, y, 
+                            gs.current_size,
+                            gs.current_size
+                        )
+        # or add a circle if you can
+        elif gs.circles_created < N_CIRCLES:
+            gw.add(start_new_circle())
+        # or stop
+        else:
+            timer.stop()
+
+    gw = GWindow(GWIDTH, GHEIGHT)
+    gs = GState()
+    gs.circles_created = 0
+    gs.current_size = 0
+    gs.desired_size = 0
+    timer = gw.set_interval(step, DELTA_TIME)</code></pre>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Loop the presentation
+        loop: false,
+        // Change the presentation direction to be RTL
+        rtl: false,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-09-10">
+  <title>True and “True”</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">True and “True”</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">September 10, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Problem Set 1 due on Monday night!
+<ul>
+<li>Feel free to email, direct message me on Discord, or post questions on Campuswire over the weekend if you get stuck on something</li>
+<li>I’m still making it through giving feedback on PS0, so keep an eye out for that, if you haven’t already received it</li>
+</ul></li>
+<li>Sections
+<ul>
+<li>Hopefully everyone made it to their sections</li>
+<li>Be aware that all the section leaders have only had experience doing this remotely in the past, so it may take some adjustments to in-person</li>
+</ul></li>
+<li>Class Discord server invite went out on Wednesday evening
+<ul>
+<li>Section leaders were interested in having this to make it easier to answer your questions or help out remotely</li>
+</ul></li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="shorthand-and-multiple" class="slide level2">
+<h2>Shorthand and Multiple</h2>
+<ul>
+<li>It is very common to want to adjust an existing variable</li>
+</ul>
+<pre ><code class="python">balance = balance + deposit</code></pre>
+<ul>
+<li>Python gives you a shorter expression to describe this relationship:</li>
+</ul>
+<pre ><code class="python">balance += deposit</code></pre>
+<ul>
+<li>You can do this with any operation (op) following the general form:</li>
+</ul>
+<pre ><code class="python">variable op= expression</code></pre>
+<ul>
+<li><p>You can name multiple variables at once by separating with commas</p>
+<pre ><code class="python">A, B, C = 1, 2, 3</code></pre>
+<ul>
+<li>All the expressions on the right are computed before being assigned to the left variables</li>
+</ul></li>
+</ul>
+</section>
+<section id="understanding-check" class="slide level2" data-notes="Solution: 40">
+<h2 data-notes="Solution: 40">Understanding Check!</h2>
+<p>What is the final printed value of <code class="python">A</code> in the code below?</p>
+<pre ><code class="idle">>>> A = 10
+>>> B = 4
+>>> C = A * B
+>>> A -= B
+>>> A, B, C = C, A, B
+>>> print(A)
+??</code></pre>
+<div class="hpoll">
+<ol>
+<li>4</li>
+<li>10</li>
+<li>30</li>
+<li>40</li>
+</ol>
+</div>
+</section>
+<section id="what-is-your-function" class="slide level2">
+<h2>What is your Function?</h2>
+<ul>
+<li>As discussed in the context of Karel, a <em>function</em> is a sequence of commands that have been collected together and given a name.</li>
+<li>Unlike in Karel though, functions typically go beyond that and can have inputs and outputs</li>
+</ul>
+<p><img data-src="../images/svg_cache/bd545feea45d8c5454f3813c4655ed1a85dcd06d.svg" style="width:70.0%" /></p>
+</section>
+<section id="writing-your-own-functions" class="slide level2">
+<h2>Writing your own functions</h2>
+<ul>
+<li><p>The general form of a function definition looks like:</p>
+<pre ><code class="python">def name(parameter_list):
+    #statements in function body</code></pre>
+<ul>
+<li><code class="python">name</code> is your chosen name for the function</li>
+<li><code class="no-highlight">parameter_list</code> is a comma-separated list of <strong>variable names</strong> that will hold each input value</li>
+</ul></li>
+<li><p>You can return or output a value from the function by including a return statement</p>
+<pre ><code class="python">return expression</code></pre>
+<ul>
+<li><code class="python">expression</code> is the value you want to return or output</li>
+<li>If no <code class="python">return</code> statement is included, Python will by default return <code class="python">None</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="simple-function-examples" class="slide level2">
+<h2>Simple function examples</h2>
+<ul>
+<li><p>Convert Fahrenheit temperatures to their Celsius equivalent</p>
+<pre ><code class="python">def f_to_c(f):
+    return 5 / 9 * (f - 32)</code></pre>
+<ul>
+<li><p>Using the function:</p>
+<pre ><code class="python">print(f_to_c(45))</code></pre></li>
+</ul></li>
+<li><p>Computes the volume of a cylinder of height <code class="python">h</code> and radius <code class="python">r</code></p>
+<pre ><code class="python">def cylinder_volume(r, h):
+    return 3.14159 * r**2 * h</code></pre>
+<ul>
+<li><p>Using the function:</p>
+<pre ><code class="python">print(cylinder_volume(2,10))</code></pre></li>
+</ul></li>
+</ul>
+<!--
+## Review Question
+::::::cols
+::::col
+Examining the code to the right, what is the output value if I evaluate the expression `func2(10)`?
+
+
+:::{.poll}
+#. 6
+#. 9
+#. 16
+#. 19
+:::
+
+::::
+
+::::col
+```python
+def func1(x):
+    return 3 + x
+
+def func2(y):
+    A = func1(y+1)
+    A -= 5
+    return A + y
+```
+::::
+::::::
+-->
+</section>
+<section id="built-ins" class="slide level2">
+<h2>Built-ins</h2>
+<ul>
+<li>All modern languages include a collection of pre-defined functions for convenience</li>
+<li>In Python, common build-in functions that operate on <strong>numbers</strong> include:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">abs(x)</code></td>
+<td>The absolute value of x</td>
+</tr>
+<tr class="even">
+<td><code class="python">max(x,y,...)</code></td>
+<td>The largest of all the arguments</td>
+</tr>
+<tr class="odd">
+<td><code class="python">min(x,y,...)</code></td>
+<td>The smallest of all the arguments</td>
+</tr>
+<tr class="even">
+<td><code class="python">round(x)</code></td>
+<td>The value of x rounded to the nearest integer</td>
+</tr>
+<tr class="odd">
+<td><code class="python">int(x)</code></td>
+<td>The value of x truncated to an integer</td>
+</tr>
+<tr class="even">
+<td><code class="python">float(x)</code></td>
+<td>The value of x as a decimal</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="visiting-the-libraryies" class="slide level2">
+<h2>Visiting the library(ies)</h2>
+<ul>
+<li>A huge strength of Python is that it offers a very large number of code collections called <em>libraries</em>
+<ul>
+<li>Can save you the effort from writing that code yourself!</li>
+</ul></li>
+<li>Requires you to <em>import</em> that library, which can take several different forms
+<ul>
+<li><p>Most common is to use <code class="python">import</code> to grab everything in a library</p>
+<pre ><code class="python">import math</code></pre>
+<ul>
+<li>You must then access any function in that library using its <em>fully qualified name</em>, which includes the library name (<code class="python">var = math.sqrt(4)</code>)</li>
+</ul></li>
+<li><p>Can also use <code class="python">from ... import</code> to grab specific functions from the library</p>
+<pre ><code class="python">from math import sqrt</code></pre>
+<ul>
+<li>You do not need to use the library name then when you call it (<code class="python">var = sqrt(4)</code>)</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="useful-math-definitions" class="slide level2">
+<h2>Useful <code class="python">math</code> definitions</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">math.pi</code></td>
+<td>The mathematical constant <span class="math inline">\(\pi\)</span></td>
+</tr>
+<tr class="even">
+<td><code class="python">math.e</code></td>
+<td>The mathematical constant <span class="math inline">\(e\)</span></td>
+</tr>
+<tr class="odd">
+<td><code class="python">math.sqrt(x)</code></td>
+<td>The square root of x</td>
+</tr>
+<tr class="even">
+<td><code class="python">math.log(x)</code></td>
+<td>The natural logarithm of x</td>
+</tr>
+<tr class="odd">
+<td><code class="python">math.log10(x)</code></td>
+<td>The base 10 logarithm of x</td>
+</tr>
+<tr class="even">
+<td><code class="python">math.sin(x)</code></td>
+<td>The sine of x in radians</td>
+</tr>
+<tr class="odd">
+<td><code class="python">math.cos(x)</code></td>
+<td>The cosine of x in radians</td>
+</tr>
+<tr class="even">
+<td><code class="python">math.asin(x)</code></td>
+<td>The arcsin of x</td>
+</tr>
+<tr class="odd">
+<td><code class="python">math.degrees(x)</code></td>
+<td>Converts from radians to degrees</td>
+</tr>
+<tr class="even">
+<td><code class="python">math.radians(x)</code></td>
+<td>Converts from degrees to radians</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="running-a-program" class="slide level2">
+<h2>Running a Program</h2>
+<ul>
+<li><p>Python programs specify what part of the code is supposed to be when a program is run using a few special lines at the end of the program</p>
+<pre ><code class="python">if __name__ == '__main__':
+    function_to_run()</code></pre>
+<ul>
+<li><code class="python">function_to_run</code> is the name of whatever function you want to execute when the program is run</li>
+</ul></li>
+<li><p>Patterns of this sort are commonly called <em>boilerplate</em></p>
+<ul>
+<li>Less important to fully understand all the pieces of it now</li>
+<li>Is important to understand what it is doing and how to implement it correctly</li>
+</ul></li>
+</ul>
+</section>
+<section id="string-theory" class="slide level2">
+<h2>String Theory</h2>
+<ul>
+<li>Would be nice to work with more interesting data than just numbers</li>
+<li>Everything internally is represented as sequences of binary numbers, but more useful to think abstractly about concepts initially</li>
+<li>First non-numeric data type to look at will be <strong>strings</strong>
+<ul>
+<li>Domain is all <em>sequences</em> of characters
+<ul>
+<li>A single string is often comprised of multiple characters</li>
+</ul></li>
+<li>Indicated in Python with pairs of quotes (single or double)</li>
+</ul>
+<pre ><code class="python">"This is a great string!"
+'And this is also a string!'</code></pre></li>
+</ul>
+</section>
+<section id="string-functions" class="slide level2">
+<h2>String Functions</h2>
+<ul>
+<li>Python has several built-in functions that are useful when working with strings</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">len(s)</code></td>
+<td>Gets the number of characters in <code class="python">s</code></td>
+</tr>
+<tr class="even">
+<td><code class="python">str(x)</code></td>
+<td>Converts the value of <code class="python">x</code> to a string</td>
+</tr>
+<tr class="odd">
+<td><code class="python">int(s)</code></td>
+<td>Attempts to convert <code class="python">s</code> to an integer</td>
+</tr>
+<tr class="even">
+<td><code class="python">float(s)</code></td>
+<td>Attempts to convert <code class="python">s</code> to a float</td>
+</tr>
+<tr class="odd">
+<td><code class="python">print(...)</code></td>
+<td>Prints all arguments separated by spaces</td>
+</tr>
+<tr class="even">
+<td><code class="python">input(prompt)</code></td>
+<td>Shows the user <code class="python">prompt</code> and then reads in a typed string</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="stringy-operations" class="slide level2">
+<h2>Stringy Operations</h2>
+<ul>
+<li><p>Initially we will focus just on <em>concatenating</em> strings, or combining them end to end</p>
+<ul>
+<li>Many more operations we’ll look at later in Ch 6</li>
+</ul></li>
+<li><p>Concatenate in Python using the <code class="python">+</code> operator:</p>
+<pre ><code class="idle">>>> print("ABC" + "DEF")
+ABCDEF</code></pre></li>
+<li><p><code class="python">+</code> with numbers gets you addition, <code class="python">+</code> with strings gets you concatenation</p></li>
+<li><p>If you have mixed types and want concatenation, need to convert all to strings</p>
+<pre ><code class="idle">>>> print("Catch" + str(-22))
+Catch-22</code></pre></li>
+</ul>
+</section>
+<section id="boolean-expressions" class="slide level2">
+<h2>Boolean Expressions</h2>
+<ul>
+<li><p>Python defines two types of operators that work with Boolean data: <em>relational operators</em> and <em>logical operators</em></p></li>
+<li><p>Relational operators compare values of other types and produce a <code class="python">True</code>/<code class="python">False</code> result:</p>
+<table>
+<tbody>
+<tr class="odd">
+<td><code class="python">==</code></td>
+<td style="text-align: left;">Equals</td>
+<td></td>
+<td></td>
+<td></td>
+<td><code class="python">!=</code></td>
+<td style="text-align: left;">Not equals</td>
+</tr>
+<tr class="even">
+<td><code class="python"><</code></td>
+<td style="text-align: left;">Less than</td>
+<td></td>
+<td></td>
+<td></td>
+<td><code class="python"><=</code></td>
+<td style="text-align: left;">Less than or equal too</td>
+</tr>
+<tr class="odd">
+<td><code class="python">></code></td>
+<td style="text-align: left;">Greater than</td>
+<td></td>
+<td></td>
+<td></td>
+<td><code class="python">>=</code></td>
+<td style="text-align: left;">Greater than or equal to</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>Be careful! <code class="python">==</code> <em>compares</em> two booleans. A single <code class="python">=</code> <em>assigns</em> a variable. The odds are high you’ll use one when you meant the other at least once this semester!</p></li>
+</ul>
+</section>
+<section id="the-vulcan-way" class="slide level2">
+<h2>The Vulcan Way</h2>
+<ul>
+<li><p>Logical operators act on Boolean pairings</p>
+<table>
+<thead>
+<tr class="header">
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">A and B</code></td>
+<td>True if both terms True, False otherwise</td>
+</tr>
+<tr class="even">
+<td><code class="python">A or B</code></td>
+<td>True if <em>any</em> term is True, False otherwise</td>
+</tr>
+<tr class="odd">
+<td><code class="python">not A</code></td>
+<td>True if A False, False if A True (opposite)</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<div>
+<ul>
+<li class="fragment">Order of operations follows parentheses and then proceeds left to right</li>
+<li class="fragment">Careful that <code class="python">or</code> is still <code class="python">True</code> if both options are <code class="python">True</code> which is a little different than common English use</li>
+<li class="fragment">Similarly, careful with combining <code class="python">not</code> with <code class="python">and</code> and <code class="python">or</code>
+<ul>
+<li class="fragment">“Not A or B” in common English is not the same as <code class="python">not A or B</code></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="understanding-check-1" class="slide level2">
+<h2>Understanding Check</h2>
+<p>What is the final printed value in the code below?</p>
+<div class="cols">
+<div class="col">
+<div class="poll">
+<ol>
+<li><code class="python">True</code></li>
+<li><code class="python">False</code></li>
+<li><code class="python">"4Quiz"</code></li>
+<li>This would give an error</li>
+</ol>
+</div>
+</div>
+<div class="col" style="flex-grow:2;">
+<pre ><code class="python">A = 10
+B = 4
+C = "Quiz"
+A *= len(C)
+if A > 40 and C != "C":
+    print(str(B)+C)
+else:
+    print(A < B or not (C == "C"))
+</code></pre>
+</div>
+</div>
+</section>
+<section id="shorting-the-circuit" class="slide level2">
+<h2>Shorting the Circuit</h2>
+<ul>
+<li>Python evaluates <em>and</em> and <em>or</em> operators using a strategy called <em>short-circuit mode</em></li>
+<li>Only evaluates the right operand if it actually needs to
+<ul>
+<li><p>Example: if <code class="python">n=0</code>, then the <code class="python">x % n == 0</code> is never actually checked in the statement</p>
+<pre ><code class="python">n != 0 and x % n == 0</code></pre>
+<p>since <code class="python">n != 0</code> already is <code class="python">False</code> and <code class="python">False and</code> <em>anything</em> is always <code class="python">False</code></p></li>
+</ul></li>
+<li>Can use short-circuit to prevent errors: the above <code class="python">x % n == 0</code> statement would have erred out if <code class="python">n=0</code></li>
+</ul>
+</section>
+<section id="sentinels" class="slide level2">
+<h2>Sentinels</h2>
+<ul>
+<li>Many programs in programming can be approached similarly by using a particular <em>idiom</em> or <em>pattern</em></li>
+<li>A common one with repetition is to use a variable to keep track of the loop state until something particular happens (the sentinel is triggered) <br><br></li>
+</ul>
+<pre ><code class="python">finished = False
+while not finished:
+    line = input("Enter a number: ")
+    if line == "":
+        finished = True
+    else:
+        print(line)</code></pre>
+</section>
+<section id="understanding-check-2" class="slide level2">
+<h2>Understanding Check</h2>
+<div class="cols">
+<div class="col">
+<pre ><code class="python">x = 7
+y = 0
+while x >= 0:
+    y += x
+    x -= 2
+print(y)</code></pre>
+</div>
+<div class="col">
+<p>What will the printed output of the code to the left?</p>
+<div class="poll">
+<ol>
+<li>15</li>
+<li>16</li>
+<li>28</li>
+<li>Infinite Loop</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="the-range-iterable" class="slide level2">
+<h2>The <code class="python">range()</code> iterable</h2>
+<ul>
+<li>Need an easy way to produce or describe a range of numeric values</li>
+<li>The built-in <code class="python">range()</code> function handles this and produces the needed iterable object</li>
+<li>Takes 1, 2, or 3 arguments:
+<ul>
+<li>Start (default 0): where to start the sequence at</li>
+<li>Stop (mandatory): the sequence ends just <em>below</em> this value (does not include it!)</li>
+<li>Step (default 1): what value the sequence counts by <br><br></li>
+</ul></li>
+</ul>
+<div class="block" name="Warning!">
+<p>Be careful, the <code class="python">range</code> function will stop one step <em>before</em> the final stop value.</p>
+</div>
+</section>
+<section id="for-ranging-examples" class="slide level2">
+<h2>For ranging examples</h2>
+<ul>
+<li><p>Providing just a stop argument:</p>
+<pre ><code class="python">for n in range(5):
+    print(n)</code></pre></li>
+<li><p>Providing a start and stop:</p>
+<pre ><code class="python">for n in range(1,11):
+    print(n)</code></pre></li>
+<li><p>Providing a start, stop, and step:</p>
+<pre ><code class="python">for n in range(10,0,-1):
+    print(n)</code></pre></li>
+</ul>
+</section>
+<section id="iterating-over-sequences" class="slide level2">
+<h2>Iterating over sequences</h2>
+<ul>
+<li><p>We can also use a <code class="python">for</code> loop to iterate directly over a sequence of values</p></li>
+<li><p>Python supports many different types of sequences, but thus far we only know about one: strings!</p>
+<ul>
+<li>Recall strings are just a sequence of individual characters</li>
+</ul></li>
+<li><p>We can loop through a string to examine each individual character</p></li>
+<li><p>Example looping through to count occurrences of a given letter:</p>
+<pre ><code class="python">def count_letters(letter, string):
+    count = 0
+    for character in string:
+        if character == letter:
+            count += 1
+    return count</code></pre></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

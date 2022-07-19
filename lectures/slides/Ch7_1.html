@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-10-11">
+  <title>No longer listless</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">No longer listless</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">October 11, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Problem Set 4 due tonight!</li>
+<li>Project 2 guide has been posted. Get an early start on it! We’ve talked about everything you need to know!</li>
+<li>Graphical Contest announcement/guide will be posted today.</li>
+<li>No class on Friday due to mid-semester day.</li>
+<li>Midterm a week from Friday.</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review-question" class="slide level2" data-notes="Solution: C, as it has the wrong data types for x and y">
+<h2 data-notes="Solution: C, as it has the wrong data types for x and y">Review Question</h2>
+<p>All the functions below would print out all valid two letter words from the English language <em>at least once</em> except for 1. Which does not?</p>
+<div class="cols">
+<div class="col">
+<div class="block" name="A">
+<pre ><code class="python" style="font-size:.85em">def func_A():
+for word in ENGLISH_WORDS:
+    if len(word) == 2:
+        print(word)</code></pre>
+</div>
+<div class="block" name="C">
+<pre ><code class="python" style="font-size:.85em">alphabet = "abcdefghijklmnopqrstuvwxyz"
+def func_C():
+    for x in range(len(alphabet))
+        for y in alphabet:
+            word = x + alphabet[y]
+            if is_english_word(word)
+                print(word)</code></pre>
+</div>
+</div>
+<div class="col">
+<div class="block" name="B">
+<pre ><code class="python" style="font-size:.85em">def func_B():
+for word in ENGLISH_WORDS:
+    if is_english_word(word[:2]):
+        print(word[:2])</code></pre>
+</div>
+<div class="block" name="D">
+<pre ><code class="python" style="font-size:.85em">alphabet = "abcdefghijklmnopqrstuvwxyz"
+def func_D():
+    for l1 in alphabet:
+        for l2 in alphabet:
+            word = l1 + l2
+            if is_english_word(word)
+                print(word)</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="shaping-your-format" class="slide level2">
+<h2>Shaping your format</h2>
+<ul>
+<li>Lots we can do, but we rarely need to do it all at once</li>
+<li>The basic building blocks:
+<center>
+<span style="font-family: monospace"> <span class="fragment highlight-current-green" data-fragment-index="6">[[fill]align]</span><!--
+--><span class="fragment highlight-current-green" data-fragment-index="5">[sign]</span><!--
+--><span class="fragment highlight-current-green" data-fragment-index="4">[width]</span><!--
+--><span class="fragment highlight-current-green" data-fragment-index="3">[,]</span><!--
+--><span class="fragment highlight-current-green" data-fragment-index="2">[.precision]</span><!--
+--><span class="fragment highlight-current-green" data-fragment-index="1">[type]</span> </span>
+</center></li>
+</ul>
+<br>
+<hr>
+<div class="only-fragment fragment current" data-fragment-index="1">
+<ul>
+<li><code class="no-highlight">type</code>
+<ul>
+<li>What type of object you want to represent as a string</li>
+<li>“d” - base-10 integer</li>
+<li>“f” - float or decimal</li>
+<li>“e” - scientific notation</li>
+<li>More on next slide</li>
+</ul></li>
+</ul>
+</div>
+<div class="only-fragment fragment current" data-fragment-index="2">
+<ul>
+<li><code class="no-highlight">precision</code>
+<ul>
+<li>How many digits to display after a decimal point</li>
+<li>Details can vary a little by conversion type</li>
+</ul></li>
+</ul>
+</div>
+<div class="only-fragment fragment current" data-fragment-index="3">
+<ul>
+<li><code class="no-highlight">Grouping</code>
+<ul>
+<li>A comma here indicates that numbers should be grouped in sets of 3 and separated with a comma</li>
+</ul></li>
+</ul>
+</div>
+<div class="only-fragment fragment current" data-fragment-index="4">
+<ul>
+<li><code class="no-highlight">width</code>
+<ul>
+<li>The minimum number of characters you want the formatted value to be</li>
+</ul></li>
+</ul>
+</div>
+<div class="only-fragment fragment current" data-fragment-index="5">
+<ul>
+<li><code class="no-highlight">sign</code>
+<ul>
+<li>If the sign of the number should be specified</li>
+<li>A + sign ensures all numbers will have either a + or - sign</li>
+<li>A space just adds a space before positive numbers (negatives would have a - sign in front)</li>
+</ul></li>
+</ul>
+</div>
+<div class="only-fragment fragment current" data-fragment-index="6">
+<ul>
+<li><code class="no-highlight">[fill]align</code>
+<ul>
+<li>How you want the text aligned if it is smaller than the minium
+<ul>
+<li>Can be <code class="python"><</code>, <code class="python">></code>, or <code class="python">^</code> for left, right, or center justified</li>
+</ul></li>
+<li>Any characters you want to fill the empty space
+<ul>
+<li>Default is space</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="output-conversion-types" class="slide level2">
+<h2>Output Conversion Types</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">b</code></td>
+<td>Inserts an integer using its binary representation</td>
+</tr>
+<tr class="even">
+<td><code class="python">d</code></td>
+<td>Inserts an integer using its decimal representation</td>
+</tr>
+<tr class="odd">
+<td><code class="python">e</code> or <code class="python">E</code></td>
+<td>Inserts a number using scientific notation</td>
+</tr>
+<tr class="even">
+<td><code class="python">f</code> or <code class="python">F</code></td>
+<td>Inserts a number using a decimal point format</td>
+</tr>
+<tr class="odd">
+<td><code class="python">g</code> or <code class="python">G</code></td>
+<td>Choose <code class="python">e</code> or <code class="python">f</code> to get the best fit</td>
+</tr>
+<tr class="even">
+<td><code class="python">o</code></td>
+<td>Inserts an integer using its octal representation</td>
+</tr>
+<tr class="odd">
+<td><code class="python">s</code></td>
+<td>Inserts a string value</td>
+</tr>
+<tr class="even">
+<td><code class="python">x</code> or <code class="python">X</code></td>
+<td>Inserts an integer using its hexadecimal representation</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Uppercase conversion types use capital characters where possible in output</li>
+</ul>
+</section>
+<section id="understanding-check" class="slide level2" data-notes="Solution D">
+<h2 data-notes="Solution D">Understanding Check!</h2>
+<p>Which of the provided formatted string options below would evaluate to appear as:</p>
+<center>
+<code class="python">101,234.98   & 4000</code>
+</center>
+<p>when printed?</p>
+<div class="poll">
+<ol>
+<li><code class="python">"{:<12,f} & {:0>4d}".format(1.01234984e5, 320//8)</code></li>
+<li><code class="python">"{>12,.2f} & {0>4d}".format(1.01234984e5, 32000//8)</code></li>
+<li><code class="python">"{:<12,.2f} & {:<4d}".format(1.01234984e5, 3200//8)</code></li>
+<li><code class="python">"{:<12,.2f} & {:0<4d}".format(1.01234984e5, 32//8)</code></li>
+</ol>
+</div>
+</section>
+<section id="not-to-be-confused-with-a-g-string" class="slide level2">
+<h2>Not to be confused with a g-string</h2>
+<ul>
+<li>Short for “format string”, an f-string achieves the same thing as <code class="python">.format()</code> but with less syntax</li>
+<li>Moves the value to be substituted directly into the placehold itself</li>
+<li>Need an <code class="python">f</code> right before the string to let Python know it needs to do more with this particular string</li>
+</ul>
+<pre ><code class="python">A = 10
+B = 15.123234
+print(f"A is {A} and B is {B:0.2f}")</code></pre>
+<ul>
+<li>You can otherwise use the same syntax and format specs as with format!</li>
+</ul>
+</section>
+<section id="arrays-and-lists" class="slide level2">
+<h2>Arrays and Lists</h2>
+<ul>
+<li>From the earliest days, programming languages have supported the idea of an <em>array</em>, or an ordered sequence of values.</li>
+<li>Individual values in an array are called <em>elements</em>, and the number of elements is the <em>length</em> of the array.</li>
+<li>Each elements position in the array is given by its <em>index</em>, with index numbers starting at 0 and extending up to 1 less than the length of the array</li>
+<li>Python implements the array concept in a bit more general form called a <em>list</em>.</li>
+</ul>
+</section>
+<section id="making-a-list" class="slide level2">
+<h2>Making a List</h2>
+<ul>
+<li>Created using square brackets with elements separated by commas:</li>
+</ul>
+<pre ><code class="python">COIN_VALUES = [1, 5, 10, 25, 50, 100]</code></pre>
+<ul>
+<li>Lists are commonly represented visually or conceptually as a series of numbered boxes:
+<p><img data-src="../images/svg_cache/e35c8d0a09b14e34781cb92ce8b75afb899729bc.svg" style="width:80.0%" /></p></li>
+</ul>
+</section>
+<section id="non-numeric-lists" class="slide level2">
+<h2>Non-numeric Lists</h2>
+<ul>
+<li>Elements in a list can be <strong>any</strong> type of Python object!</li>
+<li>We could just as easily write:</li>
+</ul>
+<pre ><code class="python">COIN_NAMES = [
+    "penny",
+    "nickle",
+    "dime",
+    "quarter",
+    "half-dollar",
+    "dollar"
+]</code></pre>
+<ul>
+<li>Represented conceptually as:
+<p><img data-src="../images/svg_cache/67ff23f149ec908ee256cfe29945d4cdfef86357.svg" style="width:80.0%" /></p></li>
+</ul>
+</section>
+<section id="selection-and-looping" class="slide level2">
+<h2>Selection and Looping</h2>
+<ul>
+<li><p>Can retrieve the value of any element by writing the index of that element in square brackets after the list name</p>
+<ul>
+<li><code class="python">COIN_VALUES[3]</code> ⟶ <code class="python">25</code></li>
+<li><code class="python">COIN_NAMES[2]</code> ⟶ <code class="python">"dime"</code></li>
+</ul></li>
+<li><p>Can loop through each of the list elements in turn</p>
+<pre ><code class="python">for elem in my_list:
+  # do stuff</code></pre>
+<p>where <code class="python">elem</code> is the name of the variable that will sequentially get assigned the value of every element in <code class="python">my_list</code></p></li>
+</ul>
+</section>
+<section id="sequences" class="slide level2">
+<h2>Sequences</h2>
+<ul>
+<li>Sound familiar? These are just like more general strings!</li>
+<li>Strings and lists are examples of a more general class of object in Python called <em>sequences</em></li>
+<li>All sequences support:
+<ul>
+<li>The <code class="python">len</code> function</li>
+<li>Index numbering starting at 0</li>
+<li>Negative index numbering counting backwards from the end</li>
+<li>Selection of an individual element using square brackets</li>
+<li>Slicing in all forms</li>
+<li>Concatenation using <code class="python">+</code> or <code class="python">+=</code></li>
+<li>Repetition using <code class="python">*</code></li>
+<li>Inclusion testing using <code class="python">in</code> operator</li>
+</ul></li>
+</ul>
+</section>
+<section id="mutants" class="slide level2">
+<h2>Mutants</h2>
+<ul>
+<li>The most important difference between strings and lists is one of <em>mutability</em>
+<ul>
+<li>Strings we have already identified as being <em>immutable</em>: you can not change the individual elements</li>
+<li>Lists, in contrast, are <em>mutable</em>, which means that we <strong>can</strong> change or assign new values to the elements of a list</li>
+</ul></li>
+<li>Immutable objects have many advantages in programming:
+<ul>
+<li>You don’t have to worry about if the values will change</li>
+<li>Immutable values can be more easily shared</li>
+<li>Immutable objects are easier to use with concurrent programs</li>
+</ul></li>
+<li>In some situations though, mutable objects are the perfect tool for the job</li>
+</ul>
+</section>
+<section id="a-tutorial-on-lists" class="slide level2">
+<h2>A Tutorial on Lists</h2>
+<div class="cols">
+<div class="col">
+<ul>
+<li>To better understand how Python works with lists, lets take a look at the code to the right in PythonTutor</li>
+<li><a href="http://www.pythontutor.com/visualize.html#code=cool%20%3D%20%5B&#39;blue&#39;,%20&#39;violet&#39;%5D%0Awarm%20%3D%20%5B&#39;red&#39;,%20&#39;orange&#39;%5D%0A%0Acolors%20%3D%20%5Bcool,%20warm%5D%0A%0Aother_colors%20%3D%20%5B%5B&#39;blue&#39;,%20&#39;violet&#39;%5D,%5B&#39;red&#39;,%20&#39;orange&#39;%5D%5D%0A%0Aprint%28colors%20%3D%3D%20other_colors%29%0Aprint%28colors%20is%20other_colors%29%0A%0A%0Acool%5B0%5D%20%3D%20&#39;indigo&#39;%0A%0Aprint%28colors%29%0Aprint%28other_colors%29%0Aprint%28colors%20%3D%3D%20other_colors%29%0Aprint%28colors%20is%20other_colors%29&amp;cumulative=false&amp;curInstr=0&amp;heapPrimitives=false&amp;mode=display&amp;origin=opt-frontend.js&amp;py=3&amp;rawInputLstJSON=%5B%5D&amp;textReferences=false">Link here</a></li>
+</ul>
+</div>
+<div class="col" style="flex-grow:2;">
+<pre ><code class="python" style="max-height:900px; font-size:0.8em;">cool = ['blue', 'violet']
+warm = ['red', 'orange']
+
+colors = [cool, warm]
+other_colors = [['blue', 'violet'],
+                ['red', 'orange']]
+
+print(colors == other_colors)
+print(colors is other_colors)
+
+cool[0] = 'indigo'
+
+print(colors)
+print(other_colors)
+print(colors == other_colors)
+print(colors is other_colors)</code></pre>
+</div>
+</div>
+</section>
+<section id="lists-as-arguments" class="slide level2">
+<h2>Lists as Arguments</h2>
+<ul>
+<li>When you pass a list as an argument to a function or return a list as a result, only the <strong>reference</strong> to the list is actually passed back and forth</li>
+<li>Means that the elements of the list are effectively shared between the function and the caller
+<ul>
+<li>Changes that the function makes to the elements <strong>will</strong> persist after the function returns</li>
+</ul></li>
+<li>Example of reversing a list in PythonTutor: <a href="http://www.pythontutor.com/visualize.html#code=def%20reverse_in_place%28array%29%3A%0A%20%20%20%20for%20lh%20in%20range%28len%28array%29//2%29%3A%0A%20%20%20%20%20%20%20%20rh%20%3D%20len%28array%29%20-%20lh%20-%201%0A%20%20%20%20%20%20%20%20array%5Blh%5D,%20array%5Brh%5D%20%3D%20array%5Brh%5D,%20array%5Blh%5D%0A%0Aarray%20%3D%20%5B0,%201,%202,%203,%204,%205,%206,%207,%208,%209%5D%0Aprint%28f%22Forward%3A%20%7Barray%7D%22%29%0Areverse_in_place%28array%29%0Aprint%28f%22Reverse%3A%20%7Barray%7D%22%29&amp;cumulative=false&amp;curInstr=0&amp;heapPrimitives=false&amp;mode=display&amp;origin=opt-frontend.js&amp;py=3&amp;rawInputLstJSON=%5B%5D&amp;textReferences=false">here</a></li>
+</ul>
+</section>
+<section id="common-useful-list-methods" class="slide level2">
+<h2>Common Useful List Methods</h2>
+<ul>
+<li>Many common methods detailed in your book on pg 245</li>
+<li>To highlight a few:</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">list.copy()</code></td>
+<td>Returns a new list whose elements are the same as the original</td>
+</tr>
+<tr class="even">
+<td><code class="python">list.append(value)</code></td>
+<td>Adds <code class="python">value</code> to the end of the list</td>
+</tr>
+<tr class="odd">
+<td><code class="python">list.insert(idx, val)</code></td>
+<td>Inserts <code class="python">val</code> before the specified <code class="python">idx</code></td>
+</tr>
+<tr class="even">
+<td><code class="python">list.remove(value)</code></td>
+<td>Removes the first instance of <code class="python">value</code> from the list, or errors</td>
+</tr>
+<tr class="odd">
+<td><code class="python">list.reverse()</code></td>
+<td>Reverses the order of the elements in the list</td>
+</tr>
+<tr class="even">
+<td><code class="python">list.sort()</code></td>
+<td>Sorts the elements of the list. Can take an optional argument <code class="python">key</code> to specify how to sort</td>
+</tr>
+</tbody>
+</table>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>

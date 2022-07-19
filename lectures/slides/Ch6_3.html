@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold">
+  <meta name="dcterms.date" content="2021-10-06">
+  <title>Cat’s Cradle: String Manipulation</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../html_srcs/reveal.js/dist/theme/python_monokai.css" id="theme">
+  <link rel="stylesheet" href="../html_srcs/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Cat’s Cradle: String Manipulation</h1>
+  <p class="author">Jed Rembold</p>
+  <p class="date">October 6, 2021</p>
+</section>
+
+<section id="announcements" class="slide level2">
+<h2>Announcements</h2>
+<ul>
+<li>Problem Set 2 has been posted!</li>
+<li>If you are still working on Project 1, get it in <em>pronto</em>!</li>
+<li>Sections today and tomorrow</li>
+<li>I have to be out of my office at 4:30pm today, so I apologize for cutting my office hours short today. I’ll be around until at least 6 tomorrow to compensate</li>
+<li>Polling: <a href="http://rembold-class.ddns.net">rembold-class.ddns.net</a></li>
+</ul>
+</section>
+<section id="review" class="slide level2" data-notes="Solution: t!d">
+<h2 data-notes="Solution: t!d">Review!</h2>
+<p>What would be printed from the below piece of code here?</p>
+<pre ><code class="python">s = "October is here already?!"
+a = ""
+for i in range(-4,4,3):
+    a = s[i] + a
+print(a)</code></pre>
+<div class="poll">
+<ol>
+<li><code class="python">"yOo"</code></li>
+<li><code class="python">"dr esr"</code></li>
+<li><code class="python">"t!d"</code></li>
+<li><code class="python">"dy?!"</code></li>
+</ol>
+</div>
+</section>
+<section id="slicing" class="slide level2">
+<h2>Slicing</h2>
+<ul>
+<li><p>Often, you may want more than a single character</p></li>
+<li><p>Python allows you to specify a starting and an ending index through an operation known as <em>slicing</em></p></li>
+<li><p>The syntax looks like:</p>
+<pre ><code class="python">string_variable[start : limit]</code></pre>
+<p>where <code class="python">start</code> is the first index to be included and everything up to but <strong>not including</strong> the <code class="python">limit</code> is included</p></li>
+<li><p><code class="python">start</code> and <code class="python">limit</code> are actually optional (but the <code class="python">:</code> is not)</p>
+<ul>
+<li>If <code class="python">start</code> omitted, the slice will begin at the start of the string</li>
+<li>If <code class="python">limit</code> omitted, the slice will proceed to the end of the string</li>
+</ul></li>
+</ul>
+</section>
+<section id="and-dicing" class="slide level2">
+<h2>and Dicing</h2>
+<ul>
+<li>Can add a third component to the slice syntax, called a <em>stride</em></li>
+</ul>
+<pre ><code class="python">string_variable[start : limit : stride]</code></pre>
+<ul>
+<li>Specifies how large the steps are between each included index</li>
+<li>Can also make the stride negative to proceed backwards through a string</li>
+</ul>
+<pre ><code class="python-repl">>>> s = "spaghetti sauce"
+>>> s[4:8]
+hett
+>>> s[10:]
+sauce
+>>> s[:10:2]
+sahti</code></pre>
+</section>
+<section id="repeat-again" class="slide level2">
+<h2>Repeat again?</h2>
+<ul>
+<li>We’ve already seen how we can use addition (<code class="python">+</code>) in Python to concatenate strings</li>
+<li>In math, adding something many times is the same as multiplying</li>
+</ul>
+<p><span class="math display">\[5+5+5+5+5+5 = 6 \times 5\]</span></p>
+<ul>
+<li>The same logic holds true for Python strings!
+<ul>
+<li>You multiply by a <strong>integer</strong>: the number of times you want the concatenation repeated</li>
+<li>You can not multiply two strings together, Python will not understand what you are trying to do</li>
+</ul>
+<pre ><code class="python">print("Betelguese, " * 3)</code></pre></li>
+</ul>
+</section>
+<section id="comparing-strings" class="slide level2">
+<h2>Comparing Strings</h2>
+<ul>
+<li><p>Python lets you use normal comparison operators to compare strings</p>
+<pre ><code class="python">string1 == string2</code></pre>
+<p>is true if <code class="python">string1</code> and <code class="python">string2</code> contain the same characters in the same order</p></li>
+<li><p>Comparisons involving greater than or less than are done similar to alphabetical ordering</p>
+<ul>
+<li>Start at the beginning and compare a character. If they are the same, then compare the next character, etc</li>
+</ul></li>
+<li><p>All comparisons are done <strong>according to their Unicode values</strong>.</p>
+<ul>
+<li>Called <em>lexicographic ordering</em></li>
+<li><code class="python">"cat" > "CAT"</code></li>
+<li><code class="python">"Zebra" < "aardvark"</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="cant-change-a-strings-colors" class="slide level2">
+<h2>Can’t change a string’s colors</h2>
+<ul>
+<li>Strings are what we call <em>immutable</em>: they can not be modified in place by clients.</li>
+<li>You can “look” at different parts of the string, but you can not “change” those parts without making a whole new string</li>
+</ul>
+<pre ><code class="python badcode">s = "Cats!"
+s[0] = "R"   # THIS WILL ERROR!!</code></pre>
+<ul>
+<li>You can of course create a new string object with the desired traits:</li>
+</ul>
+<pre ><code class="python">s = "R" + s[1:]</code></pre>
+<ul>
+<li>This applies to all methods that act on strings as well: they return a <strong>new</strong> string, they do not modify the original</li>
+</ul>
+</section>
+<section id="methods-to-find-string-patterns" class="slide level2">
+<h2>Methods to find string patterns</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">string.find(pattern)</code></td>
+<td>Returns the first index of <code class="python">pattern</code> in <code class="python">string</code>, or <code class="python">-1</code> if it does not appear</td>
+</tr>
+<tr class="even">
+<td><code class="python">string.find(pattern, k)</code></td>
+<td>Same as the one-argument version, but starts searching at index <code class="python">k</code></td>
+</tr>
+<tr class="odd">
+<td><code class="python">string.rfind(pattern)</code></td>
+<td>Returns the last index of <code class="python">pattern</code> is <code class="python">string</code>, or <code class="python">-1</code> if missing</td>
+</tr>
+<tr class="even">
+<td><code class="python">string.rfind(pattern, k)</code></td>
+<td>Same as the one-argument version, but searches backwards from index <code class="python">k</code></td>
+</tr>
+<tr class="odd">
+<td><code class="python">string.startswith(prefix)</code></td>
+<td>Returns <code class="python">True</code> if the string starts with <code class="python">prefix</code></td>
+</tr>
+<tr class="even">
+<td><code class="python">string.endswith(suffix)</code></td>
+<td>Returns <code class="python">True</code> if the string ends with <code class="python">suffix</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="transforming-methods" class="slide level2">
+<h2>Transforming Methods</h2>
+<table>
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">string.lower()</code></td>
+<td>Returns a copy of <code class="python">string</code> with all letters converted to lowercase</td>
+</tr>
+<tr class="even">
+<td><code class="python">string.upper()</code></td>
+<td>Returns a copy of <code class="python">string</code> with all letters converted to uppercase</td>
+</tr>
+<tr class="odd">
+<td><code class="python">string.capitalize()</code></td>
+<td>Returns a copy of <code class="python">string</code> with the first character capitalized and the rest lowercase</td>
+</tr>
+<tr class="even">
+<td><code class="python">string.strip()</code></td>
+<td>Returns a copy of <code class="python">string</code> with whitespace and non-printing characters removed from both ends</td>
+</tr>
+<tr class="odd">
+<td><code class="python">string.replace(old, new)</code></td>
+<td>Returns a copy of <code class="python">string</code> with all instances of <code class="python">old</code> replaced by <code class="python">new</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="classifying-character-methods" class="slide level2">
+<h2>Classifying Character Methods</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="python">char.isalpha()</code></td>
+<td>Returns <code class="python">True</code> if <code class="python">char</code> is a letter</td>
+</tr>
+<tr class="even">
+<td><code class="python">char.isdigit()</code></td>
+<td>Returns <code class="python">True</code> if <code class="python">char</code> is a digit</td>
+</tr>
+<tr class="odd">
+<td><code class="python">char.isalnum()</code></td>
+<td>Returns <code class="python">True</code> if <code class="python">char</code> is letter or a digit</td>
+</tr>
+<tr class="even">
+<td><code class="python">char.islower()</code></td>
+<td>Returns <code class="python">True</code> if <code class="python">char</code> is a lowercase letter</td>
+</tr>
+<tr class="odd">
+<td><code class="python">char.isupper()</code></td>
+<td>Returns <code class="python">True</code> if <code class="python">char</code> is an uppercase letter</td>
+</tr>
+<tr class="even">
+<td><code class="python">char.isspace()</code></td>
+<td>Returns <code class="python">True</code> if <code class="python">char</code> is a whitespace character (space, tab, or newline)</td>
+</tr>
+<tr class="odd">
+<td><code class="python">char.isidentifier()</code></td>
+<td>Returns <code class="python">True</code> if <code class="python">char</code> is a legal Python identifier</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="igpay-atinlay" class="slide level2">
+<h2>Igpay Atinlay</h2>
+<ul>
+<li>Suppose we wanted to write a script that converted English to Pig Latin</li>
+<li>Rules of Pig Latin:
+<ul>
+<li>If the word begins with a consonant, move everything up to the first vowel to the end and append on “ay” at the end
+<center>
+<code class="python">fleet</code> ⟶ <code class="python">eetflay</code>
+</center></li>
+<li>If the word starts with a vowel, just append “way” to the end
+<center>
+<code class="python">orange</code> ⟶ <code class="python">orangeway</code>
+</center></li>
+<li>If the word has no vowels, do nothing</li>
+</ul></li>
+<li>Our decomposition:
+<ul>
+<li>Convert a single word
+<ul>
+<li>Find first vowel</li>
+</ul></li>
+<li>Loop over whole phrase to convert the entire phrase word by word</li>
+</ul></li>
+</ul>
+</section>
+<section id="indingfay-owelsvay" class="slide level2">
+<h2>Indingfay Owelsvay</h2>
+<pre ><code class="python">def find_first_vowel_index(word):
+    """
+    Find the first vowel in a word and return its index,
+    or return None if no vowels found.
+    """
+    for i in range(len(word)):
+        index = "aeiou".find(word[i].lower())
+        if index != -1:
+            return i
+    return None</code></pre>
+</section>
+<section id="onvertcay-oneway-ordway" class="slide level2">
+<h2>Onvertcay Oneway Ordway</h2>
+<pre ><code class="python" style="max-height:900px;">def word_2_pig_latin(word):
+    """
+    Convert a single word with no special characters from
+    English to Pig Latin.
+    """
+    vowel = find_first_vowel_index(word)
+    if vowel is None:
+        return word
+    elif vowel == 0:
+        return word + "way"
+    else:
+        return word[vowel:] + word[:vowel] + "ay"</code></pre>
+</section>
+<section id="onvertcay-hrasepay" class="slide level2">
+<h2>Onvertcay hrasepay</h2>
+<pre ><code class="python" style="max-height:900px;">def string_2_pig_latin(string):
+    start = 0
+    i = 0
+    phrase = ""
+    finding_words = True
+    while len(string) > 0 and finding_words:
+        if not string[i].isalpha():
+            word = string[start:i]
+            phrase += word_2_pig_latin(word) + string[i]
+            start = i + 1
+        i += 1
+        if i == len(string):
+            finding_words = False
+            phrase += word_2_pig_latin(string[start:])
+    return phrase</code></pre>
+</section>
+    </div>
+  </div>
+
+  <script src="../html_srcs/reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../html_srcs/reveal.js/plugin/notes/notes.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/search/search.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/Chart.min.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chart/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/chalkboard/plugin.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/math/math.js"></script>
+  <script src="../html_srcs/reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1200,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: '../html_srcs/reveal.js/plugin/math/mathjax/tex-mml-chtml.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+	reveald3: {
+			runLastState: true, // true/false, default: true
+			onSlideChangedDelay: 200,
+			mapPath: false, // true / false / "spefific/path/as/string", default: false
+			tryFallbackURL: true, // true/false, default false
+			disableCheckFile: false, //default false
+		 },
+
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChart,
+		  RevealChalkboard,
+        ],
+		chalkboard: {
+		boardmarkerWidth: 4,
+        chalkWidth: 7,
+		boardmarkers : [
+                { color: 'rgba(248,248,242,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                { color: 'rgba(102,217,239,1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                { color: 'rgba(249,38,114,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                { color: 'rgba(166,226,46,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                { color: 'rgba(253,151,31,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                { color: 'rgba(174,129,255,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                { color: 'rgba(255,231,146,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+        ],
+        chalks: [
+                { color: 'rgba(248,248,242,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                { color: 'rgba(102,217,239,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                { color: 'rgba(249,38,114,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                { color: 'rgba(166,226,46,0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                { color: 'rgba(253,151,31,0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                { color: 'rgba(174,129,255,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                { color: 'rgba(255,231,146,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+        ]
+		},
+		dependencies: [
+			{ src: "../html_srcs/reveal.js/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"../html_srcs/reveal.js/plugin/title-footer/title-footer.css"}); } },
+			{ src: "../html_srcs/reveal.js/plugin/d3/reveald3.js" },
+		],
+      });
+    </script>
+    </body>
+</html>
